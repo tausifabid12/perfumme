@@ -24,11 +24,16 @@
 import GodModeScene from "@/components/GodModeScene";
 import GodModeExperience from "@/components/GodModeExperience";
 import ScrollVelocity from "@/components/providers/ScrollVelocity";
+import ScrollDebugOverlay from "@/components/ScrollDebugOverlay";
+import CinematicTypography from "@/components/Cinematictypography";
+import CinematicNav from "@/components/Cinematicnav";
 
 
 export default function Page() {
     return (
         <main className="bg-black">
+
+            <CinematicNav />
             <ScrollVelocity />
 
             {/* 🌌 WebGL WORLD */}
@@ -36,6 +41,11 @@ export default function Page() {
 
             {/* 🎬 CINEMATIC VIDEO ENGINE */}
             <GodModeExperience />
+
+            <CinematicTypography />
+
+            {/* 🔧 REMOVE BEFORE LAUNCH */}
+            <ScrollDebugOverlay />
         </main>
     );
 }
