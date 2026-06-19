@@ -7,7 +7,7 @@ import TransitionLink from "@/components/TransitionLink";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function CinematicTypography() {
+export default function CinematicTypography({ canAnimate = false }: { canAnimate?: boolean }) {
     const smokeRef = useRef<HTMLDivElement>(null);
     const rebelRef = useRef<HTMLDivElement>(null);
     const itboyRef = useRef<HTMLDivElement>(null);
@@ -17,6 +17,7 @@ export default function CinematicTypography() {
     const rafRef = useRef<number>();
 
     useEffect(() => {
+        if (!canAnimate) return;
         // Fonts loaded globally via next/font in layout.tsx — no runtime injection needed
 
         const isMobile = window.innerWidth < 768;
@@ -181,7 +182,7 @@ export default function CinematicTypography() {
             if (rafRef.current) cancelAnimationFrame(rafRef.current);
             ScrollTrigger.getAll().forEach(t => t.kill());
         };
-    }, []);
+    }, [canAnimate]);
 
     const SplitChars = ({ text }: { text: string }) => (
         <span aria-label={text} className="inline-block">

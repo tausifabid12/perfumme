@@ -63,7 +63,7 @@ export default function Page() {
                 />
             )}
 
-            <CinematicNav />
+            <CinematicNav canAnimate={!loading} />
             <ScrollVelocity />
 
             {/* WebGL particle field — fixed behind everything */}
@@ -73,7 +73,7 @@ export default function Page() {
             <GodModeExperience onReady={handleVideoReady} />
 
             {/* Fixed overlay — uses fixed 799vh math, unaffected by content below */}
-            <CinematicTypography />
+            <CinematicTypography canAnimate={!loading} />
 
             {/* Always in DOM (stable scrollHeight) but hidden until cinematic ends.
                 Revealed at 98.5% of cinematic scroll — same point overlay hides. */}

@@ -39,7 +39,7 @@ export default function ProductPageClient({
     <div className="relative" style={{ background: "var(--bg-primary)" }}>
       <ScrollProgress />
       <ScrollSkewProvider />
-      <CinematicNav />
+      <CinematicNav canAnimate={true} />
 
       <HeroSection
         data={data}

@@ -10,17 +10,22 @@ interface Props {
 
 export default function LoadingScreen({ onComplete, onRegister }: Props) {
     const wrapRef = useRef<HTMLDivElement>(null);
+    const leftPanelRef = useRef<HTMLDivElement>(null);
+    const rightPanelRef = useRef<HTMLDivElement>(null);
     const logoRef = useRef<HTMLDivElement>(null);
-    const barRef = useRef<HTMLDivElement>(null);
+    const sublineRef = useRef<HTMLDivElement>(null);
+    const progressLineRef = useRef<HTMLDivElement>(null);
     const fillRef = useRef<HTMLDivElement>(null);
-    const tagRef = useRef<HTMLParagraphElement>(null);
-    const curtainRef = useRef<HTMLDivElement>(null);
-    const [pct, setPct] = useState(0);
-    const readyRef = useRef(false);   // video is ready
-    const doneRef = useRef(false);   // dismiss already fired
-    const pctRef = useRef(0);       // latest pct without stale closure
+    const counterRef = useRef<HTMLSpanElement>(null);
+    const line1Ref = useRef<HTMLDivElement>(null);
+    const line2Ref = useRef<HTMLDivElement>(null);
+    const glowRef = useRef<HTMLDivElement>(null);
 
-    // Keep pctRef in sync
+    const [pct, setPct] = useState(0);
+    const readyRef = useRef(false);
+    const doneRef = useRef(false);
+    const pctRef = useRef(0);
+
     useEffect(() => { pctRef.current = pct; }, [pct]);
 
     // ── Dismiss animation ────────────────────────────────────────────
@@ -28,20 +33,40 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
         if (doneRef.current) return;
         doneRef.current = true;
 
-        // Snap fill to 100 then wipe the curtain upward
         gsap.to(fillRef.current, {
-            width: "100%", duration: 0.3, ease: "power2.out",
+            width: "100%", duration: 0.25, ease: "power2.out",
             onComplete: () => {
-                gsap.timeline()
-                    .to(logoRef.current, { opacity: 0, y: -24, duration: 0.45, ease: "power3.in" }, 0)
-                    .to(tagRef.current, { opacity: 0, y: -12, duration: 0.35, ease: "power3.in" }, 0)
-                    .to(barRef.current, { opacity: 0, duration: 0.3 }, 0.05)
-                    .fromTo(curtainRef.current,
-                        { yPercent: 0 },
-                        {
-                            yPercent: -100, duration: 0.9, ease: "expo.inOut",
-                            onComplete: onComplete
-                        }, 0.3);
+                const tl = gsap.timeline({ onComplete });
+
+                // Glow pulse before wipe
+                tl.to(glowRef.current, {
+                    scale: 2.2, opacity: 0.9,
+                    duration: 0.35, ease: "power2.out",
+                }, 0);
+
+                // Fade out counter + subline
+                tl.to([sublineRef.current, progressLineRef.current], {
+                    opacity: 0, y: -8, duration: 0.3, ease: "power2.in",
+                }, 0);
+
+                // Logo letters scatter upward with stagger
+                tl.to(logoRef.current?.querySelectorAll(".ll") ?? [], {
+                    y: -60, opacity: 0, stagger: 0.04,
+                    duration: 0.5, ease: "power3.in",
+                }, 0.05);
+
+                // Horizontal accent lines retract
+                tl.to([line1Ref.current, line2Ref.current], {
+                    scaleX: 0, duration: 0.4, ease: "expo.in",
+                }, 0);
+
+                // Split-panel wipe — left slides left, right slides right
+                tl.to(leftPanelRef.current, {
+                    xPercent: -100, duration: 0.85, ease: "expo.inOut",
+                }, 0.25);
+                tl.to(rightPanelRef.current, {
+                    xPercent: 100, duration: 0.85, ease: "expo.inOut",
+                }, 0.25);
             },
         });
     }, [onComplete]);
@@ -50,8 +75,6 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
     useEffect(() => {
         onRegister(() => {
             readyRef.current = true;
-            // If progress bar has already reached 100, dismiss immediately
-            // otherwise let the tick loop handle it
             if (pctRef.current >= 100) dismiss();
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,16 +83,35 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
     // ── Entry animation ──────────────────────────────────────────────
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.timeline({ defaults: { ease: "expo.out" } })
-                .fromTo(logoRef.current?.querySelectorAll(".logo-letter") ?? [],
-                    { yPercent: 110, opacity: 0 },
-                    { yPercent: 0, opacity: 1, stagger: 0.06, duration: 0.9 }, 0.2)
-                .fromTo(barRef.current,
-                    { scaleX: 0, opacity: 0 },
-                    { scaleX: 1, opacity: 1, transformOrigin: "left", duration: 0.7 }, 0.7)
-                .fromTo(tagRef.current,
-                    { opacity: 0, y: 10 },
-                    { opacity: 1, y: 0, duration: 0.6 }, 0.85);
+            const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+            // Horizontal accent lines expand from center
+            tl.fromTo([line1Ref.current, line2Ref.current],
+                { scaleX: 0, opacity: 0 },
+                { scaleX: 1, opacity: 1, transformOrigin: "center", duration: 0.9, stagger: 0.08 },
+                0.1
+            );
+
+            // Logo letters rise from below, clipped by overflow:hidden parent
+            tl.fromTo(logoRef.current?.querySelectorAll(".ll") ?? [],
+                { yPercent: 120, opacity: 0 },
+                { yPercent: 0, opacity: 1, stagger: 0.055, duration: 0.95 },
+                0.25
+            );
+
+            // Progress bar slides in
+            tl.fromTo(progressLineRef.current,
+                { opacity: 0, y: 10 },
+                { opacity: 1, y: 0, duration: 0.5 },
+                0.85
+            );
+
+            // Subline fades in
+            tl.fromTo(sublineRef.current,
+                { opacity: 0, y: 8 },
+                { opacity: 1, y: 0, duration: 0.6 },
+                0.95
+            );
         }, wrapRef);
         return () => ctx.revert();
     }, []);
@@ -77,14 +119,10 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
     // ── Progress tick ────────────────────────────────────────────────
     useEffect(() => {
         let raf: number;
-
         const tick = () => {
             setPct(prev => {
-                // Fast until 70, slow crawl 70–97, then stop and wait for video
                 const speed = prev < 70 ? 1.8 : prev < 97 ? 0.35 : 0;
                 const next = Math.min(prev + speed, 97);
-
-                // If video is ready and we've hit a "good enough" point, push to 100
                 if (readyRef.current && next >= 40) {
                     pctRef.current = 100;
                     dismiss();
@@ -100,7 +138,7 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Failsafe: if video never fires, dismiss after 6s
+    // ── Failsafe ─────────────────────────────────────────────────────
     useEffect(() => {
         const t = setTimeout(() => dismiss(), 6000);
         return () => clearTimeout(t);
@@ -109,119 +147,219 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
 
     const display = Math.round(Math.min(pct, 100));
 
+    const BRAND = "SENZ8";
+
     return (
-        <div ref={wrapRef}
-            className="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden"
-            style={{ background: "#050507" }}>
+        <div
+            ref={wrapRef}
+            className="fixed inset-0 z-[99999] overflow-hidden"
+            style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
+        >
+            {/* ── Left panel ── */}
+            <div
+                ref={leftPanelRef}
+                className="absolute inset-y-0 left-0 w-1/2"
+                style={{ background: "#050507" }}
+            />
+            {/* ── Right panel ── */}
+            <div
+                ref={rightPanelRef}
+                className="absolute inset-y-0 right-0 w-1/2"
+                style={{ background: "#050507" }}
+            />
 
-            {/* Grain overlay */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.035]"
-                style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }} />
+            {/* Everything above panels */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
 
-            {/* Ambient glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-                style={{
-                    width: 600, height: 600,
-                    background: "radial-gradient(circle, rgba(212,175,55,0.06) 0%, transparent 65%)"
-                }} />
-
-            {/* Grid decoration */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.025]"
-                style={{
-                    backgroundImage: "linear-gradient(rgba(212,175,55,1) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,1) 1px, transparent 1px)",
-                    backgroundSize: "80px 80px"
-                }} />
-
-            {/* Corner brackets */}
-            {(["tl", "tr", "bl", "br"] as const).map(pos => (
-                <div key={pos} className="absolute pointer-events-none"
+                {/* Ambient radial glow — animates on dismiss */}
+                <div
+                    ref={glowRef}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
                     style={{
-                        width: 32, height: 32,
-                        top: pos.startsWith("t") ? 32 : undefined,
-                        bottom: pos.startsWith("b") ? 32 : undefined,
-                        left: pos.endsWith("l") ? 32 : undefined,
-                        right: pos.endsWith("r") ? 32 : undefined,
-                        borderTop: pos.startsWith("t") ? "1px solid rgba(212,175,55,0.3)" : undefined,
-                        borderBottom: pos.startsWith("b") ? "1px solid rgba(212,175,55,0.3)" : undefined,
-                        borderLeft: pos.endsWith("l") ? "1px solid rgba(212,175,55,0.3)" : undefined,
-                        borderRight: pos.endsWith("r") ? "1px solid rgba(212,175,55,0.3)" : undefined,
-                    }} />
-            ))}
+                        width: 480,
+                        height: 480,
+                        background: "radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 68%)",
+                        opacity: 0.6,
+                    }}
+                />
 
-            {/* ── Centre content ── */}
-            <div className="relative flex flex-col items-center gap-10 select-none">
+                {/* Grain texture */}
+                <div
+                    className="absolute inset-0 pointer-events-none opacity-[0.04]"
+                    style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')" }}
+                />
 
-                {/* SENZ8 logo */}
-                <div ref={logoRef} className="flex items-end gap-0.5">
-                    {"SENZ8".split("").map((ch, i) => (
-                        <span key={i} className="logo-letter block font-black uppercase overflow-hidden"
+                {/* Corner brackets */}
+                {(["tl", "tr", "bl", "br"] as const).map(pos => (
+                    <div key={pos} className="absolute pointer-events-none"
+                        style={{
+                            width: 28, height: 28,
+                            top: pos.startsWith("t") ? 28 : undefined,
+                            bottom: pos.startsWith("b") ? 28 : undefined,
+                            left: pos.endsWith("l") ? 28 : undefined,
+                            right: pos.endsWith("r") ? 28 : undefined,
+                            borderTop: pos.startsWith("t") ? "1px solid rgba(212,175,55,0.25)" : undefined,
+                            borderBottom: pos.startsWith("b") ? "1px solid rgba(212,175,55,0.25)" : undefined,
+                            borderLeft: pos.endsWith("l") ? "1px solid rgba(212,175,55,0.25)" : undefined,
+                            borderRight: pos.endsWith("r") ? "1px solid rgba(212,175,55,0.25)" : undefined,
+                        }} />
+                ))}
+
+                {/* ── Top horizontal accent line ── */}
+                <div
+                    ref={line1Ref}
+                    className="absolute"
+                    style={{
+                        top: "calc(50% - clamp(80px, 12vw, 115px))",
+                        left: "10%",
+                        right: "10%",
+                        height: 1,
+                        opacity: 0,
+                        background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.18) 20%, rgba(212,175,55,0.45) 50%, rgba(212,175,55,0.18) 80%, transparent)",
+                    }}
+                />
+
+                {/* ── Bottom horizontal accent line ── */}
+                <div
+                    ref={line2Ref}
+                    className="absolute"
+                    style={{
+                        top: "calc(50% + clamp(80px, 12vw, 115px))",
+                        left: "10%",
+                        right: "10%",
+                        height: 1,
+                        opacity: 0,
+                        background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.18) 20%, rgba(212,175,55,0.45) 50%, rgba(212,175,55,0.18) 80%, transparent)",
+                    }}
+                />
+
+                {/* ── Logo wordmark ── */}
+                <div
+                    ref={logoRef}
+                    className="relative flex items-end overflow-hidden"
+                    style={{ gap: "0.04em" }}
+                >
+                    {BRAND.split("").map((ch, i) => (
+                        <span
+                            key={i}
+                            className="ll block font-black uppercase leading-none select-none"
                             style={{
                                 fontFamily: "var(--font-bodoni), 'Georgia', serif",
-                                fontSize: "clamp(52px, 10vw, 88px)",
-                                letterSpacing: "-0.04em",
-                                lineHeight: 1,
-                                color: i === 4 ? "var(--accent-gold)" : "var(--text-primary)",
-                            }}>
+                                fontSize: "clamp(64px, 12vw, 108px)",
+                                letterSpacing: "-0.03em",
+                                color: i === 4 ? "#D4AF37" : "#F5F5F5",
+                                textShadow: i === 4
+                                    ? "0 0 40px rgba(212,175,55,0.5), 0 0 80px rgba(212,175,55,0.2)"
+                                    : "none",
+                            }}
+                        >
                             {ch}
                         </span>
                     ))}
-                    {/* Pulsing dot */}
-                    <span className="mb-2 ml-1.5 w-[7px] h-[7px] rounded-full animate-pulse flex-shrink-0"
-                        style={{ background: "var(--accent-gold)", boxShadow: "0 0 14px rgba(212,175,55,0.8)" }} />
+                    {/* Gold pulse dot */}
+                    <span
+                        className="mb-2 ml-1.5 w-[8px] h-[8px] rounded-full animate-pulse flex-shrink-0"
+                        style={{
+                            background: "#D4AF37",
+                            boxShadow: "0 0 16px rgba(212,175,55,0.9), 0 0 32px rgba(212,175,55,0.4)",
+                        }}
+                    />
                 </div>
 
-                {/* Progress bar + counter */}
-                <div ref={barRef} className="flex flex-col items-center gap-3" style={{ opacity: 0 }}>
-                    <div className="relative overflow-hidden"
-                        style={{ width: "clamp(200px, 30vw, 340px)", height: 1, background: "rgba(212,175,55,0.12)" }}>
-                        <div ref={fillRef} className="absolute inset-y-0 left-0"
+                {/* ── Progress bar ── */}
+                <div
+                    ref={progressLineRef}
+                    className="flex flex-col items-center"
+                    style={{ gap: 10, marginTop: "clamp(32px, 5vw, 52px)", opacity: 0 }}
+                >
+                    {/* Bar track */}
+                    <div
+                        className="relative overflow-hidden"
+                        style={{
+                            width: "clamp(200px, 28vw, 320px)",
+                            height: 1,
+                            background: "rgba(212,175,55,0.1)",
+                        }}
+                    >
+                        {/* Fill */}
+                        <div
+                            ref={fillRef}
+                            className="absolute inset-y-0 left-0"
                             style={{
                                 width: `${display}%`,
-                                background: "linear-gradient(90deg, rgba(212,175,55,0.7), #D4AF37)",
-                                transition: "width 0.12s linear",
-                                boxShadow: "0 0 10px rgba(212,175,55,0.5)",
-                            }} />
-                        {/* Glowing head dot */}
-                        <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-[5px] h-[5px] rounded-full pointer-events-none"
+                                background: "linear-gradient(90deg, rgba(212,175,55,0.5), #D4AF37)",
+                                transition: "width 0.1s linear",
+                                boxShadow: "0 0 12px rgba(212,175,55,0.6)",
+                            }}
+                        />
+                        {/* Glowing head */}
+                        <div
+                            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-[6px] h-[6px] rounded-full pointer-events-none"
                             style={{
-                                left: `${display}%`, background: "#D4AF37",
-                                boxShadow: "0 0 8px 2px rgba(212,175,55,0.7)",
-                                transition: "left 0.12s linear"
-                            }} />
+                                left: `${display}%`,
+                                background: "#D4AF37",
+                                boxShadow: "0 0 10px 3px rgba(212,175,55,0.8)",
+                                transition: "left 0.1s linear",
+                            }}
+                        />
                     </div>
 
-                    <div className="flex items-baseline gap-1.5">
-                        <span className="font-black tabular-nums"
-                            style={{ fontSize: 13, letterSpacing: "0.06em", color: "var(--accent-gold)" }}>
+                    {/* Counter row */}
+                    <div className="flex items-baseline" style={{ gap: 4 }}>
+                        <span
+                            ref={counterRef}
+                            className="font-black tabular-nums"
+                            style={{
+                                fontSize: 11,
+                                letterSpacing: "0.1em",
+                                color: "#D4AF37",
+                            }}
+                        >
                             {String(display).padStart(3, "0")}
                         </span>
-                        <span className="text-[9px] uppercase tracking-[0.35em]"
-                            style={{ color: "rgba(212,175,55,0.35)" }}>%</span>
+                        <span style={{ fontSize: 8, letterSpacing: "0.4em", color: "rgba(212,175,55,0.3)", textTransform: "uppercase" }}>
+                            %
+                        </span>
                     </div>
                 </div>
 
-                {/* Tagline */}
-                <p ref={tagRef} className="text-[8px] uppercase tracking-[0.75em]"
-                    style={{ color: "rgba(245,245,245,0.18)", opacity: 0 }}>
-                    Parfum Maison · Est. 2024
-                </p>
+                {/* ── Subline ── */}
+                <div
+                    ref={sublineRef}
+                    style={{ marginTop: "clamp(16px, 3vw, 28px)", opacity: 0 }}
+                >
+                    <p
+                        style={{
+                            fontSize: 8,
+                            letterSpacing: "0.7em",
+                            textTransform: "uppercase",
+                            color: "rgba(245,245,245,0.16)",
+                            textAlign: "center",
+                        }}
+                    >
+                        Parfum Maison &nbsp;·&nbsp; Est. 2024
+                    </p>
+                </div>
+
+                {/* Bottom-right label */}
+                <div
+                    className="absolute bottom-7 right-7"
+                    style={{
+                        fontSize: 7,
+                        letterSpacing: "0.5em",
+                        textTransform: "uppercase",
+                        color: "rgba(212,175,55,0.18)",
+                    }}
+                >
+                    Loading Experience
+                </div>
+
+                {/* Top + bottom edge lines */}
+                <div className="absolute top-0 left-0 right-0 h-px"
+                    style={{ background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.25), transparent)" }} />
+                <div className="absolute bottom-0 left-0 right-0 h-px"
+                    style={{ background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.25), transparent)" }} />
             </div>
-
-            {/* Top + bottom accent lines */}
-            <div className="absolute top-0 left-0 right-0 h-px"
-                style={{ background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)" }} />
-            <div className="absolute bottom-0 left-0 right-0 h-px"
-                style={{ background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)" }} />
-
-            {/* Build label bottom-right */}
-            <div className="absolute bottom-8 right-8 text-[8px] uppercase tracking-[0.5em]"
-                style={{ color: "rgba(212,175,55,0.2)" }}>
-                Loading Experience
-            </div>
-
-            {/* Exit curtain — slides up over everything */}
-            <div ref={curtainRef} className="absolute inset-0 pointer-events-none"
-                style={{ background: "#050507", zIndex: 10 }} />
         </div>
     );
 }

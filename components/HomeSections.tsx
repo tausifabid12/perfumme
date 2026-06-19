@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
 import TransitionLink from "@/components/TransitionLink";
+import HomeTestimonialsSection from "@/components/HomeTestimonialsSection";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -253,6 +254,7 @@ export default function HomeSections() {
         <>
             <MarqueeStrip />
             <CollectionPreview />
+            <HomeTestimonialsSection />
             <BrandStory />
         </>
     );

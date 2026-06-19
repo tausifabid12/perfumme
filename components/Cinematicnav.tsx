@@ -16,7 +16,7 @@ const NAV_LINKS = [
     { name: "Contact", text: "5", href: "/contact" },
 ];
 
-export default function CinematicNav() {
+export default function CinematicNav({ canAnimate = false }: { canAnimate?: boolean }) {
     const [isOpen, setIsOpen] = useState(false);
     const { totalQuantity, setCartOpen } = useCart();
 
@@ -25,6 +25,7 @@ export default function CinematicNav() {
     const linksRef = useRef<(HTMLLIElement | null)[]>([]);
     const cursorRef = useRef<HTMLDivElement>(null);
     const followerRef = useRef<HTMLDivElement>(null);
+    const headerRef = useRef<HTMLElement>(null);
 
     // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     const getScale = () => {
@@ -46,6 +47,15 @@ export default function CinematicNav() {
         gsap.to(e.currentTarget, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1,0.3)" });
 
     // â”€â”€ Cursor follower â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Nav entry animation once loading is done ─────────────────────
+    useEffect(() => {
+        if (!canAnimate) return;
+        gsap.fromTo(headerRef.current,
+            { opacity: 0, y: -16 },
+            { opacity: 1, y: 0, duration: 0.9, ease: "expo.out", delay: 0.15 }
+        );
+    }, [canAnimate]);
+
     useEffect(() => {
         const move = (e: MouseEvent) => {
             gsap.to(cursorRef.current, { x: e.clientX, y: e.clientY, duration: 0.1 });
@@ -98,7 +108,7 @@ export default function CinematicNav() {
             />
 
             {/* â”€â”€ Header bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-            <header className="fixed top-0 left-0 w-full z-[210] px-6 py-7 md:px-12 flex justify-between items-center mix-blend-difference">
+            <header ref={headerRef} className="fixed top-0 left-0 w-full z-[210] px-6 py-7 md:px-12 flex justify-between items-center mix-blend-difference" style={{ opacity: 0 }}>
 
                 {/* Logo */}
                 <Link href={"/"}>
