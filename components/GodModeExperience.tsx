@@ -9,10 +9,17 @@ const TOTAL_FRAMES = FPS * DURATION;
 const VIDEO_FADE_SCROLL = 300;
 const CROSSFADE_BEFORE_END = 0.6;
 
-export default function GodModeExperience() {
+export default function GodModeExperience({ onReady }: { onReady?: () => void }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const videoA = useRef<HTMLVideoElement>(null);
     const videoB = useRef<HTMLVideoElement>(null);
+    const readyFired = useRef(false);   // ensure onReady fires at most once
+
+    const fireReady = () => {
+        if (readyFired.current) return;
+        readyFired.current = true;
+        onReady?.();
+    };
 
     const images = useRef<HTMLImageElement[]>([]);
     const currentFrame = useRef(0);
@@ -85,9 +92,12 @@ export default function GodModeExperience() {
 
         // Start A, pre-warm B, begin monitoring loop
         vA.play().then(() => {
+            fireReady();           // ← signal loading screen to dismiss
             prewarmB();
             rafId = requestAnimationFrame(checkAndSwap);
-        }).catch(() => { });
+        }).catch(() => {
+            fireReady();           // dismiss even on autoplay block
+        });
 
         return () => cancelAnimationFrame(rafId);
     }, []);
@@ -141,7 +151,7 @@ export default function GodModeExperience() {
     }, []);
 
     return (
-        <div className="relative h-[800vh] bg-black">
+        <div className="relative h-[1300vh] bg-black">
             <div className="sticky top-0 h-screen overflow-hidden">
 
                 <video
@@ -150,6 +160,7 @@ export default function GodModeExperience() {
                     muted
                     playsInline
                     preload="auto"
+                    onCanPlay={() => onReady?.()}
                     className="absolute inset-0 w-full h-full object-cover"
                     style={{
                         opacity: videoOpacity * (activeVideo === "a" ? 1 : 0),

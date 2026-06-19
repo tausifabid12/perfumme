@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import TransitionLink from "@/components/TransitionLink";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,10 +17,7 @@ export default function CinematicTypography() {
     const rafRef = useRef<number>();
 
     useEffect(() => {
-        const link = document.createElement("link");
-        link.rel = "stylesheet";
-        link.href = "https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,700;0,6..96,800;1,6..96,700&family=Inter:wght@300;400&display=swap";
-        document.head.appendChild(link);
+        // Fonts loaded globally via next/font in layout.tsx — no runtime injection needed
 
         const isMobile = window.innerWidth < 768;
 
@@ -30,13 +28,14 @@ export default function CinematicTypography() {
         window.addEventListener("mousemove", onMouse, { passive: true });
 
         const getScrollPx = (pct: number) => {
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            return maxScroll * pct;
+            // GodModeExperience = 1300vh. Cinematic scroll max = 1200vh (1300 - 100 viewport).
+            const cinematicScrollMax = window.innerHeight * 12; // 1200vh
+            return cinematicScrollMax * pct;
         };
 
-        // ════════════════════════════════════════════════════════════════
-        // SECTION 1 — IMPERIAL SMOKE
-        // ════════════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // SECTION 1 â€” IMPERIAL SMOKE
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         const smokeEl = smokeRef.current!;
 
         const chars = smokeEl.querySelectorAll<HTMLElement>("[data-char]");
@@ -68,9 +67,9 @@ export default function CinematicTypography() {
             },
         });
 
-        // ════════════════════════════════════════════════════════════════
-        // SECTION 2 — REBEL GIRL
-        // ════════════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // SECTION 2 â€” REBEL GIRL
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         const rebelEl = rebelRef.current!;
         gsap.set(rebelEl, { opacity: 0, pointerEvents: "none" });
         gsap.set("[data-rebel-label]", { opacity: 0, x: 24 });
@@ -99,9 +98,9 @@ export default function CinematicTypography() {
             },
         });
 
-        // ════════════════════════════════════════════════════════════════
-        // SECTION 3 — IT BOY
-        // ════════════════════════════════════════════════════════════════
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        // SECTION 3 â€” IT BOY
+        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         const itEl = itboyRef.current!;
         const itWord = itEl.querySelector<HTMLElement>("[data-it-word]")!;
         const boyWord = itEl.querySelector<HTMLElement>("[data-boy-word]")!;
@@ -121,14 +120,32 @@ export default function CinematicTypography() {
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.93)}px top`,
-            end: () => `${getScrollPx(0.97)}px top`,
+            start: () => `${getScrollPx(0.88)}px top`,
             scrub: false,
             onEnter: () => { itEl.style.pointerEvents = "auto"; itInTl.play(); },
             onLeaveBack: () => { itEl.style.pointerEvents = "none"; itInTl.reverse(); },
         });
 
-        // ── Floating breathe (desktop only — skip on touch) ──────────────
+        // ── Hide the entire fixed overlay once the user scrolls past the
+        //    cinematic zone (800vh GodModeExperience) into the normal page.
+        //    This is the ONLY thing that clears the IT BOY text — no early fade.
+        const overlayEl = smokeEl.closest<HTMLElement>(".ct-overlay");
+        if (overlayEl) {
+            ScrollTrigger.create({
+                trigger: document.body,
+                start: () => `${getScrollPx(0.998)}px top`,
+                onEnter: () => {
+                    overlayEl.style.visibility = "hidden";
+                    overlayEl.style.pointerEvents = "none";
+                },
+                onLeaveBack: () => {
+                    overlayEl.style.visibility = "";
+                    overlayEl.style.pointerEvents = "";
+                },
+            });
+        }
+
+        // â”€â”€ Floating breathe (desktop only â€” skip on touch) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if (!isMobile) {
             const breathe = (t: number) => {
                 rafRef.current = requestAnimationFrame(breathe);
@@ -180,15 +197,14 @@ export default function CinematicTypography() {
     return (
         <>
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,700;0,6..96,800;1,6..96,700&family=Inter:wght@300;400&display=swap');
 
                 .ct-overlay {
                     position: fixed; inset: 0; z-index: 10; pointer-events: none;
                 }
 
-                /* ─── LABEL / NUMBER ────────────────────────────────────── */
+                /* â”€â”€â”€ LABEL / NUMBER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 .ct-label {
-                    font-family: 'Inter', sans-serif;
+                    font-family: var(--font-inter), system-ui, sans-serif;
                     font-weight: 300;
                     font-size: 9px;
                     letter-spacing: 0.55em;
@@ -196,9 +212,9 @@ export default function CinematicTypography() {
                     margin: 0 0 0.6rem;
                 }
 
-                /* ─── HEADLINE ──────────────────────────────────────────── */
+                /* â”€â”€â”€ HEADLINE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 .ct-h2 {
-                    font-family: 'Bodoni Moda', serif;
+                    font-family: var(--font-bodoni), 'Georgia', serif;
                     font-weight: 800;
                     line-height: 0.9;
                     color: #fff;
@@ -208,9 +224,9 @@ export default function CinematicTypography() {
                     font-size: clamp(38px, 10vw, 60px);
                 }
 
-                /* ─── SUBTEXT ───────────────────────────────────────────── */
+                /* â”€â”€â”€ SUBTEXT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 .ct-sub {
-                    font-family: 'Inter', sans-serif;
+                    font-family: var(--font-inter), system-ui, sans-serif;
                     font-weight: 300;
                     font-size: 10px;
                     letter-spacing: 0.28em;
@@ -219,14 +235,14 @@ export default function CinematicTypography() {
                     margin: 0;
                 }
 
-                /* ─── RULE ──────────────────────────────────────────────── */
+                /* â”€â”€â”€ RULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 .ct-rule {
                     width: 36px; height: 1px;
                     margin: 0.8rem 0;
                 }
 
-                /* ─── SECTION WRAPPERS ──────────────────────────────────── */
-                /* SMOKE — bottom-left */
+                /* â”€â”€â”€ SECTION WRAPPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* SMOKE â€” bottom-left */
                 .ct-smoke {
                     position: absolute;
                     bottom: 6%;
@@ -236,7 +252,7 @@ export default function CinematicTypography() {
                     will-change: transform, opacity, filter;
                 }
 
-                /* REBEL — top-right */
+                /* REBEL â€” top-right */
                 .ct-rebel {
                     position: absolute;
                     top: 6%;
@@ -257,14 +273,14 @@ export default function CinematicTypography() {
                     will-change: transform, opacity;
                 }
 
-                /* IT — bottom-left */
+                /* IT â€” bottom-left */
                 .ct-it {
                     position: absolute;
                     bottom: 5%;
                     left: 4%;
                 }
 
-                /* BOY — bottom-right */
+                /* BOY â€” bottom-right */
                 .ct-boy {
                     position: absolute;
                     bottom: 5%;
@@ -274,7 +290,7 @@ export default function CinematicTypography() {
 
                 /* IT / BOY giant word */
                 .ct-giant {
-                    font-family: 'Bodoni Moda', serif;
+                    font-family: var(--font-bodoni), 'Georgia', serif;
                     font-weight: 800;
                     line-height: 0.85;
                     color: #fff;
@@ -289,72 +305,77 @@ export default function CinematicTypography() {
                     font-weight: 700;
                 }
 
-                /* ─── BUTTON ────────────────────────────────────────────── */
+                /* --- BUTTON -------------------------------------------- */
                 .ct-btn {
                     display: inline-flex;
                     align-items: center;
                     justify-content: center;
                     gap: 8px;
-                    height: 44px;
-                    padding: 0 1.4rem;
+                    height: 48px;
+                    padding: 0 1.8rem;
                     border-radius: 999px;
-                    border: 1px solid rgba(255,255,255,0.75);
-                    background: rgba(255,255,255,0.10);
-                    backdrop-filter: blur(18px);
-                    -webkit-backdrop-filter: blur(18px);
-                    color: #ffffff;
-                    font-family: 'Inter', sans-serif;
-                    font-weight: 400;
+                    border: 1.5px solid #D4AF37;
+                    background: #D4AF37;
+                    color: #0A0A0A;
+                    font-family: var(--font-inter), system-ui, sans-serif;
+                    font-weight: 800;
                     font-size: 10px;
-                    letter-spacing: 0.24em;
+                    letter-spacing: 0.3em;
                     text-transform: uppercase;
                     cursor: pointer;
                     position: relative;
                     overflow: hidden;
-                    transition: border-color 0.3s, background 0.3s, box-shadow 0.3s, transform 0.2s;
+                    transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
                     pointer-events: auto;
-                    /* tap target */
-                    min-width: 120px;
+                    min-width: 148px;
                     touch-action: manipulation;
+                    box-shadow:
+                        0 0 0 4px rgba(212,175,55,0.15),
+                        0 0 28px rgba(212,175,55,0.5),
+                        0 4px 16px rgba(0,0,0,0.6);
                 }
-                .ct-btn svg { flex-shrink: 0; transition: transform 0.25s ease; }
-                .ct-btn:hover svg { transform: translateX(3px); }
+                .ct-btn svg { flex-shrink: 0; transition: transform 0.25s ease; color: #0A0A0A; }
+                .ct-btn:hover svg { transform: translateX(4px); color: #D4AF37; }
 
+                /* White shimmer on hover */
                 .ct-btn::after {
                     content: '';
                     position: absolute;
                     top: 0; left: -110%;
                     width: 55%; height: 100%;
-                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.13), transparent);
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
                     transition: left 0.5s ease;
                 }
                 .ct-btn:hover::after { left: 160%; }
 
                 .ct-btn:hover {
-                    border-color: rgba(255,255,255,0.95);
-                    background: rgba(255,255,255,0.16);
-                    box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 4px 24px rgba(0,0,0,0.4);
-                    transform: scale(1.03);
+                    background: rgba(0,0,0,0.55);
+                    border-color: #D4AF37;
+                    color: #D4AF37;
+                    box-shadow:
+                        0 0 0 4px rgba(212,175,55,0.12),
+                        0 0 36px rgba(212,175,55,0.4),
+                        0 4px 24px rgba(0,0,0,0.6);
+                    transform: scale(1.04);
                 }
                 .ct-btn:active { transform: scale(0.97); }
 
-                /* gold variant */
+                /* dark outlined variant */
                 .ct-btn-gold {
-                    border-color: rgba(212,175,55,0.8);
-                    background: rgba(212,175,55,0.08);
-                    color: #f0d98a;
+                    background: rgba(0,0,0,0.55);
+                    border-color: #D4AF37;
+                    color: #D4AF37;
+                    box-shadow: 0 0 20px rgba(212,175,55,0.25), 0 4px 16px rgba(0,0,0,0.5);
                 }
+                .ct-btn-gold svg { color: #D4AF37; }
                 .ct-btn-gold:hover {
-                    border-color: #d4af37;
-                    background: rgba(212,175,55,0.16);
-                    color: #ffffff;
-                    box-shadow:
-                        0 0 0 1px rgba(212,175,55,0.25),
-                        0 0 28px rgba(212,175,55,0.25),
-                        0 4px 20px rgba(0,0,0,0.35);
+                    background: #D4AF37;
+                    color: #0A0A0A;
+                    box-shadow: 0 0 36px rgba(212,175,55,0.45), 0 4px 20px rgba(0,0,0,0.5);
                 }
+                .ct-btn-gold:hover svg { color: #0A0A0A; }
 
-                /* ─── TABLET ≥ 768px ────────────────────────────────────── */
+                /* â”€â”€â”€ TABLET â‰¥ 768px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 @media (min-width: 768px) {
                     .ct-label  { font-size: 9px; }
                     .ct-sub    { font-size: 11px; }
@@ -366,7 +387,7 @@ export default function CinematicTypography() {
                     .ct-rule   { width: 44px; }
                 }
 
-                /* ─── DESKTOP ≥ 1280px ──────────────────────────────────── */
+                /* â”€â”€â”€ DESKTOP â‰¥ 1280px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 @media (min-width: 1280px) {
                     .ct-label  { font-size: 10px; }
                     .ct-sub    { font-size: 12px; }
@@ -377,7 +398,7 @@ export default function CinematicTypography() {
                     .ct-btn    { height: 50px; padding: 0 2rem; font-size: 11px; letter-spacing: 0.28em; }
                 }
 
-                /* ─── ULTRAWIDE ≥ 2000px ────────────────────────────────── */
+                /* â”€â”€â”€ ULTRAWIDE â‰¥ 2000px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 @media (min-width: 2000px) {
                     .ct-label  { font-size: 12px; letter-spacing: 0.6em; }
                     .ct-sub    { font-size: 15px; }
@@ -389,23 +410,23 @@ export default function CinematicTypography() {
                     .ct-rule   { width: 56px; }
                 }
 
-                /* rebel button row — right on desktop, left on mobile */
+                /* rebel button row â€” right on desktop, left on mobile */
                 .ct-rebel-btn-row { justify-content: flex-end; }
 
-                /* rebel gold rule — right on desktop */
+                /* rebel gold rule â€” right on desktop */
                 .ct-rebel-rule { margin-left: auto; margin-right: 0; }
 
-                /* ─── MOBILE < 768px ───────────────────────────────────── */
+                /* â”€â”€â”€ MOBILE < 768px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 @media (max-width: 767px) {
                     /*
                      * Both sections stack at bottom-left.
                      * Smoke = lower slot, Rebel = upper slot above it.
                      * Sections are shown one at a time via scroll so they
-                     * never visually overlap — positioning just needs to be
+                     * never visually overlap â€” positioning just needs to be
                      * sensible for each section's own moment on screen.
                      */
 
-                    /* Smoke — left, bottom, no wrapping */
+                    /* Smoke â€” left, bottom, no wrapping */
                     .ct-smoke {
                         left: 5%;
                         right: auto;
@@ -418,7 +439,7 @@ export default function CinematicTypography() {
                         font-size: clamp(30px, 9vw, 50px);
                     }
 
-                    /* Rebel — left, bottom (shows AFTER smoke scrolls away) */
+                    /* Rebel â€” left, bottom (shows AFTER smoke scrolls away) */
                     .ct-rebel {
                         top: auto;
                         bottom: 6%;
@@ -439,9 +460,9 @@ export default function CinematicTypography() {
 
             <div className="ct-overlay">
 
-                {/* ═══ SECTION 1 — IMPERIAL SMOKE ═══ */}
+                {/* â•â•â• SECTION 1 â€” IMPERIAL SMOKE â•â•â• */}
                 <div ref={smokeRef} className="ct-smoke">
-                    <p className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>N° 001</p>
+                    <p className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>NÂ° 001</p>
 
                     <h2 className="ct-h2">
                         <div><SplitChars text="IMPERIAL" /></div>
@@ -455,17 +476,17 @@ export default function CinematicTypography() {
                         Crafted in shadow.<br />Remembered forever.
                     </p>
 
-                    <button data-smoke-sub className="ct-btn" style={{ marginTop: "1.2rem" }}>
+                    <TransitionLink href="/collections" label="Discover Collection" data-smoke-sub className="ct-btn" style={{ marginTop: "1.2rem" }}>
                         Discover
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                             <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
-                    </button>
+                    </TransitionLink>
                 </div>
 
-                {/* ═══ SECTION 2 — REBEL GIRL ═══ */}
+                {/* â•â•â• SECTION 2 â€” REBEL GIRL â•â•â• */}
                 <div ref={rebelRef} className="ct-rebel">
-                    <p data-rebel-label className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>N° 002</p>
+                    <p data-rebel-label className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>NÂ° 002</p>
 
                     <h2 className="ct-h2">
                         <div data-rebel-word="0" style={{ display: "block" }}>REBEL</div>
@@ -483,22 +504,22 @@ export default function CinematicTypography() {
 
                     <div data-rebel-sub data-rebel-sub-btn className="ct-rebel-btn-row"
                         style={{ display: "flex", marginTop: "1.2rem" }}>
-                        <button className="ct-btn ">
+                        <TransitionLink href="/collections" label="Discover Collection" className="ct-btn">
                             Discover
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                                 <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
-                        </button>
+                        </TransitionLink>
                     </div>
                 </div>
 
-                {/* ═══ SECTION 3 — IT BOY ═══ */}
+                {/* â•â•â• SECTION 3 â€” IT BOY â•â•â• */}
                 <div ref={itboyRef} className="ct-itboy">
 
-                    {/* IT — bottom-left */}
+                    {/* IT â€” bottom-left */}
                     <div className="ct-it">
                         <p data-it-sub className="ct-label" style={{ color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem" }}>
-                            N° 003
+                            NÂ° 003
                         </p>
 
                         <div data-it-word className="ct-giant">IT</div>
@@ -508,15 +529,15 @@ export default function CinematicTypography() {
                             The Final Statement.
                         </p>
 
-                        <button data-it-sub className="ct-btn " style={{ marginTop: "1rem" }}>
+                        <TransitionLink href="/collections" label="Discover Collection" data-it-sub className="ct-btn" style={{ marginTop: "1rem" }}>
                             Discover
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                                 <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
-                        </button>
+                        </TransitionLink>
                     </div>
 
-                    {/* BOY — bottom-right */}
+                    {/* BOY â€” bottom-right */}
                     <div className="ct-boy">
                         <p data-it-sub className="ct-label"
                             style={{ color: "rgba(255,255,255,0.52)", marginBottom: "0.4rem" }}>
