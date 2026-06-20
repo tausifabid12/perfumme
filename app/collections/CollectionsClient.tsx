@@ -604,7 +604,7 @@ export default function CollectionsClient({ products }: { products: CollectionPr
             <CustomCursor />
             <ScrollProgress />
             <ScrollSkewProvider />
-            <CinematicNav />
+            <CinematicNav canAnimate={true} />
             <PageHeader total={products.length} />
             <Marquee items={marqueeItems} />
             <FilterBar active={activeFilter} onChange={setActiveFilter} total={filtered.length} />

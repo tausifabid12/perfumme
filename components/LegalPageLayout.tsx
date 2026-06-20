@@ -70,7 +70,7 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
     return (
         <div className="relative min-h-screen" style={{ background: "var(--bg-primary)" }}>
             <ScrollProgress />
-            <CinematicNav />
+            <CinematicNav canAnimate={true} />
 
             {/* ── Hero ─────────────────────────────────────────────────────── */}
             <div ref={heroRef}

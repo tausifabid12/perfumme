@@ -527,7 +527,7 @@ export default function ContactClient() {
     return (
         <div className="relative min-h-screen" style={{ background: "var(--bg-primary)" }}>
             <ScrollProgress />
-            <CinematicNav />
+            <CinematicNav canAnimate={true} />
 
             <Hero />
 
