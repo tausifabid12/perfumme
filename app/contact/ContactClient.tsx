@@ -16,22 +16,22 @@ const INFO = [
     {
         icon: Mail,
         label: "Email Us",
-        value: "hello@senz8.com",
+        value: "contact@senz8.in",
         sub: "We reply within 24 hours",
-        href: "mailto:hello@senz8.com",
+        href: "mailto:contact@senz8.in",
     },
     {
         icon: Phone,
         label: "Call Us",
-        value: "+880 1800 000 000",
+        value: "+91 90197 09227",
         sub: "Mon – Fri, 10am – 6pm",
-        href: "tel:+8801800000000",
+        href: "tel:+919019709227",
     },
     {
         icon: MapPin,
         label: "Visit Us",
-        value: "Dhaka, Bangladesh",
-        sub: "By appointment only",
+        value: "No. 427 Srinivasa Nilaya,6th Cross, Domlur,Domlur,Bangalore North,Bangalore-560071,Karnataka",
+        sub: "",
         href: "#",
     },
 ];

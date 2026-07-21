@@ -150,7 +150,7 @@ function PageHeader({ total }: { total: number }) {
                             <span className="text-[8px] uppercase tracking-[0.5em]" style={{ color: "var(--text-secondary)" }}>Extrait de Parfum</span>
                         </div>
                         <div ref={headRef}>
-                            {["The", "Collection."].map((w, i) => (
+                            {["The Zoomers’", "Collection."].map((w, i) => (
                                 <div key={i} style={{ overflow: "hidden" }}>
                                     <span className="hw block font-black uppercase"
                                         style={{ fontSize: "clamp(42px, 7vw, 108px)", letterSpacing: "-0.045em", lineHeight: 0.88, color: i === 1 ? "var(--accent-gold)" : "var(--text-primary)" }}>
@@ -607,7 +607,7 @@ export default function CollectionsClient({ products }: { products: CollectionPr
             <CinematicNav canAnimate={true} />
             <PageHeader total={products.length} />
             <Marquee items={marqueeItems} />
-            <FilterBar active={activeFilter} onChange={setActiveFilter} total={filtered.length} />
+            {/* <FilterBar active={activeFilter} onChange={setActiveFilter} total={filtered.length} /> */}
             <div className="px-5 lg:px-10 py-10 lg:py-14 max-w-[1440px] mx-auto">
                 <ProductGrid products={filtered} />
             </div>

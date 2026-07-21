@@ -6,7 +6,7 @@ const imperialSmoke: ProductData = {
     name: "IMPERIAL SMOKE",
     fullName: "IMPERIAL SMOKE EXTRAIT DE PARFUM",
     description: "Built To Dominate The Room. A dark, smoky, intense fragrance crafted for Gen Z men who want power, confidence, and attention in every spray.",
-    price: 1699, currency: "৳", priceUnit: "50ML",
+    price: 1799, currency: "৳", priceUnit: "50ML",
     rating: 4.9, reviewCount: 1247,
     image: "/images/imps-1.png", heroBg: "/images/bg-1.png",
     statsBg: "/images/stats-bg.jpg", footerImage: "/images/imps-footer.png",
@@ -100,7 +100,7 @@ const imperialSmoke: ProductData = {
   ],
   faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
   footer: {
-    hashtag: "#WEARYOURSCENT", cta: "Shop LUXE Now",
+    hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IT BOY", "REBEL GIRL", "BLIND DATE", "IMPERIAL SMOKE"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },
     newsletter: "Get exclusive early access and stay informed about limited drops and events.",
   },
@@ -208,7 +208,7 @@ const itBoy: ProductData = {
   ],
   faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
   footer: {
-    hashtag: "#WEARYOURSCENT", cta: "Shop LUXE Now",
+    hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IMPERIAL SMOKE", "REBEL GIRL", "BLIND DATE", "IT BOY"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },
     newsletter: "Get exclusive early access and stay informed about limited drops and events.",
   },
@@ -316,7 +316,7 @@ const rebelGirl: ProductData = {
   ],
   faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
   footer: {
-    hashtag: "#WEARYOURSCENT", cta: "Shop LUXE Now",
+    hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IMPERIAL SMOKE", "IT BOY", "BLIND DATE", "REBEL GIRL"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },
     newsletter: "Get exclusive early access and stay informed about limited drops and events.",
   },
@@ -330,7 +330,7 @@ const blindDate: ProductData = {
     name: "BLIND DATE",
     fullName: "BLIND DATE EXTRAIT DE PARFUM",
     description: "One Spray. Endless Chemistry. A romantic, addictive fragrance for stolen glances and unforgettable chemistry.",
-    price: 1699, currency: "৳", priceUnit: "50ML",
+    price: 1799, currency: "৳", priceUnit: "50ML",
     rating: 4.7, reviewCount: 876,
     image: "/images/blind-date-bottle.png", heroBg: "/images/bg-1.png",
     statsBg: "/images/stats-bg.jpg", footerImage: "/images/imps-footer.png",
@@ -424,7 +424,7 @@ const blindDate: ProductData = {
   ],
   faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
   footer: {
-    hashtag: "#WEARYOURSCENT", cta: "Shop LUXE Now",
+    hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IMPERIAL SMOKE", "IT BOY", "REBEL GIRL", "BLIND DATE"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },
     newsletter: "Get exclusive early access and stay informed about limited drops and events.",
   },

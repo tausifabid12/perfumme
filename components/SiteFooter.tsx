@@ -19,7 +19,7 @@ const SCENTS = [
 const LEGAL = [
     { name: "Contact", href: "/contact" },
     { name: "Privacy Policy", href: "/privacy-policy" },
-    { name: "Terms of Service", href: "/terms" },
+    { name: "Refund Policy", href: "/refund-policy" },
 ];
 
 const SOCIALS = [
@@ -131,7 +131,7 @@ export default function SiteFooter() {
                         clipPath: "inset(0 0 100% 0)", opacity: 0,
                     }}
                 >
-                    #WEARYOURSCENT
+                    #WEARYOURIDENTITY
                 </h2>
 
                 <p className="text-sm max-w-sm mx-auto mb-10" style={{ color: "var(--text-secondary)", lineHeight: 1.8 }}>

@@ -79,17 +79,14 @@ const sections: LegalSection[] = [
         ),
     },
     {
-        heading: "Returns & Refunds",
+        heading: "Order Cancellation",
         body: (
             <>
-                <p>We want you to love every scent. If you are not satisfied, please review our return conditions:</p>
-                <ul className="list-none flex flex-col gap-2 mt-3 mb-4">
+                <p>Physical Products:</p>
+                <ul className="list-none flex flex-col gap-2 mt-3">
                     {[
-                        "Returns are accepted within 7 days of delivery for unopened, unused products in original packaging.",
-                        "To initiate a return, contact us at contact@senz8.in with your order number and reason.",
-                        "Opened or used products cannot be returned due to hygiene reasons, unless defective.",
-                        "Refunds are processed within 5–10 business days of receiving the returned item.",
-                        "Shipping costs for returns are the customer's responsibility unless the item is defective or incorrect.",
+                        "Orders can be cancelled only before the item is shipped.",
+                        "Orders already shipped cannot be cancelled.",
                     ].map((item, i) => (
                         <li key={i} className="flex items-start gap-3">
                             <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "var(--accent-gold)" }} />
@@ -97,7 +94,78 @@ const sections: LegalSection[] = [
                         </li>
                     ))}
                 </ul>
-                <p>Defective or damaged items will be replaced or fully refunded — please provide photographic evidence when contacting us.</p>
+            </>
+        ),
+    },
+    {
+        heading: "Refund Policy",
+        body: (
+            <>
+                <p>We maintain a strict no-refund policy for all products. However, we may make exceptions in the following cases:</p>
+                <ul className="list-none flex flex-col gap-2 mt-3 mb-4">
+                    {[
+                        "Product not received.",
+                        "If the product is lost in transit.",
+                        "If the wrong product is delivered.",
+                        "If the product is damaged during shipping.",
+                    ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                            <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "var(--accent-gold)" }} />
+                            {item}
+                        </li>
+                    ))}
+                </ul>
+                <p className="font-medium mb-2">Refund Process (When Applicable)</p>
+                <p>If any refund is approved, the amount will be credited back to the original payment method within 7–14 business days.</p>
+            </>
+        ),
+    },
+    {
+        heading: "Return Policy",
+        body: (
+            <>
+                <p>We are committed to ensuring customer satisfaction and stand by the quality of our products. Below is our return policy to guide you through the return and replacement process.</p>
+
+                <p className="font-medium mt-4 mb-2">Eligibility for Return</p>
+                <ul className="list-none flex flex-col gap-2 mb-4">
+                    {[
+                        "Returns are accepted only for defective, damaged, or incorrect products received.",
+                        "The return request must be initiated within 24 hours of receiving the product.",
+                    ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                            <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "var(--accent-gold)" }} />
+                            {item}
+                        </li>
+                    ))}
+                </ul>
+
+                <p className="font-medium mb-2">Return Process</p>
+                <ul className="list-none flex flex-col gap-2 mb-4">
+                    {[
+                        "If your return request is approved, the replacement process will be initiated within 2–3 business days.",
+                        "Once the replacement is dispatched, it is expected to be delivered within 4–7 business days.",
+                    ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                            <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "var(--accent-gold)" }} />
+                            {item}
+                        </li>
+                    ))}
+                </ul>
+
+                <p className="font-medium mb-2">Important Notes</p>
+                <ul className="list-none flex flex-col gap-2 mb-4">
+                    {[
+                        "Delivery timelines may be affected by delays from the transport company, adverse weather conditions, or other unforeseen circumstances.",
+                        "We are not responsible for delays caused by external factors beyond our control.",
+                    ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                            <span className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0" style={{ background: "var(--accent-gold)" }} />
+                            {item}
+                        </li>
+                    ))}
+                </ul>
+
+                <p>We aim to make the return and replacement process as seamless as possible.</p>
             </>
         ),
     },

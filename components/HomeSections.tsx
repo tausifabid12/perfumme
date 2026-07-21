@@ -34,9 +34,9 @@ function MarqueeStrip() {
 // ── Collection preview ─────────────────────────────────────────────────────────
 const PRODUCTS = [
     { name: "IMPERIAL SMOKE", sub: "Dark · Smoky · Oriental", tag: "For Him", href: "/products/imperial-smoke", img: "/images/imps-1.png", rgb: "212,175,55" },
-    { name: "IT BOY", sub: "Fresh · Bold · Addictive", tag: "For Him", href: "/products/it-boy", img: "/images/itboy-1.png", rgb: "200,169,110" },
-    { name: "REBEL GIRL", sub: "Soft · Bold · Unforgettable", tag: "For Her", href: "/products/rebel-girl", img: "/images/rebel-1.png", rgb: "212,105,126" },
-    { name: "BLIND DATE", sub: "Fresh · Warm · Irresistible", tag: "Unisex", href: "/products/blind-date", img: "/images/blind-1.png", rgb: "168,159,200" },
+    { name: "IT BOY", sub: "Fresh · Bold · Addictive", tag: "For Him", href: "/products/it-boy", img: "/images/it-boy-bottle.png", rgb: "200,169,110" },
+    { name: "REBEL GIRL", sub: "Soft · Bold · Unforgettable", tag: "For Her", href: "/products/rebel-girl", img: "/images/rabel-girl-bottle.png", rgb: "212,105,126" },
+    { name: "BLIND DATE", sub: "Fresh · Warm · Irresistible", tag: "Unisex", href: "/products/blind-date", img: "/images/blind-date-bottle.png", rgb: "168, 159, 200" },
 ];
 
 function CollectionPreview() {
@@ -68,7 +68,7 @@ function CollectionPreview() {
             <div className="mb-14 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-4">
-                        <span className="text-[8px] uppercase tracking-[0.7em]" style={{ color: "var(--accent-gold)" }}>The Collection</span>
+                        <span className="text-[8px] uppercase tracking-[0.7em]" style={{ color: "var(--accent-gold)" }}>The Zoomers’ Collection</span>
                         <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
                     </div>
                     <div ref={headRef}>
@@ -108,6 +108,9 @@ function ProductPreviewCard({ product: p, index }: { product: typeof PRODUCTS[nu
     const cardRef = useRef<HTMLDivElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);
     const glowRef = useRef<HTMLDivElement>(null);
+
+
+    console.log
 
     useEffect(() => {
         const ctx = gsap.context(() => {

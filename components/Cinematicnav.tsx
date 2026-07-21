@@ -6,6 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import TransitionLink from "@/components/TransitionLink";
 import { useCart } from "@/components/providers/CartProvider";
+import Image from "next/image";
 
 // â”€â”€â”€ Brand nav links â€” update hrefs to match your routing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const NAV_LINKS = [
@@ -111,19 +112,21 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
             <header ref={headerRef} className="fixed top-0 left-0 w-full z-[210] px-6 py-7 md:px-12 flex justify-between items-center mix-blend-difference" style={{ opacity: 0 }}>
 
                 {/* Logo */}
-                <Link href={"/"}>
+                <Link href="/">
                     <div
-                        className="cursor-pointer flex items-end gap-1 group select-none"
+                        className="cursor-pointer flex items-center group select-none"
                         onMouseMove={handleMagnetic}
                         onMouseLeave={resetMagnetic}
                     >
-                        <span
-                            className="text-white text-sm font-bold tracking-[0.52em] uppercase transition-opacity duration-500 group-hover:opacity-60"
-                            style={{ fontFamily: "var(--font-bodoni), 'Georgia', serif" }}
-                        >
-                            senz8
-                        </span>
-                        <span className="w-[5px] h-[5px] bg-amber-400 rounded-full mb-[4px] animate-pulse" />
+                        <div className="relative w-14 h-14">
+                            <Image
+                                src="/logo.png"
+                                alt="Senz8"
+                                fill
+                                className="object-contain"
+                                priority
+                            />
+                        </div>
                     </div>
                 </Link>
 
