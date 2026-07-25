@@ -121,7 +121,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.88)}px top`,
+            start: () => `${getScrollPx(0.93)}px top`,
             scrub: false,
             onEnter: () => { itEl.style.pointerEvents = "auto"; itInTl.play(); },
             onLeaveBack: () => { itEl.style.pointerEvents = "none"; itInTl.reverse(); },
