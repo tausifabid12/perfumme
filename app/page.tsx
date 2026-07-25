@@ -13,7 +13,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 export default function Page() {
     const [loading, setLoading] = useState(true);
     const triggerCompleteRef = useRef<(() => void) | null>(null);
-    // Ref to the below-fold wrapper — we toggle visibility via CSS so it's
+    // Ref to the below-fold wrapper — we toggle visibility via CSS so it'sz
     // always in the DOM (stable scrollHeight) but invisible until needed
     const belowFoldRef = useRef<HTMLDivElement>(null);
 

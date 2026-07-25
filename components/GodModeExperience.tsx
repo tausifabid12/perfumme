@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 const FPS = 30;
-const DURATION = 18;
-const TOTAL_FRAMES = FPS * DURATION;
+const DURATION = 19;
+const TOTAL_FRAMES = 583; // actual frame count (19s video @ ~30fps)
 
 const VIDEO_FADE_SCROLL = 300;
 const CROSSFADE_BEFORE_END = 0.6;
@@ -120,10 +120,14 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
             images.current[i] = img;
         }
 
+        const CINEMATIC_SCROLL = () => window.innerHeight * 12; // 1200vh (1300vh container - 100vh viewport)
+
         const onScroll = () => {
             const scrollTop = window.scrollY;
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            targetFrame.current = (scrollTop / maxScroll) * (TOTAL_FRAMES - 1);
+            // Map frames only across the cinematic scroll zone, not the full page
+            const cinematicMax = CINEMATIC_SCROLL();
+            const clampedScroll = Math.min(scrollTop, cinematicMax);
+            targetFrame.current = (clampedScroll / cinematicMax) * (TOTAL_FRAMES - 1);
             setVideoOpacity(Math.max(0, 1 - scrollTop / VIDEO_FADE_SCROLL));
         };
         window.addEventListener("scroll", onScroll, { passive: true });
