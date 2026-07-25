@@ -54,7 +54,7 @@ export default function ProductPageClient({
       <DripTransition />
       <MarqueeSection data={data} />
       <HorizontalStorySection data={data} />
-      <TestimonialsSection data={data} />
+      {/* <TestimonialsSection data={data} /> */}
       <YouMayAlsoLikeSection data={data} />
       <FAQSection data={data} />
       <Footer data={data} />

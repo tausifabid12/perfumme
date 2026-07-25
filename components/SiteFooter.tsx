@@ -18,7 +18,9 @@ const SCENTS = [
 
 const LEGAL = [
     { name: "Contact", href: "/contact" },
-    { name: "Privacy Policy", href: "/privacy-policy" },
+    {
+        name: "Shipping Policy", href: "/shipping-policy"
+    },
     { name: "Refund Policy", href: "/refund-policy" },
 ];
 
