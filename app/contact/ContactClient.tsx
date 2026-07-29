@@ -31,7 +31,7 @@ const INFO = [
         icon: MapPin,
         label: "Visit Us",
         value: "No. 427 Srinivasa Nilaya,6th Cross, Domlur,Domlur,Bangalore North,Bangalore-560071,Karnataka",
-        sub: "",
+        sub: "Senz8 Aroma Private Limited",
         href: "#",
     },
 ];
@@ -542,7 +542,7 @@ export default function ContactClient() {
                     style={{ height: 1, background: "rgba(212,175,55,0.07)" }} />
             </div>
 
-            <FaqStrip />
+            {/* <FaqStrip /> */}
 
             <SiteFooter />
         </div>

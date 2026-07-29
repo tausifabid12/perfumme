@@ -18,10 +18,13 @@ const SCENTS = [
 
 const LEGAL = [
     { name: "Contact", href: "/contact" },
-    {
-        name: "Shipping Policy", href: "/shipping-policy"
-    },
-    { name: "Refund Policy", href: "/refund-policy" },
+    { name: "Privacy Policy", href: "/privacy-policy" },
+    { name: "Terms of Service", href: "/terms" },
+    // {
+    //     name: "Shipping Policy", href: "/shipping-policy"
+    // },
+    // { name: "Refund Policy", href: "/refund-policy" },
+
 ];
 
 const SOCIALS = [
@@ -302,7 +305,7 @@ export default function SiteFooter() {
                         ))}
                     </div>
                     {/* Legal links */}
-                    <div className="flex gap-5">
+                    {/* <div className="flex gap-5">
                         {LEGAL.map((l) => (
                             <TransitionLink
                                 key={l.name}
@@ -316,7 +319,7 @@ export default function SiteFooter() {
                                 {l.name}
                             </TransitionLink>
                         ))}
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </footer>

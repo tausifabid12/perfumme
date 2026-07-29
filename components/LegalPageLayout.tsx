@@ -234,7 +234,7 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
                         {/* Bottom gold rule */}
                         <div style={{ height: 1, background: "linear-gradient(90deg, rgba(212,175,55,0.2), transparent)" }} />
                         <p className="text-[8px] uppercase tracking-[0.55em]" style={{ color: "rgba(212,175,55,0.25)" }}>
-                            SENZ8 · Parfum Maison · Est. 2024
+                            Senz8 Aroma Private Limited · Parfum Maison · Est. 2024
                         </p>
                     </div>
                 </div>

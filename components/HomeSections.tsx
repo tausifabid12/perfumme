@@ -227,9 +227,9 @@ function BrandStory() {
                         Wear Your<br />Identity.
                     </h2>
                     <p className="text-sm leading-relaxed max-w-sm" style={{ color: "var(--text-secondary)", lineHeight: 1.9 }}>
-                        SENZ8 is built for a generation that refuses to be ordinary.
-                        Every bottle is a statement. Every spray is a presence.
-                        Extrait de Parfum — 35% oil concentration for a scent that outlasts the moment.
+                        Senz8 Aroma Private Limited was built for a generation that refuses to be ordinary.
+                        Every bottle is a statement. Every spray, a presence.
+                        Crafted as an Extrait de Parfum — 35% oil concentration — for a scent that outlasts the moment.
                     </p>
                 </div>
 
@@ -256,9 +256,10 @@ export default function HomeSections() {
     return (
         <>
             <MarqueeStrip />
-            <CollectionPreview />
-            <HomeTestimonialsSection />
             <BrandStory />
+            <CollectionPreview />
+
+            <HomeTestimonialsSection />
         </>
     );
 }
