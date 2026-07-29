@@ -14,7 +14,8 @@ const NAV_LINKS = [
     { name: "Imperial Smoke", text: "2", href: "/products/imperial-smoke" },
     { name: "IT Boy", text: "3", href: "/products/it-boy" },
     { name: "Rebel Girl", text: "4", href: "/products/rebel-girl" },
-    { name: "Contact", text: "5", href: "/contact" },
+    { name: "About Us", text: "5", href: "/about" },
+    { name: "Contact", text: "6", href: "/contact" },
 ];
 
 export default function CinematicNav({ canAnimate = false }: { canAnimate?: boolean }) {

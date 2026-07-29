@@ -17,6 +17,7 @@ const SCENTS = [
 ];
 
 const LEGAL = [
+    { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
     { name: "Privacy Policy", href: "/privacy-policy" },
     { name: "Terms of Service", href: "/terms" },
