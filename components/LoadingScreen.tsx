@@ -147,7 +147,7 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
 
     const display = Math.round(Math.min(pct, 100));
 
-    const BRAND = "SENZ8";
+    const BRAND = "Senz8 Aroma";
 
     return (
         <div
@@ -251,9 +251,21 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                                 textShadow: i === 4
                                     ? "0 0 40px rgba(212,175,55,0.5), 0 0 80px rgba(212,175,55,0.2)"
                                     : "none",
+                                // shrink font for the subtitle word "Aroma"
+                                ...(i >= 6 ? {
+                                    fontSize: "clamp(28px, 5vw, 48px)",
+                                    letterSpacing: "0.12em",
+                                    alignSelf: "flex-end",
+                                    marginBottom: "0.18em",
+                                    fontWeight: 300,
+                                    color: "rgba(245,245,245,0.45)",
+                                    textShadow: "none",
+                                } : {}),
+                                // space between Senz8 and Aroma
+                                ...(i === 5 ? { width: "0.3em" } : {}),
                             }}
                         >
-                            {ch}
+                            {ch === " " ? "\u00A0" : ch}
                         </span>
                     ))}
                     {/* Gold pulse dot */}

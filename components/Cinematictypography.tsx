@@ -90,8 +90,8 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.17)}px top`,
-            end: () => `${getScrollPx(0.42)}px top`,
+            start: () => `${getScrollPx(0.31)}px top`,
+            end: () => `${getScrollPx(0.64)}px top`,
             scrub: 1.2,
             animation: rebelTl,
             onUpdate: self => {
@@ -121,7 +121,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.93)}px top`,
+            start: () => `${getScrollPx(0.81)}px top`,
             scrub: false,
             onEnter: () => { itEl.style.pointerEvents = "auto"; itInTl.play(); },
             onLeaveBack: () => { itEl.style.pointerEvents = "none"; itInTl.reverse(); },
