@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import LegalPageLayout, { type LegalSection } from "@/components/LegalPageLayout";
 
 export const metadata: Metadata = {
-    title: "Shipping Policy — SENZ8",
-    description: "Processing times, delivery estimates, and order tracking for SENZ8 orders.",
+    title: "Shipping Policy — Senz8 Aroma",
+    description:
+        "Processing times, delivery estimates, and order tracking for Senz8 Aroma orders across India.",
+    alternates: { canonical: "https://www.senz8.in/shipping-policy" },
+    robots: { index: false, follow: false },
 };
 
 const sections: LegalSection[] = [

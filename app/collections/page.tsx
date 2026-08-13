@@ -4,8 +4,17 @@ import type { ShopifyProduct } from "@/lib/shopify/types";
 import CollectionsClient from "./CollectionsClient";
 
 export const metadata = {
-    title: "The Collection — SENZ8",
-    description: "Every bottle tells a story. Discover the full SENZ8 collection.",
+    title: "The Collection — Senz8 Aroma | All Perfumes",
+    description:
+        "Explore the full Senz8 Aroma collection. Imperial Smoke, Rebel Girl, It Boy — every bottle tells a story. Shop Extrait de Parfum online.",
+    alternates: { canonical: "https://www.senz8.in/collections" },
+    openGraph: {
+        title: "The Collection — Senz8 Aroma | All Perfumes",
+        description:
+            "Bold, cinematic Extrait de Parfum. Browse the full Senz8 Aroma collection and find your signature scent.",
+        url: "https://www.senz8.in/collections",
+        images: [{ url: "/images/og-image.jpg", width: 1200, height: 630, alt: "Senz8 Aroma Collection" }],
+    },
 };
 
 // The 4 slugs that have a full cinematic product page

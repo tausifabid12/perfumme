@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import LegalPageLayout, { type LegalSection } from "@/components/LegalPageLayout";
 
 export const metadata: Metadata = {
-    title: "Refund Policy — SENZ8",
-    description: "Our order cancellation, refund, and return policy.",
+    title: "Refund Policy — Senz8 Aroma",
+    description:
+        "Senz8 Aroma order cancellation, refund, and return policy. Learn about eligibility, timelines, and how to initiate a return.",
+    alternates: { canonical: "https://www.senz8.in/refund-policy" },
+    robots: { index: false, follow: false },
 };
 
 const sections: LegalSection[] = [

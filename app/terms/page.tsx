@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import LegalPageLayout, { type LegalSection } from "@/components/LegalPageLayout";
 
 export const metadata: Metadata = {
-    title: "Terms of Service — SENZ8",
-    description: "The terms and conditions governing your use of SENZ8.",
+    title: "Terms of Service — Senz8 Aroma",
+    description:
+        "Terms and conditions governing your use of senz8.in — operated by Senz8 Aroma Private Limited, Bangalore.",
+    alternates: { canonical: "https://www.senz8.in/terms" },
+    robots: { index: false, follow: false },
 };
 
 const sections: LegalSection[] = [

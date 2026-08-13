@@ -26,8 +26,72 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const BASE_URL = "https://www.senz8.in";
+
 export const metadata: Metadata = {
-  title: "SENZ8 — Parfum Maison",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "SENZ8 Aroma — Parfum Maison | Luxury Fragrances",
+    template: "%s | SENZ8 Aroma",
+  },
+  description:
+    "SENZ8 Aroma — a luxury fragrance house crafting bold, cinematic perfumes. Discover Imperial Smoke, Rebel Girl, It Boy and more. Extrait de Parfum. Made to be remembered.",
+  keywords: [
+    "SENZ8",
+    "Senz8 Aroma",
+    "luxury perfume",
+    "extrait de parfum",
+    "Indian perfume brand",
+    "Imperial Smoke perfume",
+    "Rebel Girl perfume",
+    "It Boy perfume",
+    "fragrance house India",
+    "premium attar",
+    "long lasting perfume",
+    "Senz8 Aroma Private Limited",
+  ],
+  authors: [{ name: "Senz8 Aroma Private Limited", url: BASE_URL }],
+  creator: "Senz8 Aroma Private Limited",
+  publisher: "Senz8 Aroma Private Limited",
+  category: "shopping",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: BASE_URL,
+    siteName: "SENZ8 Aroma",
+    title: "SENZ8 Aroma — Parfum Maison | Luxury Fragrances",
+    description:
+      "Bold, cinematic perfumes crafted in the house of SENZ8. Discover our collection of Extrait de Parfum — crafted in shadow, remembered forever.",
+    images: [
+      {
+        url: "/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "SENZ8 Aroma — Luxury Parfum Maison",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SENZ8 Aroma — Parfum Maison | Luxury Fragrances",
+    description:
+      "Bold, cinematic perfumes crafted in the house of SENZ8. Discover Imperial Smoke, Rebel Girl, It Boy & more.",
+    images: ["/images/og-image.jpg"],
+    creator: "@senz8aroma",
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
 };
 
 export default function RootLayout({

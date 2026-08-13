@@ -10,6 +10,58 @@ import HomeSections from "@/components/HomeSections";
 import SiteFooter from "@/components/SiteFooter";
 import LoadingScreen from "@/components/LoadingScreen";
 
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "Organization",
+            "@id": "https://www.senz8.in/#organization",
+            "name": "Senz8 Aroma Private Limited",
+            "url": "https://www.senz8.in",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://www.senz8.in/logo.png",
+                "width": 200,
+                "height": 200,
+            },
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "email": "contact@senz8.in",
+                "contactType": "customer service",
+                "areaServed": "IN",
+                "availableLanguage": "English",
+            },
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "No. 427 Srinivasa Nilaya, 6th Cross, Domlur",
+                "addressLocality": "Bangalore",
+                "addressRegion": "Karnataka",
+                "postalCode": "560071",
+                "addressCountry": "IN",
+            },
+            "sameAs": [
+                "https://www.instagram.com/senz8aroma",
+            ],
+        },
+        {
+            "@type": "WebSite",
+            "@id": "https://www.senz8.in/#website",
+            "url": "https://www.senz8.in",
+            "name": "SENZ8 Aroma",
+            "description": "Luxury Extrait de Parfum — crafted in shadow, remembered forever.",
+            "publisher": { "@id": "https://www.senz8.in/#organization" },
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": "https://www.senz8.in/collections?q={search_term_string}",
+                },
+                "query-input": "required name=search_term_string",
+            },
+        },
+    ],
+};
+
 export default function Page() {
     const [loading, setLoading] = useState(true);
     const triggerCompleteRef = useRef<(() => void) | null>(null);
@@ -56,6 +108,12 @@ export default function Page() {
 
     return (
         <main className="bg-black">
+            {/* JSON-LD structured data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+
             {loading && (
                 <LoadingScreen
                     onComplete={handleLoadComplete}
