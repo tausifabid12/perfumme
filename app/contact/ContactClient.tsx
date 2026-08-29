@@ -31,7 +31,7 @@ const INFO = [
         icon: MapPin,
         label: "Visit Us",
         value: "No. 427 Srinivasa Nilaya,6th Cross, Domlur,Domlur,Bangalore North,Bangalore-560071,Karnataka",
-        sub: "Senz8 Aroma Private Limited",
+        sub: "Senz eight Aroma Private Limited",
         href: "#",
     },
 ];

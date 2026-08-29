@@ -37,7 +37,7 @@ const PILLARS = [
 
 const TIMELINE = [
     { year: "2023", event: "The Idea", detail: "Three friends, one shared obsession: why did luxury fragrance feel so exclusive, so out of reach for young India?" },
-    { year: "2024", event: "Born in Bangalore", detail: "Senz8 Aroma Private Limited was incorporated. Our first formulations came to life in a small studio in Domlur, Bangalore." },
+    { year: "2024", event: "Born in Bangalore", detail: "Senz eight Aroma Private Limited was incorporated. Our first formulations came to life in a small studio in Domlur, Bangalore." },
     { year: "2024", event: "First Four Drops", detail: "Imperial Smoke, IT Boy, Rebel Girl, and Blind Date — four scents, four identities, one house. Extrait de Parfum, each one." },
     { year: "2025", event: "The Community Grows", detail: "Thousands of wearers later, the community defines us. Every review, every story, every tagged moment tells us we got it right." },
 ];
@@ -123,7 +123,7 @@ function Hero() {
                     </span>
                     <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.4)" }} />
                     <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: "var(--text-secondary)" }}>
-                        SENZ8 Aroma Private Limited
+                        Senz eight Aroma Private Limited
                     </span>
                 </div>
 
@@ -213,11 +213,11 @@ function OriginStory() {
                 {/* Right — story paragraphs */}
                 <div className="os-item opacity-0 flex flex-col gap-6">
                     <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)", lineHeight: 1.95 }}>
-                        Senz8 Aroma Private Limited  started with a question: why does luxury fragrance feel like it belongs to someone else?
+                        Senz eight Aroma Private Limited  started with a question: why does luxury fragrance feel like it belongs to someone else?
                         Three fragrance obsessives in Bangalore decided the answer was simple — it shouldn't.
                     </p>
                     <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)", lineHeight: 1.95 }}>
-                        We built Senz8 Aroma Private Limited to bridge the gap between Maison-grade quality and
+                        We built Senz eight Aroma Private Limited to bridge the gap between Maison-grade quality and
                         real, accessible pricing. No watered-down Eau de Toilettes. No compromise on longevity.
                         Every fragrance in our line is an Extrait de Parfum — 35% oil concentration —
                         because we believe your scent should last as long as your ambition.

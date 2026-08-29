@@ -30,10 +30,18 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         const getScrollPx = (pct: number) => {
             // GodModeExperience = 1300vh. Cinematic scroll max = 1200vh (1300 - 100 viewport).
-            const cinematicScrollMax = window.innerHeight * 12; // 1200vh
+            const cinematicScrollMax = window.innerHeight * 12;
             return cinematicScrollMax * pct;
         };
 
+        // Mobile compresses the sections so Rebel Girl appears on first swipe
+        // and IT Boy on the second — desktop keeps the original wide spacing.
+        const SMOKE_OUT_START = 0.035;
+        const SMOKE_OUT_END   = 0.075;
+        const REBEL_IN_START  = isMobile ? 0.09 : 0.31;
+        const REBEL_IN_END    = isMobile ? 0.28 : 0.64;
+        const ITBOY_IN_START  = isMobile ? 0.32 : 0.81;
+        const OVERLAY_HIDE    = 0.998;
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
         // SECTION 1 â€” IMPERIAL SMOKE
         // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
@@ -56,8 +64,8 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.035)}px top`,
-            end: () => `${getScrollPx(0.075)}px top`,
+            start: () => `${getScrollPx(SMOKE_OUT_START)}px top`,
+            end: () => `${getScrollPx(SMOKE_OUT_END)}px top`,
             scrub: 1.5,
             animation: gsap.to(smokeEl, {
                 opacity: 0, y: -28, filter: "blur(10px)",
@@ -90,8 +98,8 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.31)}px top`,
-            end: () => `${getScrollPx(0.64)}px top`,
+            start: () => `${getScrollPx(REBEL_IN_START)}px top`,
+            end: () => `${getScrollPx(REBEL_IN_END)}px top`,
             scrub: 1.2,
             animation: rebelTl,
             onUpdate: self => {
@@ -121,7 +129,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.81)}px top`,
+            start: () => `${getScrollPx(ITBOY_IN_START)}px top`,
             scrub: false,
             onEnter: () => { itEl.style.pointerEvents = "auto"; itInTl.play(); },
             onLeaveBack: () => { itEl.style.pointerEvents = "none"; itInTl.reverse(); },
@@ -134,7 +142,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
         if (overlayEl) {
             ScrollTrigger.create({
                 trigger: document.body,
-                start: () => `${getScrollPx(0.998)}px top`,
+                start: () => `${getScrollPx(OVERLAY_HIDE)}px top`,
                 onEnter: () => {
                     overlayEl.style.visibility = "hidden";
                     overlayEl.style.pointerEvents = "none";
@@ -549,6 +557,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
         </>
     );
 }
+
 
 
 

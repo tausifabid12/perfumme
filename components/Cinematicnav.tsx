@@ -11,11 +11,11 @@ import Image from "next/image";
 // â”€â”€â”€ Brand nav links â€” update hrefs to match your routing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const NAV_LINKS = [
     { name: "Collections", text: "1", href: "/collections" },
-    { name: "Imperial Smoke", text: "2", href: "/products/imperial-smoke" },
-    { name: "IT Boy", text: "3", href: "/products/it-boy" },
-    { name: "Rebel Girl", text: "4", href: "/products/rebel-girl" },
-    { name: "About Us", text: "5", href: "/about" },
-    { name: "Contact", text: "6", href: "/contact" },
+    // { name: "Imperial Smoke", text: "2", href: "/products/imperial-smoke" },
+    // { name: "IT Boy", text: "3", href: "/products/it-boy" },
+    // { name: "Rebel Girl", text: "4", href: "/products/rebel-girl" },
+    { name: "About Us", text: "2", href: "/about" },
+    { name: "Contact", text: "3", href: "/contact" },
 ];
 
 export default function CinematicNav({ canAnimate = false }: { canAnimate?: boolean }) {
@@ -70,22 +70,33 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
     // â”€â”€ Open / close animation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     useEffect(() => {
         const validLinks = linksRef.current.filter((el): el is HTMLLIElement => el !== null);
+        const cx = typeof window !== "undefined" ? window.innerWidth - 56 : 0;
+        const cy = 56;
+        const maxR = typeof window !== "undefined" ? Math.hypot(window.innerWidth, window.innerHeight) * 1.1 : 2000;
 
         if (isOpen) {
             gsap.timeline()
-                .to(navRef.current, { display: "flex", duration: 0 })
-                .to(circleRef.current, { scale: getScale(), duration: 1.2, ease: "expo.inOut" })
+                .set(navRef.current, { display: "flex", clipPath: `circle(0px at ${cx}px ${cy}px)` })
+                .to(navRef.current, {
+                    clipPath: `circle(${maxR}px at ${cx}px ${cy}px)`,
+                    duration: 0.9,
+                    ease: "power4.inOut",
+                })
                 .fromTo(
                     validLinks,
                     { y: 40, opacity: 0 },
                     { y: 0, opacity: 1, stagger: 0.1, duration: 0.6, ease: "power4.out" },
-                    "-=0.6"
+                    "-=0.45"
                 );
         } else {
             gsap.timeline()
-                .to(validLinks, { y: 20, opacity: 0, stagger: -0.05, duration: 0.4 })
-                .to(circleRef.current, { scale: 0, duration: 0.8, ease: "expo.inOut" }, "-=0.2")
-                .to(navRef.current, { display: "none", duration: 0 });
+                .to(validLinks, { y: 20, opacity: 0, stagger: -0.05, duration: 0.3 })
+                .to(navRef.current, {
+                    clipPath: `circle(0px at ${cx}px ${cy}px)`,
+                    duration: 0.65,
+                    ease: "power4.inOut",
+                }, "-=0.1")
+                .set(navRef.current, { display: "none" });
         }
     }, [isOpen]);
 
@@ -208,38 +219,27 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
             </header>
 
             {/* â”€â”€ Expansion circle â€” smoked glass lens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-            <div
-                ref={circleRef}
-                className="fixed top-6 right-6 md:top-10 md:right-10 w-20 h-20 rounded-full z-[100] pointer-events-none scale-0"
-                style={{
-                    background: [
-                        /* mirror light catch â€” top-left */
-                        "radial-gradient(circle at 32% 26%, rgba(255,255,255,0.13) 0%, rgba(210,205,230,0.04) 18%, transparent 42%)",
-                        /* cool smoke body */
-                        "radial-gradient(circle at 55% 60%, rgba(160,150,200,0.06) 0%, transparent 55%)",
-                        /* near-void obsidian base */
-                        "linear-gradient(145deg, rgba(18,14,26,0.94) 0%, rgba(5,4,8,0.97) 100%)",
-                    ].join(", "),
-                    backdropFilter: "blur(42px) saturate(180%) brightness(0.85)",
-                    WebkitBackdropFilter: "blur(42px) saturate(180%) brightness(0.85)",
-                    /* inner glass edge shimmer */
-                    boxShadow: "inset 0 0 0 0.5px rgba(255,255,255,0.09), inset 1px 1px 0 rgba(255,255,255,0.06)",
-                    isolation: "isolate",
-                    willChange: "transform",
-                }}
-            />
+            {/* circle ref kept for legacy — animation now uses clip-path on nav */}
+            <div ref={circleRef} className="fixed pointer-events-none" style={{ display: "none" }} />
 
             {/* â”€â”€ Full-screen nav overlay â€” glass mirror surface â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
             <nav
                 ref={navRef}
                 className="fixed inset-0 z-[200] hidden items-center justify-center p-6"
                 style={{
-                    /* Top-corner mirror catch â€” angled light hitting the glass */
                     background: [
-                        "linear-gradient(148deg, rgba(255,255,255,0.055) 0%, transparent 28%)",
-                        /* Bottom luminance bounce â€” light from below through glass */
-                        "radial-gradient(ellipse 65% 30% at 50% 108%, rgba(200,195,230,0.05) 0%, transparent 60%)",
+                        /* top-left specular — light catching the glass edge */
+                        "radial-gradient(ellipse 60% 50% at 5% 0%, rgba(255,255,255,0.07) 0%, transparent 60%)",
+                        /* gold shimmer — bottom right */
+                        "radial-gradient(ellipse 50% 40% at 95% 100%, rgba(212,175,55,0.08) 0%, transparent 55%)",
+                        /* dark gold-tinted glass base */
+                        "linear-gradient(160deg, rgba(28,22,12,0.94) 0%, rgba(10,8,4,0.97) 100%)",
                     ].join(", "),
+                    backdropFilter: "blur(24px) saturate(160%)",
+                    WebkitBackdropFilter: "blur(24px) saturate(160%)",
+                    /* glass surface edge line */
+                    boxShadow: "inset 0 0 0 1px rgba(212,175,55,0.08), inset 1px 1px 0 rgba(255,255,255,0.06)",
+                    willChange: "clip-path",
                 }}
             >
                 {/* Mirror glass anatomy â€” decorative light layers */}
@@ -260,7 +260,7 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
                     {/* Smoke vignette â€” darker at the corners, atmospheric */}
                     <div style={{
                         position: "absolute", inset: 0,
-                        background: "radial-gradient(ellipse 90% 90% at 50% 50%, transparent 40%, rgba(0,0,0,0.45) 100%)",
+                        background: "transparent",
                     }} />
                 </div>
                 <ul className="w-full max-w-2xl flex flex-col gap-2">
@@ -298,27 +298,18 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
                     ))}
                 </ul>
 
-                {/* Bottom â€” socials with glass rule above */}
-                <div className="absolute bottom-10 left-10 hidden md:flex flex-col gap-3">
-                    {/* Glass rule */}
-                    <div style={{
-                        height: "1px",
-                        width: "120px",
-                        background: "linear-gradient(to right, rgba(255,255,255,0.2), transparent)",
-                        marginBottom: "4px",
-                    }} />
-                    <div className="flex gap-10 text-[10px] tracking-[0.35em] font-medium text-white/35">
-                        <Link href="https://instagram.com" className="hover:text-white/80 transition-colors">INSTAGRAM</Link>
-                        <Link href="https://tiktok.com" className="hover:text-white/80 transition-colors">TIKTOK</Link>
-                        <Link href="https://pinterest.com" className="hover:text-white/80 transition-colors">PINTEREST</Link>
-                    </div>
-                </div>
 
                 {/* Bottom â€” tagline */}
-                <p className="absolute bottom-10 right-10 hidden md:block text-[10px] tracking-[0.35em] text-white/25 uppercase select-none">
+                <p className="absolute bottom-10 right-10 hidden md:block text-[10px] tracking-[0.35em] text-white/50 uppercase select-none">
                     Fine Fragrance Â· Est. 2024
                 </p>
             </nav>
         </>
     );
 }
+
+
+
+
+
+
