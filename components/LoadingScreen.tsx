@@ -147,8 +147,6 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
 
     const display = Math.round(Math.min(pct, 100));
 
-    const BRAND = "Senz8 Aroma";
-
     return (
         <div
             ref={wrapRef}
@@ -176,8 +174,8 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                     ref={glowRef}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
                     style={{
-                        width: 480,
-                        height: 480,
+                        width: "min(480px, 90vw)",
+                        height: "min(480px, 90vw)",
                         background: "radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 68%)",
                         opacity: 0.6,
                     }}
@@ -210,9 +208,9 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                     ref={line1Ref}
                     className="absolute"
                     style={{
-                        top: "calc(50% - clamp(80px, 12vw, 115px))",
-                        left: "10%",
-                        right: "10%",
+                        top: "calc(50% - clamp(80px, 18vw, 140px))",
+                        left: "6%",
+                        right: "6%",
                         height: 1,
                         opacity: 0,
                         background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.18) 20%, rgba(212,175,55,0.45) 50%, rgba(212,175,55,0.18) 80%, transparent)",
@@ -224,9 +222,9 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                     ref={line2Ref}
                     className="absolute"
                     style={{
-                        top: "calc(50% + clamp(80px, 12vw, 115px))",
-                        left: "10%",
-                        right: "10%",
+                        top: "calc(50% + clamp(80px, 18vw, 140px))",
+                        left: "6%",
+                        right: "6%",
                         height: 1,
                         opacity: 0,
                         background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.18) 20%, rgba(212,175,55,0.45) 50%, rgba(212,175,55,0.18) 80%, transparent)",
@@ -236,59 +234,70 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                 {/* ── Logo wordmark ── */}
                 <div
                     ref={logoRef}
-                    className="relative flex items-end overflow-hidden"
-                    style={{ gap: "0.04em" }}
+                    className="relative flex flex-col items-center overflow-hidden px-4"
+                    style={{ gap: "0.15em" }}
                 >
-                    {BRAND.split("").map((ch, i) => (
-                        <span
-                            key={i}
-                            className="ll block font-black uppercase leading-none select-none"
-                            style={{
-                                fontFamily: "var(--font-inter), system-ui, sans-serif",
-                                fontSize: "clamp(64px, 12vw, 108px)",
-                                letterSpacing: "-0.03em",
-                                color: i === 4 ? "#D4AF37" : "#F5F5F5",
-                                textShadow: i === 4
-                                    ? "0 0 40px rgba(212,175,55,0.5), 0 0 80px rgba(212,175,55,0.2)"
-                                    : "none",
-                                // shrink font for the subtitle word "Aroma"
-                                ...(i >= 6 ? {
-                                    fontSize: "clamp(28px, 5vw, 48px)",
-                                    letterSpacing: "0.12em",
-                                    alignSelf: "flex-end",
-                                    marginBottom: "0.18em",
+                    {/* SENZ8 — big weight */}
+                    <div className="flex items-end overflow-hidden" style={{ gap: "0.02em" }}>
+                        {"Senz8".split("").map((ch, i) => (
+                            <span
+                                key={i}
+                                className="ll block font-black uppercase leading-none select-none"
+                                style={{
+                                    fontFamily: "var(--font-inter), system-ui, sans-serif",
+                                    fontSize: "clamp(52px, 18vw, 108px)",
+                                    letterSpacing: "-0.03em",
+                                    color: i === 4 ? "#D4AF37" : "#F5F5F5",
+                                    textShadow: i === 4
+                                        ? "0 0 40px rgba(212,175,55,0.5), 0 0 80px rgba(212,175,55,0.2)"
+                                        : "none",
+                                }}
+                            >
+                                {ch}
+                            </span>
+                        ))}
+                    </div>
+
+                    {/* AROMA — lighter, smaller, tracked out */}
+                    <div className="flex items-center overflow-hidden" style={{ gap: "0.06em" }}>
+                        {"Aroma".split("").map((ch, i) => (
+                            <span
+                                key={i}
+                                className="ll block uppercase leading-none select-none"
+                                style={{
+                                    fontFamily: "var(--font-inter), system-ui, sans-serif",
+                                    fontSize: "clamp(13px, 4.5vw, 32px)",
+                                    letterSpacing: "0.25em",
                                     fontWeight: 300,
                                     color: "rgba(245,245,245,0.45)",
-                                    textShadow: "none",
-                                } : {}),
-                                // space between Senz8 and Aroma
-                                ...(i === 5 ? { width: "0.3em" } : {}),
+                                }}
+                            >
+                                {ch}
+                            </span>
+                        ))}
+                        {/* Gold pulse dot */}
+                        <span
+                            className="ml-2 w-[5px] h-[5px] md:w-[7px] md:h-[7px] rounded-full animate-pulse flex-shrink-0"
+                            style={{
+                                background: "#D4AF37",
+                                boxShadow: "0 0 12px rgba(212,175,55,0.9), 0 0 24px rgba(212,175,55,0.4)",
+                                alignSelf: "center",
                             }}
-                        >
-                            {ch === " " ? "\u00A0" : ch}
-                        </span>
-                    ))}
-                    {/* Gold pulse dot */}
-                    <span
-                        className="mb-2 ml-1.5 w-[8px] h-[8px] rounded-full animate-pulse flex-shrink-0"
-                        style={{
-                            background: "#D4AF37",
-                            boxShadow: "0 0 16px rgba(212,175,55,0.9), 0 0 32px rgba(212,175,55,0.4)",
-                        }}
-                    />
+                        />
+                    </div>
                 </div>
 
                 {/* ── Progress bar ── */}
                 <div
                     ref={progressLineRef}
                     className="flex flex-col items-center"
-                    style={{ gap: 10, marginTop: "clamp(32px, 5vw, 52px)", opacity: 0 }}
+                    style={{ gap: 10, marginTop: "clamp(20px, 4vw, 52px)", opacity: 0 }}
                 >
                     {/* Bar track */}
                     <div
                         className="relative overflow-hidden"
                         style={{
-                            width: "clamp(200px, 28vw, 320px)",
+                            width: "clamp(200px, 60vw, 320px)",
                             height: 1,
                             background: "rgba(212,175,55,0.1)",
                         }}
@@ -338,7 +347,7 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                 {/* ── Subline ── */}
                 <div
                     ref={sublineRef}
-                    style={{ marginTop: "clamp(16px, 3vw, 28px)", opacity: 0 }}
+                    style={{ marginTop: "clamp(10px, 2.5vw, 28px)", opacity: 0 }}
                 >
                     <p
                         style={{
@@ -355,9 +364,9 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
 
                 {/* Bottom-right label */}
                 <div
-                    className="absolute bottom-7 right-7"
+                    className="absolute bottom-5 right-5 md:bottom-7 md:right-7"
                     style={{
-                        fontSize: 9,
+                        fontSize: "clamp(7px, 1.8vw, 9px)",
                         letterSpacing: "0.45em",
                         textTransform: "uppercase",
                         color: "rgba(212,175,55,0.5)",
