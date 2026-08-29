@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
@@ -110,19 +110,19 @@ function Hero() {
 
             <div className="relative max-w-[900px]">
                 <TransitionLink href="/" label="Home"
-                    className="inline-flex items-center gap-2 mb-8 text-[9px] uppercase tracking-[0.4em] cursor-hover transition-colors duration-300"
-                    style={{ color: "rgba(245,245,245,0.3)" }}
+                    className="inline-flex items-center gap-2 mb-8 text-[10px] uppercase tracking-[0.35em] cursor-hover transition-colors duration-300"
+                    style={{ color: "rgba(245,245,245,0.65)" }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--accent-gold)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.3)"; }}>
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.65)"; }}>
                     <ArrowLeft size={11} /> Back to Home
                 </TransitionLink>
 
                 <div ref={badgeRef} className="flex items-center gap-3 mb-5 opacity-0">
-                    <span className="text-[8px] uppercase tracking-[0.7em] font-bold" style={{ color: "var(--accent-gold)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.6em] font-bold" style={{ color: "var(--accent-gold)" }}>
                         About Us
                     </span>
                     <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.4)" }} />
-                    <span className="text-[8px] uppercase tracking-[0.4em]" style={{ color: "var(--text-secondary)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: "var(--text-secondary)" }}>
                         SENZ8 Aroma Private Limited
                     </span>
                 </div>
@@ -134,7 +134,7 @@ function Hero() {
                                 ref={el => { if (el) wordRefs.current[i] = el; }}
                                 className="block font-black uppercase"
                                 style={{
-                                    fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                                    fontFamily: "var(--font-inter), system-ui, sans-serif",
                                     fontSize: "clamp(44px,7.5vw,110px)",
                                     letterSpacing: "-0.04em", lineHeight: 0.88,
                                     color: i === headline.length - 1 ? "var(--accent-gold)" : "var(--text-primary)",
@@ -190,11 +190,11 @@ function OriginStory() {
 
                 {/* Left — pull quote */}
                 <div className="os-item opacity-0">
-                    <p className="text-[8px] uppercase tracking-[0.6em] font-bold mb-6"
+                    <p className="text-[10px] uppercase tracking-[0.55em] font-bold mb-6"
                         style={{ color: "var(--accent-gold)" }}>Est. 2024 · Bangalore</p>
                     <blockquote className="font-black uppercase"
                         style={{
-                            fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                            fontFamily: "var(--font-inter), system-ui, sans-serif",
                             fontSize: "clamp(30px,4vw,60px)",
                             letterSpacing: "-0.04em",
                             lineHeight: 0.92,
@@ -205,7 +205,7 @@ function OriginStory() {
                     </blockquote>
                     <div className="mt-8" style={{ height: 1, width: 200, background: "linear-gradient(90deg, #D4AF37, transparent)" }} />
                     <p className="mt-6 text-[9px] uppercase tracking-[0.4em]"
-                        style={{ color: "rgba(212,175,55,0.45)" }}>
+                        style={{ color: "rgba(212,175,55,0.8)" }}>
                         — The SENZ8 Manifesto
                     </p>
                 </div>
@@ -261,7 +261,7 @@ function StatsBar() {
                             style={{ fontSize: "clamp(32px,4vw,58px)", color: "var(--accent-gold)", letterSpacing: "-0.04em" }}>
                             {s.n}
                         </p>
-                        <p className="text-[8px] uppercase tracking-[0.3em]" style={{ color: "var(--text-secondary)" }}>
+                        <p className="text-[10px] uppercase tracking-[0.25em]" style={{ color: "var(--text-secondary)" }}>
                             {s.l}
                         </p>
                     </div>
@@ -306,7 +306,7 @@ function Pillars() {
             <div className="max-w-[1100px] mx-auto">
                 <div className="mb-16">
                     <div className="flex items-center gap-3 mb-5">
-                        <span className="text-[8px] uppercase tracking-[0.7em]" style={{ color: "var(--accent-gold)" }}>
+                        <span className="text-[10px] uppercase tracking-[0.6em]" style={{ color: "var(--accent-gold)" }}>
                             What We Stand For
                         </span>
                         <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
@@ -335,8 +335,8 @@ function Pillars() {
                             }}>
                             {/* Top accent */}
                             <div style={{ height: 1, background: "linear-gradient(90deg, rgba(212,175,55,0.4), transparent)" }} />
-                            <span className="text-[9px] font-black tracking-[0.15em]"
-                                style={{ color: "rgba(212,175,55,0.4)" }}>{p.num}</span>
+                            <span className="text-[10px] font-black tracking-[0.15em]"
+                                style={{ color: "rgba(212,175,55,0.8)" }}>{p.num}</span>
                             <h3 className="font-black uppercase leading-tight"
                                 style={{ fontSize: "clamp(14px,1.5vw,18px)", letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
                                 {p.title}
@@ -387,7 +387,7 @@ function Timeline() {
             <div className="max-w-[1100px] mx-auto">
                 <div className="mb-16">
                     <div className="flex items-center gap-3 mb-5">
-                        <span className="text-[8px] uppercase tracking-[0.7em]" style={{ color: "var(--accent-gold)" }}>
+                        <span className="text-[10px] uppercase tracking-[0.6em]" style={{ color: "var(--accent-gold)" }}>
                             How We Got Here
                         </span>
                         <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
@@ -508,7 +508,7 @@ function CollectionTeaser() {
                 <div className="mb-14 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                     <div>
                         <div className="flex items-center gap-3 mb-4">
-                            <span className="text-[8px] uppercase tracking-[0.7em]" style={{ color: "var(--accent-gold)" }}>
+                            <span className="text-[10px] uppercase tracking-[0.6em]" style={{ color: "var(--accent-gold)" }}>
                                 Four Identities
                             </span>
                             <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
@@ -548,14 +548,14 @@ function CollectionTeaser() {
                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.06)"; }}>
                             <div style={{ height: 1, background: `linear-gradient(90deg, rgba(${s.rgb},0.5), transparent)`, marginBottom: 14 }} />
                             <p className="font-black uppercase leading-tight mb-1"
-                                style={{ fontSize: "clamp(11px,1.2vw,14px)", letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
+                                style={{ fontSize: "clamp(13px,1.4vw,16px)", letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
                                 {s.name}
                             </p>
-                            <p className="text-[7px] uppercase tracking-[0.2em] mb-3"
+                            <p className="text-[10px] uppercase tracking-[0.18em] mb-3"
                                 style={{ color: "var(--text-secondary)" }}>
                                 {s.sub}
                             </p>
-                            <span className="text-[7px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-full"
+                            <span className="text-[9px] uppercase tracking-[0.18em] px-2 py-0.5 rounded-full"
                                 style={{ border: `1px solid rgba(${s.rgb},0.3)`, color: `rgba(${s.rgb},0.8)` }}>
                                 {s.tag}
                             </span>
@@ -603,7 +603,7 @@ function CTABanner() {
                     background: "radial-gradient(ellipse at center, rgba(212,175,55,0.05) 0%, transparent 70%)"
                 }} />
 
-            <p className="text-[8px] uppercase tracking-[0.7em] mb-5" style={{ color: "var(--accent-gold)" }}>
+            <p className="text-[10px] uppercase tracking-[0.6em] mb-5" style={{ color: "var(--accent-gold)" }}>
                 Find Your Signature
             </p>
 
@@ -611,7 +611,7 @@ function CTABanner() {
                 ref={headRef}
                 className="font-black uppercase mx-auto mb-8"
                 style={{
-                    fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                    fontFamily: "var(--font-inter), system-ui, sans-serif",
                     fontSize: "clamp(36px,6.5vw,96px)",
                     letterSpacing: "-0.04em", lineHeight: 0.9,
                     color: "var(--text-primary)",
@@ -665,3 +665,5 @@ export default function AboutClient() {
         </div>
     );
 }
+
+

@@ -92,7 +92,7 @@ function Nav({ total }: { total: number }) {
             <div className="flex items-center justify-between px-6 lg:px-12" style={{ height: 68 }}>
                 <TransitionLink href="/" label="Home" className="flex items-end gap-1.5 group select-none cursor-hover">
                     <span className="text-sm font-bold tracking-[0.45em] uppercase transition-opacity duration-500 group-hover:opacity-50"
-                        style={{ color: "var(--text-primary)", fontFamily: "var(--font-bodoni), 'Georgia', serif" }}>senz8</span>
+                        style={{ color: "var(--text-primary)", fontFamily: "var(--font-inter), system-ui, sans-serif" }}>senz8</span>
                     <span className="w-[5px] h-[5px] bg-amber-400 rounded-full mb-[4px] animate-pulse" />
                 </TransitionLink>
                 <div className="hidden md:flex items-center gap-10">
@@ -105,7 +105,7 @@ function Nav({ total }: { total: number }) {
                     ))}
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className="text-[9px] uppercase tracking-[0.4em]" style={{ color: "var(--text-secondary)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: "var(--text-secondary)" }}>
                         {total} Signatures
                     </span>
                     <TransitionLink href="/collections" label="Shop All"
@@ -145,9 +145,9 @@ function PageHeader({ total }: { total: number }) {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                     <div>
                         <div className="flex items-center gap-3 mb-5">
-                            <span className="text-[8px] uppercase tracking-[0.7em]" style={{ color: "var(--accent-gold)" }}>The Collection</span>
+                            <span className="text-[10px] uppercase tracking-[0.6em]" style={{ color: "var(--accent-gold)" }}>The Collection</span>
                             <div style={{ width: 36, height: 1, background: "rgba(212,175,55,0.35)" }} />
-                            <span className="text-[8px] uppercase tracking-[0.5em]" style={{ color: "var(--text-secondary)" }}>Extrait de Parfum</span>
+                            <span className="text-[10px] uppercase tracking-[0.45em]" style={{ color: "var(--text-secondary)" }}>Extrait de Parfum</span>
                         </div>
                         <div ref={headRef}>
                             {["The Zoomers’", "Collection."].map((w, i) => (
@@ -166,8 +166,8 @@ function PageHeader({ total }: { total: number }) {
                                 {String(total).padStart(2, "0")}
                             </span>
                             <div>
-                                <p className="text-[8px] uppercase tracking-[0.4em]" style={{ color: "var(--text-secondary)" }}>Signatures</p>
-                                <p className="text-[8px] uppercase tracking-[0.4em]" style={{ color: "var(--text-secondary)" }}>in House</p>
+                                <p className="text-[10px] uppercase tracking-[0.35em]" style={{ color: "var(--text-secondary)" }}>Signatures</p>
+                                <p className="text-[10px] uppercase tracking-[0.35em]" style={{ color: "var(--text-secondary)" }}>in House</p>
                             </div>
                         </div>
                         <p className="text-sm max-w-xs lg:text-right leading-relaxed" style={{ color: "var(--text-secondary)" }}>
@@ -190,7 +190,7 @@ function FilterBar({ active, onChange, total }: { active: string; onChange: (f: 
             <div className="flex items-center gap-2 flex-wrap">
                 {FILTERS.map((f) => (
                     <button key={f} onClick={() => onChange(f)}
-                        className="px-4 py-1.5 rounded-pill text-[9px] font-bold uppercase tracking-widest cursor-hover transition-all duration-300"
+                        className="px-4 py-1.5 rounded-pill text-[10px] font-bold uppercase tracking-widest cursor-hover transition-all duration-300"
                         style={{
                             background: active === f ? "var(--accent-gold)" : "rgba(255,255,255,0.03)",
                             color: active === f ? "#0A0A0A" : "var(--text-secondary)",
@@ -199,7 +199,7 @@ function FilterBar({ active, onChange, total }: { active: string; onChange: (f: 
                     </button>
                 ))}
             </div>
-            <span className="text-[9px] uppercase tracking-[0.4em] hidden sm:block" style={{ color: "var(--text-secondary)" }}>
+            <span className="text-[10px] uppercase tracking-[0.35em] hidden sm:block" style={{ color: "var(--text-secondary)" }}>
                 {total} result{total !== 1 ? "s" : ""}
             </span>
         </div>
@@ -340,7 +340,7 @@ function ProductCard({ product, index }: { product: CollectionProduct; index: nu
                                 style={{ fontSize: "clamp(16px,1.9vw,21px)", letterSpacing: "-0.03em", color: "var(--text-primary)" }}>
                                 {product.name}
                             </h3>
-                            <p className="text-[8px] uppercase tracking-[0.28em]" style={{ color: "var(--text-secondary)" }}>
+                            <p className="text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--text-secondary)" }}>
                                 {product.subtitle || "Extrait de Parfum"}
                             </p>
                         </div>
@@ -349,8 +349,8 @@ function ProductCard({ product, index }: { product: CollectionProduct; index: nu
                         {(product.note0 || product.note2) && (
                             <div className="flex flex-wrap gap-1.5">
                                 {[product.note0, product.note2].filter(Boolean).map((n) => (
-                                    <span key={n} className="px-2 py-0.5 text-[7px] uppercase tracking-[0.18em] font-semibold"
-                                        style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: 999, color: "rgba(245,245,245,0.35)" }}>
+                                    <span key={n} className="px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] font-semibold"
+                                        style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: 999, color: "rgba(245,245,245,0.72)" }}>
                                         {n}
                                     </span>
                                 ))}
@@ -361,18 +361,18 @@ function ProductCard({ product, index }: { product: CollectionProduct; index: nu
                         <div className="flex items-center gap-4">
                             <div>
                                 <p className="font-black leading-none" style={{ fontSize: 12, color: p.primary, letterSpacing: "-0.03em" }}>{product.stat0.number}</p>
-                                <p className="text-[6.5px] uppercase tracking-[0.14em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.stat0.label}</p>
+                                <p className="text-[10px] uppercase tracking-[0.12em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.stat0.label}</p>
                             </div>
                             <div>
                                 <p className="font-black leading-none" style={{ fontSize: 12, color: p.primary, letterSpacing: "-0.03em" }}>{product.stat1.number}</p>
-                                <p className="text-[6.5px] uppercase tracking-[0.14em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.stat1.label}</p>
+                                <p className="text-[10px] uppercase tracking-[0.12em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.stat1.label}</p>
                             </div>
                             {product.rating && (
                                 <div className="flex items-center gap-1 ml-auto">
                                     <Star size={8} fill={p.primary} stroke={p.primary} />
                                     <span className="text-[9px] font-bold" style={{ color: "var(--text-primary)" }}>{product.rating}</span>
                                     {product.reviewCount && (
-                                        <span className="text-[8px]" style={{ color: "rgba(245,245,245,0.28)" }}>({product.reviewCount})</span>
+                                        <span className="text-[8px]" style={{ color: "rgba(245,245,245,0.65)" }}>({product.reviewCount})</span>
                                     )}
                                 </div>
                             )}
@@ -386,7 +386,7 @@ function ProductCard({ product, index }: { product: CollectionProduct; index: nu
                                 <p className="font-black leading-none" style={{ fontSize: 18, color: p.primary, letterSpacing: "-0.04em" }}>
                                     {product.price}
                                 </p>
-                                <p className="text-[7px] uppercase tracking-[0.12em] mt-0.5" style={{ color: "var(--text-secondary)" }}>
+                                <p className="text-[10px] uppercase tracking-[0.1em] mt-0.5" style={{ color: "var(--text-secondary)" }}>
                                     {product.priceUnit}
                                 </p>
                             </div>
@@ -486,14 +486,14 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
                             style={{ fontSize: "clamp(28px,4vw,58px)", letterSpacing: "-0.04em", lineHeight: 0.9, color: "var(--text-primary)" }}>
                             {product.name}
                         </h2>
-                        <p className="text-sm leading-relaxed mb-5 max-w-md line-clamp-2" style={{ color: "rgba(245,245,245,0.45)" }}>
+                        <p className="text-sm leading-relaxed mb-5 max-w-md line-clamp-2" style={{ color: "rgba(245,245,245,0.75)" }}>
                             {product.description}
                         </p>
                         <div className="flex items-center gap-6 mb-6">
                             {[product.stat0, product.stat1].map((s, i) => (
                                 <div key={i}>
                                     <p className="font-black leading-none" style={{ fontSize: 16, color: p.primary, letterSpacing: "-0.04em" }}>{s.number}</p>
-                                    <p className="text-[7px] uppercase tracking-[0.14em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{s.label}</p>
+                                    <p className="text-[10px] uppercase tracking-[0.12em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{s.label}</p>
                                 </div>
                             ))}
                         </div>
@@ -505,7 +505,7 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
                             </span>
                             <div>
                                 <p className="font-black leading-none" style={{ fontSize: 16, color: `rgba(${p.rgb},0.8)`, letterSpacing: "-0.03em" }}>{product.price}</p>
-                                <p className="text-[7px] uppercase tracking-[0.1em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.priceUnit}</p>
+                                <p className="text-[10px] uppercase tracking-[0.1em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.priceUnit}</p>
                             </div>
                         </div>
                     </div>
@@ -615,3 +615,4 @@ export default function CollectionsClient({ products }: { products: CollectionPr
         </div>
     );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
@@ -68,7 +68,7 @@ function CollectionPreview() {
             <div className="mb-14 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
                 <div>
                     <div className="flex items-center gap-3 mb-4">
-                        <span className="text-[8px] uppercase tracking-[0.7em]" style={{ color: "var(--accent-gold)" }}>The Zoomers’ Collection</span>
+                        <span className="text-[10px] uppercase tracking-[0.6em]" style={{ color: "var(--accent-gold)" }}>The Zoomers’ Collection</span>
                         <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
                     </div>
                     <div ref={headRef}>
@@ -171,12 +171,12 @@ function ProductPreviewCard({ product: p, index }: { product: typeof PRODUCTS[nu
                                     style={{ fontSize: "clamp(12px,1.5vw,15px)", letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
                                     {p.name}
                                 </p>
-                                <p className="text-[7px] uppercase tracking-[0.2em] mt-0.5" style={{ color: "var(--text-secondary)" }}>
+                                <p className="text-[10px] uppercase tracking-[0.2em] mt-0.5" style={{ color: "rgba(245,245,245,0.65)" }}>
                                     {p.sub}
                                 </p>
                             </div>
-                            <span className="text-[7px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-full"
-                                style={{ border: `1px solid rgba(${p.rgb},0.3)`, color: `rgba(${p.rgb},0.8)` }}>
+                            <span className="text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-full"
+                                style={{ border: `1px solid rgba(${p.rgb},0.4)`, color: `rgba(${p.rgb},0.95)` }}>
                                 {p.tag}
                             </span>
                         </div>
@@ -219,7 +219,7 @@ function BrandStory() {
 
                 {/* Text */}
                 <div className="bs-item flex-1 opacity-0">
-                    <span className="text-[8px] uppercase tracking-[0.6em] font-bold block mb-4" style={{ color: "var(--accent-gold)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.5em] font-bold block mb-4" style={{ color: "var(--accent-gold)" }}>
                         Our Philosophy
                     </span>
                     <h2 className="font-black uppercase mb-5"
@@ -240,7 +240,7 @@ function BrandStory() {
                             <p className="font-black leading-none" style={{ fontSize: "clamp(28px,3vw,48px)", color: "var(--accent-gold)", letterSpacing: "-0.04em" }}>
                                 {s.n}
                             </p>
-                            <p className="text-[8px] uppercase tracking-[0.3em] mt-1" style={{ color: "var(--text-secondary)" }}>
+                            <p className="text-[10px] uppercase tracking-[0.25em] mt-1" style={{ color: "var(--text-secondary)" }}>
                                 {s.l}
                             </p>
                         </div>
@@ -263,3 +263,4 @@ export default function HomeSections() {
         </>
     );
 }
+

@@ -264,7 +264,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
                         style={{ opacity: 0, filter: "blur(18px)", marginBottom: "0.9rem" }}
                     >
                         <span style={{
-                            fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                            fontFamily: "var(--font-inter), system-ui, sans-serif",
                             fontSize: 10, fontWeight: 700,
                             letterSpacing: "0.55em", textTransform: "uppercase",
                             color: "rgba(245,245,245,0.3)",
@@ -290,7 +290,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
                         <p
                             ref={labelTextRef}
                             style={{
-                                fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                                fontFamily: "var(--font-inter), system-ui, sans-serif",
                                 fontWeight: 800,
                                 fontSize: "clamp(28px, 5.5vw, 76px)",
                                 letterSpacing: "-0.03em",
@@ -312,3 +312,4 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
         </Ctx.Provider>
     );
 }
+

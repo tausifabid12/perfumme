@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+﻿import { useState, useRef, useEffect, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Star, ChevronDown, Plus, ShoppingBag, Check, Loader2 } from "lucide-react";
@@ -222,17 +222,17 @@ export default function HeroSection({
 
           <div className="mt-8 flex items-center gap-6 flex-wrap">
             <div>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: GOLD_SOFT }}>NOSE</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>NOSE</div>
               <div className="text-sm text-white mt-1">House of SENZ8</div>
             </div>
             <div style={{ width: 1, height: 32, background: GOLD_LINE }} />
             <div>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: GOLD_SOFT }}>FAMILY</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>FAMILY</div>
               <div className="text-sm text-white mt-1">Smoky · Oriental</div>
             </div>
             <div style={{ width: 1, height: 32, background: GOLD_LINE }} />
             <div>
-              <div style={{ fontSize: 9, letterSpacing: "0.3em", color: GOLD_SOFT }}>SILLAGE</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>SILLAGE</div>
               <div className="text-sm text-white mt-1">Heavy</div>
             </div>
           </div>
@@ -319,7 +319,7 @@ export default function HeroSection({
                     }}>Buy Now</button>
                 </div>
               </div>
-              <div style={{ fontSize: 9, letterSpacing: "0.2em", color: GOLD_SOFT, textTransform: "uppercase" }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.18em", color: "rgba(212,175,55,0.75)", textTransform: "uppercase" }}>
                 ✦ Free shipping · arrives in 2–3 days
               </div>
             </div>
@@ -370,7 +370,7 @@ export default function HeroSection({
       </div> */}
 
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 z-10">
-        <span style={{ fontSize: 9, letterSpacing: "0.4em", color: GOLD_SOFT, textTransform: "uppercase" }}>
+        <span style={{ fontSize: 10, letterSpacing: "0.35em", color: "rgba(212,175,55,0.75)", textTransform: "uppercase" }}>
           {data.hero.scrollIndicator}
         </span>
         <ChevronDown size={14} color={GOLD_SOFT} className="animate-bounce" />
@@ -378,3 +378,4 @@ export default function HeroSection({
     </section>
   );
 }
+

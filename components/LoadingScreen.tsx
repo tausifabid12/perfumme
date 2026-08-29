@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
@@ -244,7 +244,7 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                             key={i}
                             className="ll block font-black uppercase leading-none select-none"
                             style={{
-                                fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                                fontFamily: "var(--font-inter), system-ui, sans-serif",
                                 fontSize: "clamp(64px, 12vw, 108px)",
                                 letterSpacing: "-0.03em",
                                 color: i === 4 ? "#D4AF37" : "#F5F5F5",
@@ -342,10 +342,10 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                 >
                     <p
                         style={{
-                            fontSize: 8,
-                            letterSpacing: "0.7em",
+                            fontSize: 10,
+                            letterSpacing: "0.6em",
                             textTransform: "uppercase",
-                            color: "rgba(245,245,245,0.16)",
+                            color: "rgba(245,245,245,0.55)",
                             textAlign: "center",
                         }}
                     >
@@ -357,10 +357,10 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                 <div
                     className="absolute bottom-7 right-7"
                     style={{
-                        fontSize: 7,
-                        letterSpacing: "0.5em",
+                        fontSize: 9,
+                        letterSpacing: "0.45em",
                         textTransform: "uppercase",
-                        color: "rgba(212,175,55,0.18)",
+                        color: "rgba(212,175,55,0.5)",
                     }}
                 >
                     Loading Experience
@@ -375,3 +375,4 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
         </div>
     );
 }
+

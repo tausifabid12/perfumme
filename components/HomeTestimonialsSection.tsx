@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
@@ -197,7 +197,7 @@ function ReviewCard({ r, index }: { r: typeof REVIEWS[number]; index: number }) 
                                 </svg>
                             )}
                         </div>
-                        <span style={{ fontSize: 9, color: "rgba(245,245,245,0.3)", letterSpacing: "0.02em" }}>
+                        <span style={{ fontSize: 11, color: "rgba(245,245,245,0.6)", letterSpacing: "0.02em" }}>
                             {r.handle}
                         </span>
                     </div>
@@ -205,10 +205,10 @@ function ReviewCard({ r, index }: { r: typeof REVIEWS[number]; index: number }) 
                 {/* Product tag */}
                 <TransitionLink href={r.productHref} label={r.product}>
                     <span style={{
-                        fontSize: 7, letterSpacing: "0.22em", textTransform: "uppercase", fontWeight: 700,
+                        fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700,
                         padding: "3px 8px", borderRadius: 999,
-                        border: `1px solid rgba(${r.rgb},0.28)`,
-                        color: `rgba(${r.rgb},0.85)`,
+                        border: `1px solid rgba(${r.rgb},0.4)`,
+                        color: `rgba(${r.rgb},0.95)`,
                         cursor: "pointer", display: "block",
                     }}>
                         {r.product}
@@ -221,8 +221,8 @@ function ReviewCard({ r, index }: { r: typeof REVIEWS[number]; index: number }) 
 
             {/* Review text */}
             <p style={{
-                fontSize: 12.5, lineHeight: 1.75,
-                color: "rgba(245,245,245,0.62)",
+                fontSize: 13, lineHeight: 1.75,
+                color: "rgba(245,245,245,0.82)",
                 fontStyle: "normal",
                 flex: 1,
             }}>
@@ -235,12 +235,12 @@ function ReviewCard({ r, index }: { r: typeof REVIEWS[number]; index: number }) 
                 paddingTop: 10,
                 borderTop: "1px solid rgba(255,255,255,0.05)",
             }}>
-                <span style={{ fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(245,245,245,0.2)" }}>
+                <span style={{ fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(245,245,245,0.55)" }}>
                     Verified Purchase
                 </span>
                 <span style={{
-                    fontSize: 7, letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600,
-                    color: `rgba(${r.rgb},0.5)`,
+                    fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 600,
+                    color: `rgba(${r.rgb},0.75)`,
                 }}>
                     {r.tag}
                 </span>
@@ -354,7 +354,7 @@ export default function HomeTestimonialsSection() {
                     <div>
                         <div className="flex items-center gap-3 mb-5">
                             <span style={{
-                                fontSize: 8, letterSpacing: "0.7em", textTransform: "uppercase", fontWeight: 700,
+                                fontSize: 10, letterSpacing: "0.6em", textTransform: "uppercase", fontWeight: 700,
                                 color: "var(--accent-gold)",
                             }}>
                                 Community
@@ -394,7 +394,7 @@ export default function HomeTestimonialsSection() {
                                 }}>
                                     {s.n}
                                 </p>
-                                <p style={{ fontSize: 8, letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(245,245,245,0.3)", marginTop: 4 }}>
+                                <p style={{ fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(245,245,245,0.7)", marginTop: 4 }}>
                                     {s.l}
                                 </p>
                             </div>
@@ -411,7 +411,7 @@ export default function HomeTestimonialsSection() {
 
             {/* ── CTA ── */}
             <div className="flex flex-col items-center gap-4 mt-14 px-6">
-                <p style={{ fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(245,245,245,0.25)" }}>
+                <p style={{ fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "rgba(245,245,245,0.6)" }}>
                     Join thousands wearing their identity
                 </p>
                 <TransitionLink
@@ -449,3 +449,4 @@ export default function HomeTestimonialsSection() {
         </section>
     );
 }
+

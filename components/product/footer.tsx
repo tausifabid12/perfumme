@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+﻿/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRef, useEffect } from "react";
@@ -221,9 +221,9 @@ export default function Footer({ data }: { data: ProductData }) {
               <a key={platform} href={SOCIAL_URLS[platform] ?? "#"} target="_blank" rel="noopener noreferrer"
                 aria-label={platform}
                 className="transition-colors duration-300 cursor-hover"
-                style={{ color: "rgba(245,245,245,0.25)" }}
+                style={{ color: "rgba(245,245,245,0.6)" }}
                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#D4AF37"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.25)"; }}>
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.6)"; }}>
                 <SocialIcon platform={platform} size={14} />
               </a>
             ))}
@@ -243,3 +243,4 @@ export default function Footer({ data }: { data: ProductData }) {
     </footer>
   );
 }
+

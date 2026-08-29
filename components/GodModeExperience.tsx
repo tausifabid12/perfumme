@@ -39,7 +39,7 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
         let loadedCount = 0;
         for (let i = 0; i < TOTAL_FRAMES; i++) {
             const img = new Image();
-            img.src = `/frames3/frame_${String(i + 1).padStart(4, "0")}.jpg`;
+            img.src = `/frames3/frame_${String(i + 1).padStart(4, "0")}.webp`;
             img.onload = () => {
                 loadedCount++;
                 if (loadedCount === 1) fireReady();

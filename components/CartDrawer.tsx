@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef } from "react";
 import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2 } from "lucide-react";
@@ -186,9 +186,9 @@ export default function CartDrawer() {
                             <button
                                 onClick={() => setCartOpen(false)}
                                 className="text-[9px] uppercase tracking-[0.35em] text-center transition-colors duration-200 cursor-pointer"
-                                style={{ color: "rgba(245,245,245,0.25)", background: "none", border: "none" }}
+                                style={{ color: "rgba(245,245,245,0.55)", background: "none", border: "none" }}
                                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.6)"; }}
-                                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.25)"; }}
+                                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.55)"; }}
                             >
                                 Continue Shopping
                             </button>
@@ -213,9 +213,9 @@ function CartLineItem({
     const { merchandise, quantity, cost } = line;
     const price = parseFloat(merchandise.price.amount);
     const currency = merchandise.price.currencyCode;
-    const fmtPrice = (n: number) => currency === "BDT"
-        ? `৳${Math.round(n).toLocaleString("en-BD")}`
-        : new Intl.NumberFormat("en-US", { style: "currency", currency }).format(n);
+    const fmtPrice = (n: number) => currency === "INR"
+        ? `₹${Math.round(n).toLocaleString("en-IN")}`
+        : new Intl.NumberFormat("en-IN", { style: "currency", currency }).format(n);
 
     return (
         <div className="flex gap-4 py-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
@@ -291,7 +291,7 @@ function CartLineItem({
                         </p>
                         {quantity > 1 && (
                             <p className="text-[8px] mt-0.5 uppercase tracking-[0.1em]"
-                                style={{ color: "rgba(245,245,245,0.25)" }}>
+                                style={{ color: "rgba(245,245,245,0.6)" }}>
                                 {fmtPrice(price)} each
                             </p>
                         )}
@@ -301,3 +301,5 @@ function CartLineItem({
         </div>
     );
 }
+
+

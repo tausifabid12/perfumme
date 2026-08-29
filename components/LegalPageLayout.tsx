@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
@@ -99,7 +99,7 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
                     {/* Back link */}
                     <TransitionLink href="/" label="Home"
                         className="inline-flex items-center gap-2 mb-8 text-[9px] uppercase tracking-[0.4em] cursor-hover transition-colors duration-300"
-                        style={{ color: "rgba(245,245,245,0.3)" }}
+                        style={{ color: "rgba(245,245,245,0.65)" }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--accent-gold)"; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.3)"; }}>
                         <ArrowLeft size={11} /> Back to Home
@@ -107,11 +107,11 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
 
                     {/* Eyebrow */}
                     <div className="flex items-center gap-3 mb-5">
-                        <span className="text-[8px] uppercase tracking-[0.7em] font-bold" style={{ color: "var(--accent-gold)" }}>
+                        <span className="text-[10px] uppercase tracking-[0.6em] font-bold" style={{ color: "var(--accent-gold)" }}>
                             {badge}
                         </span>
                         <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.4)" }} />
-                        <span className="text-[8px] uppercase tracking-[0.4em]" style={{ color: "var(--text-secondary)" }}>
+                        <span className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "var(--text-secondary)" }}>
                             SENZ8 · Parfum Maison
                         </span>
                     </div>
@@ -124,7 +124,7 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
                                     ref={el => { if (el) wordRefs.current[i] = el; }}
                                     className="block font-black uppercase"
                                     style={{
-                                        fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                                        fontFamily: "var(--font-inter), system-ui, sans-serif",
                                         fontSize: "clamp(44px,7.5vw,110px)",
                                         letterSpacing: "-0.04em", lineHeight: 0.88,
                                         color: i === title.length - 1 ? "var(--accent-gold)" : "var(--text-primary)",
@@ -149,7 +149,7 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
                             style={{ color: "var(--text-secondary)", lineHeight: 1.8 }}>
                             {subtitle}
                         </p>
-                        <span className="text-[8px] uppercase tracking-[0.45em] flex-shrink-0"
+                        <span className="text-[10px] uppercase tracking-[0.4em] flex-shrink-0"
                             style={{ color: "rgba(212,175,55,0.4)" }}>
                             Last updated: {lastUpdated}
                         </span>
@@ -168,17 +168,17 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
 
                     {/* ── Table of contents (sticky) ── */}
                     <div ref={tocRef} className="lg:sticky lg:top-24 opacity-0">
-                        <p className="text-[8px] uppercase tracking-[0.55em] font-bold mb-5"
+                        <p className="text-[10px] uppercase tracking-[0.45em] font-bold mb-5"
                             style={{ color: "var(--accent-gold)" }}>Contents</p>
                         <nav className="flex flex-col gap-1">
                             {sections.map((s, i) => (
                                 <a key={i}
                                     href={`#section-${i}`}
                                     className="flex items-center gap-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors duration-250 cursor-hover group"
-                                    style={{ color: "rgba(245,245,245,0.25)" }}
+                                    style={{ color: "rgba(245,245,245,0.65)" }}
                                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
-                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.25)"; }}>
-                                    <span className="text-[7px] font-black" style={{ color: "rgba(212,175,55,0.4)" }}>
+                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.6)"; }}>
+                                    <span className="text-[9px] font-black" style={{ color: "rgba(212,175,55,0.4)" }}>
                                         {String(i + 1).padStart(2, "0")}
                                     </span>
                                     {s.heading}
@@ -189,7 +189,7 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
                         {/* Contact nudge */}
                         <div className="mt-10 p-4 rounded-xl"
                             style={{ background: "rgba(212,175,55,0.04)", border: "1px solid rgba(212,175,55,0.1)" }}>
-                            <p className="text-[8px] uppercase tracking-[0.35em] mb-2" style={{ color: "var(--accent-gold)", opacity: 0.7 }}>
+                            <p className="text-[10px] uppercase tracking-[0.3em] mb-2" style={{ color: "var(--accent-gold)", opacity: 0.7 }}>
                                 Questions?
                             </p>
                             <p className="text-[11px] mb-3" style={{ color: "var(--text-secondary)", lineHeight: 1.7 }}>
@@ -233,7 +233,7 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
 
                         {/* Bottom gold rule */}
                         <div style={{ height: 1, background: "linear-gradient(90deg, rgba(212,175,55,0.2), transparent)" }} />
-                        <p className="text-[8px] uppercase tracking-[0.55em]" style={{ color: "rgba(212,175,55,0.25)" }}>
+                        <p className="text-[10px] uppercase tracking-[0.45em]" style={{ color: "rgba(212,175,55,0.25)" }}>
                             Senz8 Aroma Private Limited · Parfum Maison · Est. 2024
                         </p>
                     </div>
@@ -244,3 +244,6 @@ export default function LegalPageLayout({ badge, title, subtitle, lastUpdated, s
         </div>
     );
 }
+
+
+

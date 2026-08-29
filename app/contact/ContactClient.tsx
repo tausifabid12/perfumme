@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import gsap from "gsap";
@@ -119,7 +119,7 @@ function Hero() {
                             <span ref={el => { if (el) wordRefs.current[i] = el; }}
                                 className="block font-black uppercase"
                                 style={{
-                                    fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                                    fontFamily: "var(--font-inter), system-ui, sans-serif",
                                     fontSize: "clamp(52px, 9vw, 130px)",
                                     letterSpacing: "-0.04em", lineHeight: 0.88,
                                     color: i === words.length - 1 ? "var(--accent-gold)" : "var(--text-primary)",
@@ -281,7 +281,7 @@ function ContactForm() {
                         style={{ color: "var(--accent-gold)" }}>Send a Message</span>
                     <h2 className="font-black uppercase mb-5"
                         style={{
-                            fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                            fontFamily: "var(--font-inter), system-ui, sans-serif",
                             fontSize: "clamp(30px,3.8vw,54px)", letterSpacing: "-0.04em",
                             lineHeight: 0.9, color: "var(--text-primary)"
                         }}>
@@ -420,7 +420,7 @@ function SuccessState() {
             <div>
                 <h3 className="font-black uppercase mb-3"
                     style={{
-                        fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                        fontFamily: "var(--font-inter), system-ui, sans-serif",
                         fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-0.03em",
                         lineHeight: 0.9, color: "var(--text-primary)"
                     }}>
@@ -478,7 +478,7 @@ function FaqStrip() {
                     style={{ color: "var(--accent-gold)" }}>Quick Answers</span>
                 <h2 className="font-black uppercase"
                     style={{
-                        fontFamily: "var(--font-bodoni), 'Georgia', serif",
+                        fontFamily: "var(--font-inter), system-ui, sans-serif",
                         fontSize: "clamp(28px,3.5vw,52px)", letterSpacing: "-0.04em",
                         lineHeight: 0.9, color: "var(--text-primary)"
                     }}>
@@ -548,3 +548,4 @@ export default function ContactClient() {
         </div>
     );
 }
+

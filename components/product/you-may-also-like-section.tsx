@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
@@ -180,7 +180,7 @@ function AlsoLikeCard({
                   {displayName}
                 </h3>
                 <p
-                  className="text-[7px] uppercase tracking-[0.25em]"
+                  className="text-[10px] uppercase tracking-[0.2em]"
                   style={{ color: "var(--text-secondary)" }}
                 >
                   Extrait de Parfum
@@ -331,3 +331,4 @@ export default function YouMayAlsoLikeSection({ data }: { data: ProductData }) {
     </section>
   );
 }
+

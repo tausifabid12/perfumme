@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+﻿/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRef, useEffect } from "react";
@@ -196,7 +196,7 @@ export default function CompositionSection({
                 className="text-xl font-bold border-b-2 border-black pb-2 mb-3"
                 style={{
                   color: "var(--text-dark)",
-                  fontFamily: "serif",
+                  fontFamily: "var(--font-inter), system-ui, sans-serif",
                 }}
               >
                 {composition.facts.title}
@@ -264,3 +264,4 @@ export default function CompositionSection({
     </section>
   );
 }
+

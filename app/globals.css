@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -6,7 +6,7 @@
   --bg-primary: #0A0A0A;
   --bg-cream: #F2F2F2;
   --text-primary: #F5F5F5;
-  --text-secondary: rgba(245, 245, 245, 0.45);
+  --text-secondary: rgba(245, 245, 245, 0.7);
   --text-dark: #111111;
   --accent-gold: #D4AF37;
   --accent-gold-light: #E8C84A;
@@ -37,7 +37,7 @@ body {
 
 /* Bodoni Moda utility — use on display/serif headings */
 .font-bodoni {
-  font-family: var(--font-bodoni), 'Georgia', serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
 }
 
 @media (pointer: coarse) {
@@ -78,9 +78,9 @@ body {
 }
 
 .text-stat-label {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 

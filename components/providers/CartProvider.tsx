@@ -134,7 +134,7 @@ const GET_CART_Q = /* GraphQL */`
 // ─── Format price ───────────────────────────────────────────────────────────────
 function fmt(amount: string, currencyCode: string) {
   const n = parseFloat(amount);
-  if (currencyCode === "BDT") return `৳${Math.round(n).toLocaleString("en-BD")}`;
+  if (currencyCode === "INR") return `₹${Math.round(n).toLocaleString("en-IN")}`;
   return new Intl.NumberFormat("en-US", { style: "currency", currency: currencyCode }).format(n);
 }
 

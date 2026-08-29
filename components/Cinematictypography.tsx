@@ -215,7 +215,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
                 /* â”€â”€â”€ HEADLINE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
                 .ct-h2 {
-                    font-family: var(--font-bodoni), 'Georgia', serif;
+                    font-family: var(--font-inter), system-ui, sans-serif;
                     font-weight: 800;
                     line-height: 0.9;
                     color: #fff;
@@ -274,24 +274,24 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     will-change: transform, opacity;
                 }
 
-                /* IT â€” bottom-left */
+                /* IT BOY — bottom-left, unified block */
                 .ct-it {
                     position: absolute;
                     bottom: 5%;
                     left: 4%;
+                    pointer-events: auto;
                 }
 
-                /* BOY â€” bottom-right */
+                /* BOY — stacked under IT in same column */
                 .ct-boy {
-                    position: absolute;
-                    bottom: 5%;
-                    right: 4%;
-                    text-align: right;
+                    display: block;
+                    position: static;
+                    text-align: left;
                 }
 
                 /* IT / BOY giant word */
                 .ct-giant {
-                    font-family: var(--font-bodoni), 'Georgia', serif;
+                    font-family: var(--font-inter), system-ui, sans-serif;
                     font-weight: 800;
                     line-height: 0.85;
                     color: #fff;
@@ -453,8 +453,8 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     .ct-rebel-rule { margin-left: 0; margin-right: auto; }
 
                     /* IT BOY */
-                    .ct-it  { left: 4%; }
-                    .ct-boy { right: 4%; }
+                    .ct-it { left: 4%; bottom: 6%; }
+                    .ct-boy { position: static; text-align: left; }
                     .ct-giant { font-size: clamp(44px, 12vw, 68px); }
                 }
             `}</style>
@@ -517,17 +517,22 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                 {/* â•â•â• SECTION 3 â€” IT BOY â•â•â• */}
                 <div ref={itboyRef} className="ct-itboy">
 
-                    {/* IT â€” bottom-left */}
+                    {/* IT BOY — unified bottom-left block */}
                     <div className="ct-it">
                         <p data-it-sub className="ct-label" style={{ color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem" }}>
-                            NÂ° 003
+                            N&#176; 003
                         </p>
 
                         <div data-it-word className="ct-giant">IT</div>
+                        <div data-boy-word className="ct-giant ct-giant-italic">BOY</div>
+
+                        <div data-it-sub className="ct-rule"
+                            style={{ background: "linear-gradient(to right,rgba(212,175,55,0.8),transparent)", marginTop: "0.8rem" }} />
 
                         <p data-it-sub className="ct-sub"
                             style={{ color: "rgba(255,255,255,0.52)", marginTop: "0.6rem" }}>
-                            The Final Statement.
+                            Fresh. Bold. Addictive. <br />
+                            The signature scent for Gen Z men
                         </p>
 
                         <TransitionLink href="/collections" label="Discover Collection" data-it-sub className="ct-btn" style={{ marginTop: "1rem" }}>
@@ -538,19 +543,12 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                         </TransitionLink>
                     </div>
 
-                    {/* BOY â€” bottom-right */}
-                    <div className="ct-boy">
-                        <p data-it-sub className="ct-label"
-                            style={{ color: "rgba(255,255,255,0.52)", marginBottom: "0.4rem" }}>
-                            The Final Chapter
-                        </p>
-
-                        <div data-boy-word className="ct-giant ct-giant-italic">BOY</div>
-                    </div>
-
                 </div>
 
             </div>
         </>
     );
 }
+
+
+

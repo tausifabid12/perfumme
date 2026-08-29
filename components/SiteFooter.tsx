@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
@@ -124,7 +124,7 @@ export default function SiteFooter() {
 
             {/* ── Hero CTA block ── */}
             <div className="relative px-6 lg:px-12 pt-20 pb-16 text-center">
-                <p className="text-[8px] uppercase tracking-[0.7em] mb-5" style={{ color: "var(--accent-gold)" }}>
+                <p className="text-[10px] uppercase tracking-[0.6em] mb-5" style={{ color: "var(--accent-gold)" }}>
                     Find Your Signature
                 </p>
 
@@ -170,7 +170,7 @@ export default function SiteFooter() {
 
                 {/* Scents */}
                 <div className="flex flex-col gap-3">
-                    <span className="text-[8px] uppercase tracking-[0.5em] font-bold mb-1" style={{ color: "var(--accent-gold)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.45em] font-bold mb-1" style={{ color: "var(--accent-gold)" }}>
                         Scents
                     </span>
                     {SCENTS.map((l) => (
@@ -186,7 +186,7 @@ export default function SiteFooter() {
 
                 {/* Community — social icons + links */}
                 <div className="flex flex-col gap-4">
-                    <span className="text-[8px] uppercase tracking-[0.5em] font-bold mb-1" style={{ color: "var(--accent-gold)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.45em] font-bold mb-1" style={{ color: "var(--accent-gold)" }}>
                         Community
                     </span>
                     {/* Social icon grid */}
@@ -201,7 +201,7 @@ export default function SiteFooter() {
                                 className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 cursor-hover"
                                 style={{
                                     border: "1px solid rgba(212,175,55,0.18)",
-                                    color: "rgba(245,245,245,0.35)",
+                                    color: "rgba(245,245,245,0.65)",
                                     background: "rgba(255,255,255,0.025)",
                                 }}
                                 onMouseEnter={(e) => {
@@ -211,7 +211,7 @@ export default function SiteFooter() {
                                 }}
                                 onMouseLeave={(e) => {
                                     (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,175,55,0.18)";
-                                    (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.35)";
+                                    (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.65)";
                                     (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.025)";
                                 }}
                             >
@@ -240,7 +240,7 @@ export default function SiteFooter() {
 
                 {/* Legal / Info */}
                 <div className="flex flex-col gap-3">
-                    <span className="text-[8px] uppercase tracking-[0.5em] font-bold mb-1" style={{ color: "var(--accent-gold)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.45em] font-bold mb-1" style={{ color: "var(--accent-gold)" }}>
                         Info
                     </span>
                     {LEGAL.map((l) => (
@@ -256,7 +256,7 @@ export default function SiteFooter() {
 
                 {/* Newsletter */}
                 <div className="flex flex-col gap-4 col-span-2 lg:col-span-1">
-                    <span className="text-[8px] uppercase tracking-[0.5em] font-bold" style={{ color: "var(--accent-gold)" }}>
+                    <span className="text-[10px] uppercase tracking-[0.45em] font-bold" style={{ color: "var(--accent-gold)" }}>
                         Stay in the loop
                     </span>
                     <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>
@@ -295,9 +295,9 @@ export default function SiteFooter() {
                                 rel="noopener noreferrer"
                                 aria-label={s.name}
                                 className="transition-colors duration-300 cursor-hover"
-                                style={{ color: "rgba(245,245,245,0.22)" }}
+                                style={{ color: "rgba(245,245,245,0.6)" }}
                                 onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--accent-gold)"; }}
-                                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.22)"; }}
+                                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.6)"; }}
                             >
                                 <span style={{ display: "block", width: 14, height: 14 }}>
                                     {s.icon}
@@ -326,3 +326,5 @@ export default function SiteFooter() {
         </footer>
     );
 }
+
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import gsap from "gsap";
@@ -121,7 +121,7 @@ export default function BuyWidget({
               style={{
                 fontSize: 9,
                 color:
-                  "rgba(245,245,245,0.35)",
+                  "rgba(245,245,245,0.75)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
               }}
@@ -146,7 +146,7 @@ export default function BuyWidget({
               style={{
                 fontSize: 9,
                 color:
-                  "rgba(245,245,245,0.35)",
+                  "rgba(245,245,245,0.75)",
                 fontWeight: 600,
               }}
             >
@@ -156,7 +156,7 @@ export default function BuyWidget({
               style={{
                 fontSize: 9,
                 color:
-                  "rgba(245,245,245,0.25)",
+                  "rgba(245,245,245,0.65)",
               }}
             >
               · {data.product.reviewCount}
@@ -224,11 +224,11 @@ export default function BuyWidget({
           <div>
             <div
               style={{
-                fontSize: 8,
+                fontSize: 10,
                 textTransform: "uppercase",
                 letterSpacing: "0.25em",
                 color:
-                  "rgba(245,245,245,0.3)",
+                  "rgba(245,245,245,0.72)",
                 marginBottom: 6,
               }}
             >
@@ -277,11 +277,11 @@ export default function BuyWidget({
           <div>
             <div
               style={{
-                fontSize: 8,
+                fontSize: 10,
                 textTransform: "uppercase",
                 letterSpacing: "0.25em",
                 color:
-                  "rgba(245,245,245,0.3)",
+                  "rgba(245,245,245,0.72)",
                 marginBottom: 6,
               }}
             >
@@ -414,7 +414,7 @@ export default function BuyWidget({
               textAlign: "center",
               fontSize: 9,
               color:
-                "rgba(245,245,245,0.25)",
+                "rgba(245,245,245,0.65)",
               letterSpacing: "0.05em",
             }}
           >
@@ -426,3 +426,4 @@ export default function BuyWidget({
     </div>
   );
 }
+
