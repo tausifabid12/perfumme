@@ -282,7 +282,7 @@ export default function SiteFooter() {
             {/* ── Bottom bar ── */}
             <div className="max-w-[1100px] mx-auto px-6 lg:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <span className="text-xs" style={{ color: "rgba(245,245,245,0.2)" }}>
-                    © 2025 SENZ8 · Parfum Maison · All Rights Reserved
+                    © 2026 SENZ8 · Parfum Maison · All Rights Reserved
                 </span>
                 <div className="flex items-center gap-6">
                     {/* Social icon row — compact version */}

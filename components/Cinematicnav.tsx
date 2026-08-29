@@ -11,11 +11,11 @@ import Image from "next/image";
 // â”€â”€â”€ Brand nav links â€” update hrefs to match your routing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const NAV_LINKS = [
     { name: "Collections", text: "1", href: "/collections" },
-    { name: "Imperial Smoke", text: "2", href: "/products/imperial-smoke" },
-    { name: "IT Boy", text: "3", href: "/products/it-boy" },
-    { name: "Rebel Girl", text: "4", href: "/products/rebel-girl" },
-    { name: "About Us", text: "5", href: "/about" },
-    { name: "Contact", text: "6", href: "/contact" },
+    // { name: "Imperial Smoke", text: "2", href: "/products/imperial-smoke" },
+    // { name: "IT Boy", text: "3", href: "/products/it-boy" },
+    // { name: "Rebel Girl", text: "4", href: "/products/rebel-girl" },
+    { name: "About Us", text: "2", href: "/about" },
+    { name: "Contact", text: "3", href: "/contact" },
 ];
 
 export default function CinematicNav({ canAnimate = false }: { canAnimate?: boolean }) {
