@@ -9,6 +9,7 @@ import CinematicNav from "@/components/Cinematicnav";
 import HomeSections from "@/components/HomeSections";
 import SiteFooter from "@/components/SiteFooter";
 import LoadingScreen from "@/components/LoadingScreen";
+import MobileHeroExperience from "@/components/MobileHeroExperience";
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -64,10 +65,14 @@ const jsonLd = {
 
 export default function Page() {
     const [loading, setLoading] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
     const triggerCompleteRef = useRef<(() => void) | null>(null);
-    // Ref to the below-fold wrapper — we toggle visibility via CSS so it'sz
-    // always in the DOM (stable scrollHeight) but invisible until needed
     const belowFoldRef = useRef<HTMLDivElement>(null);
+
+    // Detect mobile on mount (SSR-safe)
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, []);
 
     // ── Loading screen ────────────────────────────────────────────────
     const registerTrigger = useCallback((fn: () => void) => {
@@ -122,26 +127,36 @@ export default function Page() {
             )}
 
             <CinematicNav canAnimate={!loading} />
-            <ScrollVelocity />
 
-            {/* WebGL particle field — fixed behind everything */}
-            <GodModeScene />
-
-            {/* 800vh cinematic scroll zone */}
-            <GodModeExperience onReady={handleVideoReady} />
-
-            {/* Fixed overlay — uses fixed 799vh math, unaffected by content below */}
-            <CinematicTypography canAnimate={!loading} />
-
-            {/* Always in DOM (stable scrollHeight) but hidden until cinematic ends.
-                Revealed at 98.5% of cinematic scroll — same point overlay hides. */}
-            <div
-                ref={belowFoldRef}
-                style={{ visibility: "hidden", pointerEvents: "none" }}
-            >
-                <HomeSections />
-                <SiteFooter />
-            </div>
+            {/* ── MOBILE experience ── fixed card deck, then normal scroll ── */}
+            {isMobile ? (
+                <>
+                    {/* Fixed overlay — sits above everything until user swipes through all 4 cards */}
+                    <MobileHeroExperience onReady={handleVideoReady} />
+                    {/* Normal page content — always in DOM, visible once hero dismisses */}
+                    <HomeSections />
+                    <SiteFooter />
+                </>
+            ) : (
+                /* ── DESKTOP experience ── full cinematic scroll ── */
+                <>
+                    <ScrollVelocity />
+                    {/* WebGL particle field — fixed behind everything */}
+                    <GodModeScene />
+                    {/* 1300vh cinematic scroll zone */}
+                    <GodModeExperience onReady={handleVideoReady} />
+                    {/* Fixed overlay — uses fixed 1200vh math */}
+                    <CinematicTypography canAnimate={!loading} />
+                    {/* Revealed at end of cinematic scroll */}
+                    <div
+                        ref={belowFoldRef}
+                        style={{ visibility: "hidden", pointerEvents: "none" }}
+                    >
+                        <HomeSections />
+                        <SiteFooter />
+                    </div>
+                </>
+            )}
         </main>
     );
 }
