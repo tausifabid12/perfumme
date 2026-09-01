@@ -9,6 +9,31 @@ import HomeTestimonialsSection from "@/components/HomeTestimonialsSection";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// ── Design tokens — shared across all home sections ───────────────────────────
+// Keeping these in one place makes it trivial to keep sections in sync.
+const SECTION_PX = "px-6 lg:px-12";                 // horizontal padding
+const MAX_W = "max-w-[1400px] mx-auto";          // max-width container (matches testimonials)
+const SECTION_PY = "py-24 lg:py-32";                 // vertical rhythm
+const OVERLINE_STY = {                                  // consistent eyebrow label
+    fontSize: 10, letterSpacing: "0.6em",
+    textTransform: "uppercase" as const, fontWeight: 700,
+    color: "var(--accent-gold)",
+};
+const HEADLINE_SZ = "clamp(44px,6vw,92px)";           // unified headline size
+const HEADLINE_SY = {                                  // unified headline style
+    letterSpacing: "-0.045em", lineHeight: 0.88,
+};
+
+// ── Overline row helper ───────────────────────────────────────────────────────
+function Overline({ label }: { label: string }) {
+    return (
+        <div className="flex items-center gap-3 mb-5">
+            <div style={{ width: 36, height: 1, background: "rgba(212,175,55,0.4)" }} />
+            <span style={OVERLINE_STY}>{label}</span>
+        </div>
+    );
+}
+
 // ── Marquee strip ─────────────────────────────────────────────────────────────
 function MarqueeStrip() {
     const rowRef = useRef<HTMLDivElement>(null);
@@ -25,18 +50,118 @@ function MarqueeStrip() {
         </span>
     ));
     return (
-        <div className="overflow-hidden py-6" style={{ background: "#050508", borderTop: "1px solid rgba(212,175,55,0.05)", borderBottom: "1px solid rgba(212,175,55,0.05)" }}>
-            <div ref={rowRef} className="inline-flex items-center gap-8" style={{ willChange: "transform" }}>{row}{row}</div>
+        <div className="overflow-hidden py-6"
+            style={{ background: "#050508", borderTop: "1px solid rgba(212,175,55,0.05)", borderBottom: "1px solid rgba(212,175,55,0.05)" }}>
+            <div ref={rowRef} className="inline-flex items-center gap-8" style={{ willChange: "transform" }}>
+                {row}{row}
+            </div>
         </div>
     );
 }
 
-// ── Collection preview ─────────────────────────────────────────────────────────
+// ── Brand story ───────────────────────────────────────────────────────────────
+function BrandStory() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const headRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            // Headline words mask-reveal (same pattern as every other section)
+            gsap.fromTo(
+                headRef.current?.querySelectorAll(".bs-hw") ?? [],
+                { yPercent: 110, opacity: 0 },
+                {
+                    yPercent: 0, opacity: 1, stagger: 0.07, duration: 1.1, ease: "expo.out",
+                    scrollTrigger: { trigger: sectionRef.current, start: "top 80%", toggleActions: "play none none none" },
+                }
+            );
+            // Body items fade up
+            gsap.fromTo(
+                sectionRef.current?.querySelectorAll(".bs-item") ?? [],
+                { opacity: 0, y: 24 },
+                {
+                    opacity: 1, y: 0, stagger: 0.1, duration: 0.85, ease: "power2.out",
+                    scrollTrigger: { trigger: sectionRef.current, start: "top 75%", toggleActions: "play none none none" },
+                }
+            );
+        }, sectionRef);
+        return () => ctx.revert();
+    }, []);
+
+    const stats = [
+        { n: "4", l: "Signature Scents" },
+        { n: "35%", l: "Oil Concentration" },
+        { n: "12HR+", l: "Longevity" },
+        { n: "50ML", l: "Bottle Size" },
+    ];
+
+    return (
+        <section
+            ref={sectionRef}
+            className={`relative ${SECTION_PY} ${SECTION_PX}`}
+            style={{ background: "#060609", borderTop: "1px solid rgba(212,175,55,0.06)", borderBottom: "1px solid rgba(212,175,55,0.06)" }}
+        >
+            <div className={MAX_W}>
+                <div className="flex flex-col lg:flex-row items-start lg:items-end gap-12 lg:gap-20">
+
+                    {/* Left — headline + body */}
+                    <div className="flex-1 min-w-0">
+                        <Overline label="Our Philosophy" />
+                        <div ref={headRef} className="mb-7">
+                            {["Wear Your", "Identity."].map((line, li) => (
+                                <div key={li} style={{ overflow: "hidden" }}>
+                                    <span
+                                        className="bs-hw block font-black uppercase"
+                                        style={{
+                                            ...HEADLINE_SY,
+                                            fontSize: HEADLINE_SZ,
+                                            color: li === 1 ? "var(--accent-gold)" : "var(--text-primary)",
+                                        }}
+                                    >
+                                        {line}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                        <p
+                            className="bs-item text-sm lg:text-base leading-relaxed max-w-md"
+                            style={{ color: "var(--text-secondary)", lineHeight: 1.9, opacity: 0 }}
+                        >
+                            Senz8 Aroma was built for a generation that refuses to be ordinary.
+                            Every bottle is a statement. Every spray, a presence.
+                            Crafted as an Extrait de Parfum — 35% oil concentration — for a scent that outlasts the moment.
+                        </p>
+                    </div>
+
+                    {/* Right — stats grid */}
+                    <div className="grid grid-cols-2 gap-x-12 gap-y-8 lg:gap-x-16 flex-shrink-0">
+                        {stats.map((s) => (
+                            <div key={s.n} className="bs-item" style={{ opacity: 0 }}>
+                                <p
+                                    className="font-black leading-none"
+                                    style={{ fontSize: "clamp(32px,3.2vw,52px)", color: "var(--accent-gold)", letterSpacing: "-0.045em" }}
+                                >
+                                    {s.n}
+                                </p>
+                                <div style={{ width: 28, height: 1, background: "rgba(212,175,55,0.3)", margin: "6px 0" }} />
+                                <p style={{ fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase", color: "rgba(245,245,245,0.5)" }}>
+                                    {s.l}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ── Collection preview ────────────────────────────────────────────────────────
 const PRODUCTS = [
     { name: "IMPERIAL SMOKE", sub: "Dark · Smoky · Oriental", tag: "For Him", href: "/products/imperial-smoke", img: "/images/imps-1.png", rgb: "212,175,55" },
     { name: "IT BOY", sub: "Fresh · Bold · Addictive", tag: "For Him", href: "/products/it-boy", img: "/images/it-boy-bottle.png", rgb: "200,169,110" },
     { name: "REBEL GIRL", sub: "Soft · Bold · Unforgettable", tag: "For Her", href: "/products/rebel-girl", img: "/images/rabel-girl-bottle.png", rgb: "212,105,126" },
-    { name: "BLIND DATE", sub: "Fresh · Warm · Irresistible", tag: "Unisex", href: "/products/blind-date", img: "/images/blind-date-bottle.png", rgb: "168, 159, 200" },
+    { name: "BLIND DATE", sub: "Fresh · Warm · Irresistible", tag: "Unisex", href: "/products/blind-date", img: "/images/blind-date-bottle.png", rgb: "168,159,200" },
 ];
 
 function CollectionPreview() {
@@ -45,11 +170,12 @@ function CollectionPreview() {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.fromTo(headRef.current?.querySelectorAll(".hw") ?? [],
+            gsap.fromTo(
+                headRef.current?.querySelectorAll(".hw") ?? [],
                 { yPercent: 110, opacity: 0 },
                 {
                     yPercent: 0, opacity: 1, stagger: 0.07, duration: 1.1, ease: "expo.out",
-                    scrollTrigger: { trigger: sectionRef.current, start: "top 80%", toggleActions: "play none none none" }
+                    scrollTrigger: { trigger: sectionRef.current, start: "top 80%", toggleActions: "play none none none" },
                 }
             );
         }, sectionRef);
@@ -57,48 +183,58 @@ function CollectionPreview() {
     }, []);
 
     return (
-        <section ref={sectionRef} className="relative py-24 lg:py-36 px-6 lg:px-12 overflow-hidden"
-            style={{ background: "var(--bg-primary)" }}>
+        <section
+            ref={sectionRef}
+            className={`relative ${SECTION_PY} ${SECTION_PX} overflow-hidden`}
+            style={{ background: "var(--bg-primary)" }}
+        >
+            {/* Subtle radial accent */}
+            <div className="absolute inset-0 pointer-events-none" style={{
+                background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,175,55,0.04) 0%, transparent 70%)",
+            }} />
 
-            {/* Background accent */}
-            <div className="absolute inset-0 pointer-events-none"
-                style={{ background: "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(212,175,55,0.04) 0%, transparent 70%)" }} />
+            <div className={`relative ${MAX_W}`}>
+                {/* Header row */}
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12 lg:mb-16">
+                    <div>
+                        <Overline label="The Collection" />
+                        <div ref={headRef}>
+                            {["Our", "Signatures."].map((w, i) => (
+                                <div key={w} style={{ overflow: "hidden" }}>
+                                    <span
+                                        className="hw block font-black uppercase"
+                                        style={{
+                                            ...HEADLINE_SY,
+                                            fontSize: HEADLINE_SZ,
+                                            color: i === 1 ? "var(--accent-gold)" : "var(--text-primary)",
+                                        }}
+                                    >
+                                        {w}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
 
-            {/* Header */}
-            <div className="mb-14 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-                <div>
-                    <div className="flex items-center gap-3 mb-4">
-                        <span className="text-[10px] uppercase tracking-[0.6em]" style={{ color: "var(--accent-gold)" }}>The Zoomers’ Collection</span>
-                        <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
-                    </div>
-                    <div ref={headRef}>
-                        {["Our", "Signatures."].map((w, i) => (
-                            <div key={w} style={{ overflow: "hidden" }}>
-                                <span className="hw block font-black uppercase"
-                                    style={{
-                                        fontSize: "clamp(40px,6.5vw,96px)", letterSpacing: "-0.045em", lineHeight: 0.88,
-                                        color: i === 1 ? "var(--accent-gold)" : "var(--text-primary)"
-                                    }}>
-                                    {w}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
+                    {/* View All — aligned to bottom of headline */}
+                    <TransitionLink
+                        href="/collections"
+                        label="View All"
+                        className="self-start lg:self-auto inline-flex items-center gap-2 px-6 py-3 rounded-pill text-[10px] font-black uppercase tracking-widest transition-all duration-300"
+                        style={{ border: "1px solid rgba(212,175,55,0.3)", color: "var(--accent-gold)", letterSpacing: "0.25em" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(212,175,55,0.08)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                    >
+                        View All <ArrowRight size={11} />
+                    </TransitionLink>
                 </div>
-                <TransitionLink href="/collections" label="View All"
-                    className="self-start lg:self-auto inline-flex items-center gap-2 px-6 py-3 rounded-pill text-[10px] font-black uppercase tracking-widest cursor-hover transition-all duration-300"
-                    style={{ border: "1px solid rgba(212,175,55,0.3)", color: "var(--accent-gold)" }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(212,175,55,0.08)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}>
-                    View All <ArrowRight size={11} />
-                </TransitionLink>
-            </div>
 
-            {/* Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
-                {PRODUCTS.map((p, i) => (
-                    <ProductPreviewCard key={p.name} product={p} index={i} />
-                ))}
+                {/* Product grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+                    {PRODUCTS.map((p, i) => (
+                        <ProductPreviewCard key={p.name} product={p} index={i} />
+                    ))}
+                </div>
             </div>
         </section>
     );
@@ -109,16 +245,14 @@ function ProductPreviewCard({ product: p, index }: { product: typeof PRODUCTS[nu
     const imgRef = useRef<HTMLImageElement>(null);
     const glowRef = useRef<HTMLDivElement>(null);
 
-
-    console.log
-
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.fromTo(cardRef.current,
+            gsap.fromTo(
+                cardRef.current,
                 { opacity: 0, y: 40, scale: 0.95 },
                 {
                     opacity: 1, y: 0, scale: 1, duration: 0.9, ease: "expo.out", delay: index * 0.09,
-                    scrollTrigger: { trigger: cardRef.current, start: "top 90%", toggleActions: "play none none none" }
+                    scrollTrigger: { trigger: cardRef.current, start: "top 90%", toggleActions: "play none none none" },
                 }
             );
         });
@@ -136,118 +270,69 @@ function ProductPreviewCard({ product: p, index }: { product: typeof PRODUCTS[nu
 
     return (
         <div ref={cardRef} style={{ opacity: 0 }}>
-            <TransitionLink href={p.href} label={p.name} className="block cursor-hover">
-                <div onMouseEnter={onEnter} onMouseLeave={onLeave}
+            <TransitionLink href={p.href} label={p.name} className="block">
+                <div
+                    onMouseEnter={onEnter}
+                    onMouseLeave={onLeave}
                     className="relative flex flex-col overflow-hidden"
-                    style={{ borderRadius: 18, background: "linear-gradient(160deg,#141419 0%,#0f0f14 100%)", border: "1px solid rgba(255,255,255,0.07)" }}>
-
+                    style={{
+                        borderRadius: 18,
+                        background: "linear-gradient(160deg,#141419 0%,#0f0f14 100%)",
+                        border: "1px solid rgba(255,255,255,0.07)",
+                        transition: "border-color 0.3s",
+                    }}
+                >
                     {/* Top accent */}
-                    <div className="absolute top-0 left-0 right-0 h-[1px] pointer-events-none"
+                    <div className="absolute top-0 left-0 right-0 h-px pointer-events-none"
                         style={{ background: `linear-gradient(90deg,transparent,rgba(${p.rgb},0.5),transparent)` }} />
 
-                    {/* Image */}
-                    <div className="relative flex items-center justify-center overflow-hidden"
-                        style={{ height: 200, background: `radial-gradient(ellipse 80% 70% at 50% 60%, rgba(${p.rgb},0.07) 0%, transparent 70%)` }}>
+                    {/* Image area */}
+                    <div
+                        className="relative flex items-center justify-center overflow-hidden"
+                        style={{ height: 200, background: `radial-gradient(ellipse 80% 70% at 50% 60%, rgba(${p.rgb},0.07) 0%, transparent 70%)` }}
+                    >
                         <div ref={glowRef} className="absolute pointer-events-none"
                             style={{ width: 160, height: 160, background: `radial-gradient(circle,rgba(${p.rgb},0.2) 0%,transparent 65%)`, opacity: 0 }} />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img ref={imgRef} src={p.img} alt={p.name}
+                        <img
+                            ref={imgRef}
+                            src={p.img}
+                            alt={p.name}
                             className="relative z-10 object-contain"
                             style={{
                                 height: 165, width: "auto",
                                 filter: `drop-shadow(0 16px 32px rgba(0,0,0,0.85)) drop-shadow(0 0 20px rgba(${p.rgb},0.15))`,
-                                willChange: "transform"
-                            }} />
+                                willChange: "transform",
+                            }}
+                        />
                         <div className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none"
                             style={{ background: "linear-gradient(to bottom,transparent,#0f0f14)" }} />
                     </div>
 
                     {/* Info */}
-                    <div className="px-4 py-4 flex flex-col gap-1.5">
-                        <div style={{ height: 1, background: `linear-gradient(90deg,rgba(${p.rgb},0.2),transparent)` }} />
-                        <div className="flex items-center justify-between mt-1.5">
-                            <div>
-                                <p className="font-black uppercase leading-none"
-                                    style={{ fontSize: "clamp(12px,1.5vw,15px)", letterSpacing: "-0.02em", color: "var(--text-primary)" }}>
-                                    {p.name}
-                                </p>
-                                <p className="text-[10px] uppercase tracking-[0.2em] mt-0.5" style={{ color: "rgba(245,245,245,0.65)" }}>
-                                    {p.sub}
-                                </p>
-                            </div>
-                            <span className="text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-full"
-                                style={{ border: `1px solid rgba(${p.rgb},0.4)`, color: `rgba(${p.rgb},0.95)` }}>
+                    <div className="px-4 py-4">
+                        <div style={{ height: 1, background: `linear-gradient(90deg,rgba(${p.rgb},0.22),transparent)`, marginBottom: 10 }} />
+                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                            <p
+                                className="font-black uppercase leading-tight"
+                                style={{ fontSize: "clamp(11px,2.5vw,14px)", letterSpacing: "-0.02em", color: "var(--text-primary)" }}
+                            >
+                                {p.name}
+                            </p>
+                            <span
+                                className="text-[8px] uppercase tracking-[0.15em] px-2 py-0.5 rounded-full flex-shrink-0 leading-tight"
+                                style={{ border: `1px solid rgba(${p.rgb},0.4)`, color: `rgba(${p.rgb},0.95)` }}
+                            >
                                 {p.tag}
                             </span>
                         </div>
+                        <p className="text-[9px] uppercase tracking-[0.15em]" style={{ color: "rgba(245,245,245,0.45)" }}>
+                            {p.sub}
+                        </p>
                     </div>
                 </div>
             </TransitionLink>
         </div>
-    );
-}
-
-// ── Brand story strip ─────────────────────────────────────────────────────────
-function BrandStory() {
-    const sectionRef = useRef<HTMLElement>(null);
-
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.fromTo(sectionRef.current?.querySelectorAll(".bs-item") ?? [],
-                { opacity: 0, y: 28 },
-                {
-                    opacity: 1, y: 0, stagger: 0.12, duration: 0.85, ease: "power2.out",
-                    scrollTrigger: { trigger: sectionRef.current, start: "top 82%", toggleActions: "play none none none" }
-                }
-            );
-        }, sectionRef);
-        return () => ctx.revert();
-    }, []);
-
-    const stats = [
-        { n: "4", l: "Signature Scents" },
-        { n: "35%", l: "Oil Concentration" },
-        { n: "12HR+", l: "Longevity" },
-        { n: "50ML", l: "Bottle Size" },
-    ];
-
-    return (
-        <section ref={sectionRef} className="relative py-20 px-6 lg:px-12"
-            style={{ background: "#060609", borderTop: "1px solid rgba(212,175,55,0.06)", borderBottom: "1px solid rgba(212,175,55,0.06)" }}>
-
-            <div className="max-w-[1100px] mx-auto flex flex-col lg:flex-row items-start lg:items-center gap-14">
-
-                {/* Text */}
-                <div className="bs-item flex-1 opacity-0">
-                    <span className="text-[10px] uppercase tracking-[0.5em] font-bold block mb-4" style={{ color: "var(--accent-gold)" }}>
-                        Our Philosophy
-                    </span>
-                    <h2 className="font-black uppercase mb-5"
-                        style={{ fontSize: "clamp(28px,3.5vw,52px)", letterSpacing: "-0.04em", lineHeight: 0.9, color: "var(--text-primary)" }}>
-                        Wear Your<br />Identity.
-                    </h2>
-                    <p className="text-sm leading-relaxed max-w-sm" style={{ color: "var(--text-secondary)", lineHeight: 1.9 }}>
-                        Senz eight Aroma Private Limited was built for a generation that refuses to be ordinary.
-                        Every bottle is a statement. Every spray, a presence.
-                        Crafted as an Extrait de Parfum — 35% oil concentration — for a scent that outlasts the moment.
-                    </p>
-                </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-2 gap-6 lg:gap-8 flex-shrink-0">
-                    {stats.map((s) => (
-                        <div key={s.n} className="bs-item opacity-0">
-                            <p className="font-black leading-none" style={{ fontSize: "clamp(28px,3vw,48px)", color: "var(--accent-gold)", letterSpacing: "-0.04em" }}>
-                                {s.n}
-                            </p>
-                            <p className="text-[10px] uppercase tracking-[0.25em] mt-1" style={{ color: "var(--text-secondary)" }}>
-                                {s.l}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
     );
 }
 
@@ -258,9 +343,7 @@ export default function HomeSections() {
             <MarqueeStrip />
             <BrandStory />
             <CollectionPreview />
-
             <HomeTestimonialsSection />
         </>
     );
 }
-
