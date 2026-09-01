@@ -211,3 +211,35 @@ body {
 .testimonial-wrap:hover .testimonial-glow {
   opacity: 1;
 }
+
+/* ── Auth spinner ── */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Auth / account pages — restore normal cursor ── */
+.page-auth,
+.page-auth * {
+  cursor: auto !important;
+}
+
+.page-auth button,
+.page-auth a,
+.page-auth label,
+.page-auth input,
+.page-auth [role="button"] {
+  cursor: pointer !important;
+}
+
+.page-auth input[type="text"],
+.page-auth input[type="email"],
+.page-auth input[type="password"],
+.page-auth input[type="tel"] {
+  cursor: text !important;
+}

@@ -132,28 +132,33 @@ export default function SiteFooter() {
                     ref={headRef}
                     className="font-black uppercase mb-8"
                     style={{
-                        fontSize: "clamp(38px,7vw,100px)", letterSpacing: "-0.04em",
-                        lineHeight: 0.9, color: "var(--text-primary)",
+                        fontSize: "clamp(28px,8vw,100px)", letterSpacing: "-0.04em",
+                        lineHeight: 0.92, color: "var(--text-primary)",
                         clipPath: "inset(0 0 100% 0)", opacity: 0,
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word",
+                        padding: "0 4px",
                     }}
                 >
-                    #WEARYOURIDENTITY
+                    #WEARYOUR
+                    <br className="lg:hidden" />
+                    IDENTITY
                 </h2>
 
                 <p className="text-sm max-w-sm mx-auto mb-10" style={{ color: "var(--text-secondary)", lineHeight: 1.8 }}>
                     Every spray is a chapter. Start your story today.
                 </p>
 
-                <div ref={ctaRef} className="flex flex-wrap justify-center gap-3" style={{ opacity: 0 }}>
+                <div ref={ctaRef} className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 px-4" style={{ opacity: 0 }}>
                     <TransitionLink href="/collections" label="Shop All Scents"
-                        className="inline-flex items-center gap-2 px-8 py-3.5 rounded-pill font-black uppercase tracking-widest text-sm cursor-hover transition-all duration-300"
+                        className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-pill font-black uppercase tracking-widest text-sm cursor-hover transition-all duration-300 w-full sm:w-auto"
                         style={{ background: "var(--accent-gold)", color: "#0A0A0A", boxShadow: "0 0 36px rgba(212,175,55,0.22)" }}
                         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.12)"; }}
                         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}>
                         Shop All Scents <ArrowRight size={13} />
                     </TransitionLink>
                     <TransitionLink href="/" label="Home"
-                        className="inline-flex items-center gap-2 px-7 py-3.5 rounded-pill text-sm font-bold uppercase tracking-widest cursor-hover transition-all duration-300"
+                        className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-pill text-sm font-bold uppercase tracking-widest cursor-hover transition-all duration-300 w-full sm:w-auto"
                         style={{ border: "1px solid rgba(212,175,55,0.3)", color: "var(--text-secondary)" }}
                         onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,175,55,0.6)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
                         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,175,55,0.3)"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}>

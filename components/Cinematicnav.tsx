@@ -145,6 +145,19 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
                 {/* Cart icon + Hamburger toggle */}
                 <div className="flex items-center gap-3 relative z-[211]">
 
+                    {/* Account link */}
+                    <Link
+                        href="/account"
+                        className="relative flex items-center justify-center transition-opacity duration-300 hover:opacity-70"
+                        style={{ padding: 4 }}
+                        aria-label="My account"
+                    >
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </Link>
+
                     {/* Cart button */}
                     <button
                         onClick={() => setCartOpen(true)}
