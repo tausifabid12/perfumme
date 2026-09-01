@@ -60,7 +60,6 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
     const trackRef = useRef<HTMLDivElement>(null);
     const progressRef = useRef<HTMLDivElement>(null);
 
-    // Per-card element refs
     const cardRefs = useRef<HTMLDivElement[]>([]);
     const bottleRefs = useRef<HTMLImageElement[]>([]);
     const glowRefs = useRef<HTMLDivElement[]>([]);
@@ -70,17 +69,12 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
     const ctaRefs = useRef<HTMLDivElement[]>([]);
     const tagRefs = useRef<HTMLDivElement[]>([]);
     const noRefs = useRef<HTMLDivElement[]>([]);
-
-    // Keep the card-0 timeout ID so we can cancel on unmount
     const card0TimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(() => { onReady?.(); }, [onReady]);
 
     useEffect(() => {
-        // ── Build one reveal timeline per card ───────────────────────────
-        // Declared outside gsap.context so card0TimerRef can reference them
         const revealTimelines: gsap.core.Timeline[] = [];
-        // Per-card looping zoom tween refs so we can kill them on reset
         const zoomTweens: (gsap.core.Tween | null)[] = CARDS.map(() => null);
 
         const buildReveal = (i: number): gsap.core.Timeline => {
@@ -96,7 +90,6 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
             const tl = gsap.timeline({
                 paused: true,
                 onComplete: () => {
-                    // After reveal finishes, start the slow breathe-zoom loop
                     if (!bottle) return;
                     zoomTweens[i]?.kill();
                     zoomTweens[i] = gsap.to(bottle, {
@@ -109,41 +102,23 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                 },
             });
 
-            if (tag) tl.fromTo(tag,
-                { opacity: 0, y: -16 },
-                { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0);
-
-            if (no) tl.fromTo(no,
-                { opacity: 0, y: -16 },
-                { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.07);
+            if (tag) tl.fromTo(tag, { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0);
+            if (no) tl.fromTo(no, { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 0.07);
 
             if (bottle) tl.fromTo(bottle,
                 { y: 52, scale: 0.82, opacity: 0, filter: "blur(16px)" },
                 { y: 0, scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.9, ease: "expo.out" }, 0.05);
 
-            if (glow) tl.fromTo(glow,
-                { opacity: 0, scale: 0.5 },
-                { opacity: 1, scale: 1, duration: 1.0, ease: "expo.out" }, 0.05);
+            if (glow) tl.fromTo(glow, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 1.0, ease: "expo.out" }, 0.05);
 
             nameLines.forEach((line, li) => {
                 if (!line) return;
-                tl.fromTo(line,
-                    { yPercent: 112, opacity: 0 },
-                    { yPercent: 0, opacity: 1, duration: 0.78, ease: "expo.out" },
-                    0.18 + li * 0.1);
+                tl.fromTo(line, { yPercent: 112, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.78, ease: "expo.out" }, 0.18 + li * 0.1);
             });
 
-            if (rule) tl.fromTo(rule,
-                { scaleX: 0, opacity: 0 },
-                { scaleX: 1, opacity: 1, duration: 0.55, ease: "expo.out" }, 0.42);
-
-            if (sub) tl.fromTo(sub,
-                { opacity: 0, y: 18, filter: "blur(8px)" },
-                { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.65, ease: "power3.out" }, 0.50);
-
-            if (cta) tl.fromTo(cta,
-                { opacity: 0, y: 18 },
-                { opacity: 1, y: 0, duration: 0.60, ease: "expo.out" }, 0.62);
+            if (rule) tl.fromTo(rule, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.55, ease: "expo.out" }, 0.42);
+            if (sub) tl.fromTo(sub, { opacity: 0, y: 18, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.65, ease: "power3.out" }, 0.50);
+            if (cta) tl.fromTo(cta, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.60, ease: "expo.out" }, 0.62);
 
             return tl;
         };
@@ -158,7 +133,6 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
             const tag = tagRefs.current[i];
             const no = noRefs.current[i];
 
-            // Kill zoom loop first
             zoomTweens[i]?.kill();
             zoomTweens[i] = null;
 
@@ -172,13 +146,11 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
             if (cta) gsap.set(cta, { opacity: 0, y: 18 });
         };
 
-        // Reset all cards to hidden state first
         CARDS.forEach((_, i) => resetCard(i));
 
         const ctx = gsap.context(() => {
             const totalWidth = (trackRef.current?.scrollWidth ?? 0) - window.innerWidth;
 
-            // ── Master horizontal pin + scroll ──
             const mainTl = gsap.timeline({
                 scrollTrigger: {
                     trigger: pinRef.current,
@@ -192,7 +164,6 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
             });
             mainTl.to(trackRef.current, { x: -totalWidth, ease: "none" });
 
-            // ── Progress bar ──
             gsap.to(progressRef.current, {
                 scaleX: 1,
                 ease: "none",
@@ -204,41 +175,26 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                 },
             });
 
-            // ── Build all reveal timelines ──
-            CARDS.forEach((_, i) => {
-                revealTimelines[i] = buildReveal(i);
-            });
+            CARDS.forEach((_, i) => { revealTimelines[i] = buildReveal(i); });
 
-            // ── Cards 1–3: fire when card enters viewport via containerAnimation ──
             CARDS.forEach((_, i) => {
-                if (i === 0) return; // card 0 handled separately below
+                if (i === 0) return;
                 const card = cardRefs.current[i];
                 if (!card) return;
-
                 ScrollTrigger.create({
                     trigger: card,
                     containerAnimation: mainTl,
                     start: "left 92%",
                     onEnter: () => revealTimelines[i]?.play(),
-                    onLeaveBack: () => {
-                        revealTimelines[i]?.pause(0);
-                        resetCard(i);
-                    },
+                    onLeaveBack: () => { revealTimelines[i]?.pause(0); resetCard(i); },
                 });
             });
 
-            // ── Card 0: play after ScrollTrigger has initialised the pin ──
-            card0TimerRef.current = setTimeout(() => {
-                revealTimelines[0]?.play();
-            }, 350);
+            card0TimerRef.current = setTimeout(() => { revealTimelines[0]?.play(); }, 350);
         }, sectionRef);
 
         return () => {
-            if (card0TimerRef.current !== null) {
-                clearTimeout(card0TimerRef.current);
-                card0TimerRef.current = null;
-            }
-            // Kill any running zoom loops
+            if (card0TimerRef.current !== null) { clearTimeout(card0TimerRef.current); card0TimerRef.current = null; }
             zoomTweens.forEach((t) => t?.kill());
             ctx.revert();
         };
@@ -247,26 +203,17 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
 
     return (
         <section ref={sectionRef}>
-            <div
-                ref={pinRef}
-                className="relative overflow-hidden"
-                style={{ height: "100dvh" }}
-            >
+            <div ref={pinRef} className="relative overflow-hidden" style={{ height: "100dvh" }}>
+
                 {/* Scrolling track */}
-                <div
-                    ref={trackRef}
-                    className="flex h-full"
-                    style={{ width: `${CARDS.length * 100}vw` }}
-                >
+                <div ref={trackRef} className="flex h-full" style={{ width: `${CARDS.length * 100}vw` }}>
                     {CARDS.map((card, i) => (
                         <div
                             key={card.id}
                             ref={(el) => { if (el) cardRefs.current[i] = el; }}
                             className="relative flex flex-col overflow-hidden"
                             style={{
-                                width: "100vw",
-                                height: "100%",
-                                flexShrink: 0,
+                                width: "100vw", height: "100%", flexShrink: 0,
                                 background: `
                                     radial-gradient(ellipse 70% 60% at 50% 30%, rgba(${card.rgb},0.13) 0%, transparent 65%),
                                     linear-gradient(180deg, #090909 0%, #040404 100%)
@@ -280,25 +227,24 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                                 zIndex: 2,
                             }} />
 
-                            {/* Card number — padded well below the navbar */}
+                            {/* Card number — below navbar (navbar is ~72px with reduced padding) */}
                             <div
                                 ref={(el) => { if (el) noRefs.current[i] = el; }}
                                 style={{
-                                    position: "absolute", top: 108, left: 24, zIndex: 10,
+                                    position: "absolute", top: 88, left: 24, zIndex: 10,
                                     fontSize: 10, fontWeight: 700, letterSpacing: "0.45em",
-                                    textTransform: "uppercase",
-                                    color: `rgba(${card.rgb},0.5)`,
+                                    textTransform: "uppercase", color: `rgba(${card.rgb},0.5)`,
                                     opacity: 0,
                                 }}
                             >
                                 {String(i + 1).padStart(2, "0")} / {String(CARDS.length).padStart(2, "0")}
                             </div>
 
-                            {/* Tag pill — padded well below the navbar */}
+                            {/* Tag pill */}
                             <div
                                 ref={(el) => { if (el) tagRefs.current[i] = el; }}
                                 style={{
-                                    position: "absolute", top: 104, right: 24, zIndex: 10,
+                                    position: "absolute", top: 84, right: 24, zIndex: 10,
                                     fontSize: 9, fontWeight: 700, letterSpacing: "0.22em",
                                     textTransform: "uppercase",
                                     padding: "5px 14px", borderRadius: 999,
@@ -312,22 +258,19 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                                 {card.tag}
                             </div>
 
-                            {/* Bottle — center */}
-                            <div
-                                className="flex-1 flex items-center justify-center relative"
-                                style={{ minHeight: 0 }}
-                            >
+                            {/* Bottle — flex center, takes remaining space */}
+                            <div className="flex-1 flex items-center justify-center relative" style={{ minHeight: 0 }}>
                                 <div
                                     ref={(el) => { if (el) glowRefs.current[i] = el; }}
                                     className="absolute pointer-events-none"
                                     style={{
-                                        width: "72vw", height: "72vw", borderRadius: "50%",
+                                        width: "65vw", height: "65vw", borderRadius: "50%",
                                         background: `radial-gradient(circle, rgba(${card.rgb},0.18) 0%, transparent 68%)`,
                                         opacity: 0,
                                     }}
                                 />
                                 <div className="absolute pointer-events-none" style={{
-                                    width: "55vw", height: "55vw", borderRadius: "50%",
+                                    width: "50vw", height: "50vw", borderRadius: "50%",
                                     border: `1px solid rgba(${card.rgb},0.1)`,
                                 }} />
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -336,29 +279,28 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                                     src={card.img}
                                     alt={card.name.join(" ")}
                                     style={{
-                                        height: "44dvh", width: "auto",
+                                        height: "36dvh", width: "auto",
                                         objectFit: "contain",
                                         willChange: "transform, opacity, filter",
                                         filter: `drop-shadow(0 28px 56px rgba(0,0,0,0.92)) drop-shadow(0 0 32px rgba(${card.rgb},0.25))`,
-                                        opacity: 0,
-                                        position: "relative", zIndex: 1,
+                                        opacity: 0, position: "relative", zIndex: 1,
                                     }}
                                 />
                             </div>
 
-                            {/* Text block — bottom */}
+                            {/* Text block — bottom, tighter spacing to fit 100dvh */}
                             <div
                                 className="flex flex-col px-6"
-                                style={{ paddingBottom: "max(36px, env(safe-area-inset-bottom, 36px))" }}
+                                style={{ paddingBottom: "max(20px, env(safe-area-inset-bottom, 20px))" }}
                             >
-                                {/* Name lines — overflow hidden wrapper = mask for slide-up */}
-                                <div style={{ marginBottom: 12 }}>
+                                {/* Name lines */}
+                                <div style={{ marginBottom: 8 }}>
                                     {card.name.map((line, li) => (
                                         <div key={li} style={{ overflow: "hidden", lineHeight: 1 }}>
                                             <div
                                                 ref={(el) => { if (el) nameLineRefs.current[i][li] = el; }}
                                                 style={{
-                                                    fontSize: "clamp(50px, 16.5vw, 74px)",
+                                                    fontSize: "clamp(42px, 14vw, 64px)",
                                                     fontWeight: 900, lineHeight: 0.9,
                                                     letterSpacing: "-0.045em", textTransform: "uppercase",
                                                     color: li === 1 ? card.accent : "#F5F5F5",
@@ -375,10 +317,9 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                                 <div
                                     ref={(el) => { if (el) ruleRefs.current[i] = el; }}
                                     style={{
-                                        width: 44, height: 1, marginBottom: 12,
+                                        width: 40, height: 1, marginBottom: 8,
                                         background: `linear-gradient(90deg, ${card.accent}, transparent)`,
-                                        transformOrigin: "left center",
-                                        opacity: 0,
+                                        transformOrigin: "left center", opacity: 0,
                                     }}
                                 />
 
@@ -386,9 +327,9 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                                 <p
                                     ref={(el) => { if (el) subRefs.current[i] = el; }}
                                     style={{
-                                        fontSize: 13, lineHeight: 1.72,
+                                        fontSize: 12, lineHeight: 1.6,
                                         color: "rgba(245,245,245,0.45)",
-                                        marginBottom: 22, maxWidth: "75%",
+                                        marginBottom: 16, maxWidth: "75%",
                                         whiteSpace: "pre-line", opacity: 0,
                                     }}
                                 >
@@ -396,16 +337,13 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                                 </p>
 
                                 {/* CTA */}
-                                <div
-                                    ref={(el) => { if (el) ctaRefs.current[i] = el; }}
-                                    style={{ opacity: 0 }}
-                                >
+                                <div ref={(el) => { if (el) ctaRefs.current[i] = el; }} style={{ opacity: 0 }}>
                                     <TransitionLink
                                         href={card.href}
                                         label={card.name.join(" ")}
                                         style={{
                                             display: "inline-flex", alignItems: "center", gap: 9,
-                                            height: 46, padding: "0 24px", borderRadius: 999,
+                                            height: 42, padding: "0 22px", borderRadius: 999,
                                             background: card.accent, color: "#0A0A0A",
                                             fontSize: 10, fontWeight: 800,
                                             letterSpacing: "0.24em", textTransform: "uppercase",
@@ -415,9 +353,7 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                                     >
                                         Discover
                                         <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-                                            <path d="M2 7h10M8 3l4 4-4 4"
-                                                stroke="currentColor" strokeWidth="1.5"
-                                                strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                     </TransitionLink>
                                 </div>
@@ -444,48 +380,32 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
                     />
                 </div>
 
-                {/* Scroll indicator — right side, vertical layout */}
+                {/* Scroll indicator — right side */}
                 <div
                     className="absolute z-30 pointer-events-none"
                     style={{
-                        right: 18,
-                        bottom: 28,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: 8,
+                        right: 18, bottom: 28,
+                        display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
                         animation: "scroll-hint-bob 2.2s ease-in-out infinite",
                     }}
                 >
-                    {/* Label rotated 90° */}
                     <span style={{
-                        fontSize: 8,
-                        letterSpacing: "0.38em",
-                        textTransform: "uppercase",
-                        color: "rgba(255,255,255,0.5)",
-                        writingMode: "vertical-rl",
-                        lineHeight: 1,
+                        fontSize: 8, letterSpacing: "0.38em",
+                        textTransform: "uppercase", color: "rgba(255,255,255,0.5)",
+                        writingMode: "vertical-rl", lineHeight: 1,
                     }}>
                         Scroll
                     </span>
-                    {/* Short tick line */}
-                    <div style={{
-                        width: 1,
-                        height: 22,
-                        background: "linear-gradient(to bottom, rgba(255,255,255,0.45), transparent)",
-                    }} />
-                    {/* Down chevron */}
+                    <div style={{ width: 1, height: 22, background: "linear-gradient(to bottom, rgba(255,255,255,0.45), transparent)" }} />
                     <svg width="10" height="7" viewBox="0 0 10 7" fill="none">
-                        <path d="M1 1l4 4 4-4"
-                            stroke="rgba(255,255,255,0.55)" strokeWidth="1.4"
-                            strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M1 1l4 4 4-4" stroke="rgba(255,255,255,0.55)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </div>
 
                 <style>{`
                     @keyframes scroll-hint-bob {
-                        0%, 100% { opacity: 0.7; transform: translateY(0px);  }
-                        50%       { opacity: 1;   transform: translateY(4px);  }
+                        0%, 100% { opacity: 0.7; transform: translateY(0px); }
+                        50%       { opacity: 1;   transform: translateY(4px); }
                     }
                 `}</style>
             </div>

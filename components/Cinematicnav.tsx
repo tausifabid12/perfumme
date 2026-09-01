@@ -121,7 +121,7 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
             />
 
             {/* â”€â”€ Header bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-            <header ref={headerRef} className="fixed top-0 left-0 w-full z-[210] px-6 py-7 md:px-12 flex justify-between items-center mix-blend-difference" style={{ opacity: 0 }}>
+            <header ref={headerRef} className="fixed top-0 left-0 w-full z-[210] px-6 py-4 md:py-7 md:px-12 flex justify-between items-center mix-blend-difference" style={{ opacity: 0 }}>
 
                 {/* Logo */}
                 <Link href="/">
