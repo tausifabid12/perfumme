@@ -4,7 +4,9 @@ const imperialSmoke: ProductData = {
   brand: { name: "SENZ8", tagline: "Parfum Maison" },
   product: {
     name: "IMPERIAL SMOKE",
+
     fullName: "IMPERIAL SMOKE EXTRAIT DE PARFUM",
+    tagline: "a signature for men",
     description: "Built To Dominate The Room. A dark, smoky, intense fragrance crafted for Gen Z men who want power, confidence, and attention in every spray.",
     price: 1799, currency: "৳", priceUnit: "50ML",
     rating: 4.9, reviewCount: 1247,
@@ -57,7 +59,7 @@ const imperialSmoke: ProductData = {
       items: [
         ["Concentration", "35%"], ["Type", "Extrait De Parfum"], ["Longevity", "12+ Hours"],
         ["Projection", "Strong"], ["Gender", "Male"], ["Bottle Size", "50ML"],
-        ["Color", "Black"], ["Material", "Glass"], ["Made For", "Daily Wear"],
+        ["Material", "Glass"], ["Made For", "Daily Wear"],
       ],
     },
   },
@@ -93,12 +95,32 @@ const imperialSmoke: ProductData = {
   ],
   testimonialsSection: { title: "What's Everyone Talking About" },
   faqs: [
-    { q: "How should I store my LUXE fragrance?", a: "Keep your bottle in a cool, dry place away from direct sunlight. Our fragrances are crafted to mature beautifully, but heat and light can alter the composition. Always seal the cap after use." },
-    { q: "Is LUXE cruelty-free and vegan?", a: "Absolutely. We never test on animals, and our formulations contain no animal-derived ingredients. Our oud is sustainably sourced and lab-cultivated to protect wild agarwood populations." },
-    { q: "Why does LUXE last so long without alcohol?", a: "Science! We use a proprietary micro-encapsulation technique that binds fragrance oils to skin gradually. The result is a pure, alcohol-free scent that outlasts traditional eau de parfums." },
-    { q: "Is LUXE suitable for sensitive skin?", a: "Yes — our alcohol-free, hypoallergenic formula is dermatologically tested. Of the 26 common fragrance allergens, we use none. The only note you will feel is confidence." },
+    {
+      q: "What does Imperial Smoke smell like?",
+      a: "Imperial Smoke opens with rich Oud Wood and a hint of Raspberry sweetness, evolves into smoky Rose and Incense in the heart, and dries down to a warm, resinous Amberwood and Benzoin base. Dark, powerful, and unmistakably masculine.",
+    },
+    {
+      q: "How long does Imperial Smoke last on skin?",
+      a: "At 35% oil concentration (Extrait de Parfum), Imperial Smoke delivers 12+ hours of longevity with strong projection for the first 4–5 hours. Performance improves on moisturised skin — apply right after a shower for best results.",
+    },
+    {
+      q: "Is Imperial Smoke suitable for daily wear?",
+      a: "It's bold enough to be your signature scent for important moments and confident enough for daily office wear. The dark smoky character makes it exceptional for evenings, formal settings, and cooler months.",
+    },
+    // {
+    //   q: "How much does shipping cost and how long does delivery take?",
+    //   a: "Shipping is FREE across India on all orders. Standard delivery takes 2–3 business days. Orders are dispatched within 24 hours on business days. You'll receive a tracking link by email and SMS once your order ships.",
+    // },
+    // {
+    //   q: "What is your return and refund policy?",
+    //   a: "We accept returns within 7 days of delivery if the product is unused, sealed, and in original packaging. If you received a damaged or incorrect item, we'll replace it immediately at no cost. Contact us at contact@senz8.in with your order number.",
+    // },
+    {
+      q: "How should I apply and store Imperial Smoke?",
+      a: "Spray 2–3 times on pulse points — wrists, neck, and inner elbows. Don't rub after spraying. Store in a cool, dry place away from direct sunlight. Keep the bottle upright to preserve the atomiser.",
+    },
   ],
-  faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
+  faqSection: { tag: "Fragrance Questions", title: "Everything About Imperial Smoke." },
   footer: {
     hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IT BOY", "REBEL GIRL", "BLIND DATE", "IMPERIAL SMOKE"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },
@@ -113,6 +135,7 @@ const itBoy: ProductData = {
   product: {
     name: "IT BOY",
     fullName: "IT BOY EXTRAIT DE PARFUM",
+    tagline: "a signature for boys",
     description: "Not Just A Perfume. A Personality. Built for the guy who walks in like he owns the room.",
     price: 1599, currency: "৳", priceUnit: "50ML",
     rating: 4.8, reviewCount: 985,
@@ -165,7 +188,7 @@ const itBoy: ProductData = {
       items: [
         ["Concentration", "35%"], ["Type", "Extrait De Parfum"], ["Longevity", "10+ Hours"],
         ["Projection", "Strong"], ["Gender", "Male"], ["Bottle Size", "50ML"],
-        ["Color", "Gold"], ["Material", "Glass"], ["Made For", "Daily Wear"],
+        ["Material", "Glass"], ["Made For", "Daily Wear"],
       ],
     },
   },
@@ -201,12 +224,32 @@ const itBoy: ProductData = {
   ],
   testimonialsSection: { title: "What's Everyone Talking About" },
   faqs: [
-    { q: "How should I store my LUXE fragrance?", a: "Keep your bottle in a cool, dry place away from direct sunlight. Our fragrances are crafted to mature beautifully, but heat and light can alter the composition. Always seal the cap after use." },
-    { q: "Is LUXE cruelty-free and vegan?", a: "Absolutely. We never test on animals, and our formulations contain no animal-derived ingredients. Our oud is sustainably sourced and lab-cultivated to protect wild agarwood populations." },
-    { q: "Why does LUXE last so long without alcohol?", a: "Science! We use a proprietary micro-encapsulation technique that binds fragrance oils to skin gradually. The result is a pure, alcohol-free scent that outlasts traditional eau de parfums." },
-    { q: "Is LUXE suitable for sensitive skin?", a: "Yes — our alcohol-free, hypoallergenic formula is dermatologically tested. Of the 26 common fragrance allergens, we use none. The only note you will feel is confidence." },
+    {
+      q: "What does IT BOY smell like?",
+      a: "IT BOY opens with bright Bergamot and a spicy Pink Pepper kick, settles into a woody Cedarwood and aromatic Clary Sage heart, then finishes with a warm, creamy Tonka Bean and Cocoa base. Fresh, bold, and deeply addictive.",
+    },
+    {
+      q: "Is IT BOY suitable for everyday wear?",
+      a: "Absolutely — IT BOY was designed for daily wear. It's fresh enough for college, office, and casual outings but bold enough to turn heads on date nights. One of the most versatile scents in the SENZ8 collection.",
+    },
+    {
+      q: "How long does IT BOY last?",
+      a: "With 35% oil concentration, IT BOY lasts 10+ hours on skin. The dry-down — Tonka Bean and Cocoa — is especially long-lasting and stays close to the skin for a signature personal warmth throughout the day.",
+    },
+    // {
+    //   q: "How much does shipping cost and how long does delivery take?",
+    //   a: "Shipping is FREE across India on all orders. Standard delivery takes 2–3 business days. Orders are dispatched within 24 hours on business days. You'll receive a tracking link by email and SMS once your order ships.",
+    // },
+    // {
+    //   q: "What is your return and refund policy?",
+    //   a: "We accept returns within 7 days of delivery if the product is unused, sealed, and in original packaging. If you received a damaged or incorrect item, we'll replace it immediately at no cost. Contact us at contact@senz8.in with your order number.",
+    // },
+    {
+      q: "Can IT BOY be gifted? Do you offer gift packaging?",
+      a: "IT BOY makes an excellent gift for birthdays, anniversaries, or celebrations. The bottle arrives in a premium box ready to gift. For special gift messages or custom notes, mention it in your order comments and we'll add a handwritten card.",
+    },
   ],
-  faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
+  faqSection: { tag: "Fragrance Questions", title: "Everything About IT BOY." },
   footer: {
     hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IMPERIAL SMOKE", "REBEL GIRL", "BLIND DATE", "IT BOY"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },
@@ -221,6 +264,7 @@ const rebelGirl: ProductData = {
   product: {
     name: "REBEL GIRL",
     fullName: "REBEL GIRL EXTRAIT DE PARFUM",
+    tagline: "a signature for girls",
     description: "Pretty. Powerful. Unapologetic. She's not here to fit in. She's here to be remembered.",
     price: 1599, currency: "৳", priceUnit: "50ML",
     rating: 4.9, reviewCount: 1320,
@@ -273,7 +317,7 @@ const rebelGirl: ProductData = {
       items: [
         ["Concentration", "35%"], ["Type", "Extrait De Parfum"], ["Longevity", "10+ Hours"],
         ["Projection", "Strong"], ["Gender", "Female"], ["Bottle Size", "50ML"],
-        ["Color", "Red"], ["Material", "Glass"], ["Made For", "Daily Wear"],
+        ["Material", "Glass"], ["Made For", "Daily Wear"],
       ],
     },
   },
@@ -309,12 +353,32 @@ const rebelGirl: ProductData = {
   ],
   testimonialsSection: { title: "What's Everyone Talking About" },
   faqs: [
-    { q: "How should I store my LUXE fragrance?", a: "Keep your bottle in a cool, dry place away from direct sunlight. Our fragrances are crafted to mature beautifully, but heat and light can alter the composition. Always seal the cap after use." },
-    { q: "Is LUXE cruelty-free and vegan?", a: "Absolutely. We never test on animals, and our formulations contain no animal-derived ingredients. Our oud is sustainably sourced and lab-cultivated to protect wild agarwood populations." },
-    { q: "Why does LUXE last so long without alcohol?", a: "Science! We use a proprietary micro-encapsulation technique that binds fragrance oils to skin gradually. The result is a pure, alcohol-free scent that outlasts traditional eau de parfums." },
-    { q: "Is LUXE suitable for sensitive skin?", a: "Yes — our alcohol-free, hypoallergenic formula is dermatologically tested. Of the 26 common fragrance allergens, we use none. The only note you will feel is confidence." },
+    {
+      q: "What does REBEL GIRL smell like?",
+      a: "REBEL GIRL opens with luxurious Agarwood and Oud, blooms into sweet Vanilla and Sugar in the heart, then finishes with creamy Sandalwood and fresh Herbal Notes. Soft, bold, and completely unforgettable — a feminine power statement.",
+    },
+    {
+      q: "How long does REBEL GIRL last?",
+      a: "With 35% oil concentration (Extrait de Parfum), REBEL GIRL lasts 10+ hours. The Vanilla and Oud base is particularly tenacious — you'll notice the scent on your clothing even the next day. Apply to pulse points and moisturised skin for best performance.",
+    },
+    {
+      q: "Is REBEL GIRL for women only?",
+      a: "REBEL GIRL is crafted as a feminine signature, but fragrance has no rules. The Oud and Sandalwood base makes it a complex unisex-leaning scent that confident individuals of any gender can wear beautifully.",
+    },
+    // {
+    //   q: "How much does shipping cost and how long does delivery take?",
+    //   a: "Shipping is FREE across India on all orders. Standard delivery takes 2–3 business days. Orders are dispatched within 24 hours on business days. You'll receive a tracking link by email and SMS once your order ships.",
+    // },
+    // {
+    //   q: "What is your return and refund policy?",
+    //   a: "We accept returns within 7 days of delivery if the product is unused, sealed, and in original packaging. If you received a damaged or incorrect item, we'll replace it immediately at no cost. Contact us at contact@senz8.in with your order number.",
+    // },
+    {
+      q: "Can I layer REBEL GIRL with other fragrances?",
+      a: "Yes — REBEL GIRL layers beautifully. For a lighter, daytime feel, apply a floral body mist first then spray REBEL GIRL on top. For an evening intensity boost, layer with a musky or woody base. The Oud and Vanilla blend well with most oriental and floral scents.",
+    },
   ],
-  faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
+  faqSection: { tag: "Fragrance Questions", title: "Everything About REBEL GIRL." },
   footer: {
     hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IMPERIAL SMOKE", "IT BOY", "BLIND DATE", "REBEL GIRL"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },
@@ -329,6 +393,7 @@ const blindDate: ProductData = {
   product: {
     name: "BLIND DATE",
     fullName: "BLIND DATE EXTRAIT DE PARFUM",
+    tagline: "a signature for them",
     description: "One Spray. Endless Chemistry. A romantic, addictive fragrance for stolen glances and unforgettable chemistry.",
     price: 1799, currency: "৳", priceUnit: "50ML",
     rating: 4.7, reviewCount: 876,
@@ -381,7 +446,7 @@ const blindDate: ProductData = {
       items: [
         ["Concentration", "35%"], ["Type", "Extrait De Parfum"], ["Longevity", "10+ Hours"],
         ["Projection", "Moderate-Strong"], ["Gender", "Unisex"], ["Bottle Size", "50ML"],
-        ["Color", "Black"], ["Material", "Glass"], ["Made For", "Daily Wear"],
+        ["Material", "Glass"], ["Made For", "Daily Wear"],
       ],
     },
   },
@@ -417,12 +482,32 @@ const blindDate: ProductData = {
   ],
   testimonialsSection: { title: "What's Everyone Talking About" },
   faqs: [
-    { q: "How should I store my LUXE fragrance?", a: "Keep your bottle in a cool, dry place away from direct sunlight. Our fragrances are crafted to mature beautifully, but heat and light can alter the composition. Always seal the cap after use." },
-    { q: "Is LUXE cruelty-free and vegan?", a: "Absolutely. We never test on animals, and our formulations contain no animal-derived ingredients. Our oud is sustainably sourced and lab-cultivated to protect wild agarwood populations." },
-    { q: "Why does LUXE last so long without alcohol?", a: "Science! We use a proprietary micro-encapsulation technique that binds fragrance oils to skin gradually. The result is a pure, alcohol-free scent that outlasts traditional eau de parfums." },
-    { q: "Is LUXE suitable for sensitive skin?", a: "Yes — our alcohol-free, hypoallergenic formula is dermatologically tested. Of the 26 common fragrance allergens, we use none. The only note you will feel is confidence." },
+    {
+      q: "What does BLIND DATE smell like?",
+      a: "BLIND DATE opens with juicy Black Currant and fresh Pear, blossoms into elegant Jasmine and Orange Blossom in the heart, and finishes with an irresistibly warm Praline and Vanilla base. Romantic, fresh, and deeply addictive — perfect for close encounters.",
+    },
+    {
+      q: "Is BLIND DATE unisex?",
+      a: "Yes — BLIND DATE is designed to be worn by anyone. The fruity top notes and floral heart have wide appeal, while the Praline and Vanilla base adds a warm sweetness that works beautifully on all skin types and genders.",
+    },
+    {
+      q: "How long does BLIND DATE last?",
+      a: "With 35% oil concentration (Extrait de Parfum), BLIND DATE lasts 10+ hours. The Praline and Vanilla dry-down is particularly long-lasting and leaves a subtle, irresistible trail that's perfect for intimate settings.",
+    },
+    // {
+    //   q: "How much does shipping cost and how long does delivery take?",
+    //   a: "Shipping is FREE across India on all orders. Standard delivery takes 2–3 business days. Orders are dispatched within 24 hours on business days. You'll receive a tracking link by email and SMS once your order ships.",
+    // },
+    // {
+    //   q: "What is your return and refund policy?",
+    //   a: "We accept returns within 7 days of delivery if the product is unused, sealed, and in original packaging. If you received a damaged or incorrect item, we'll replace it immediately at no cost. Contact us at contact@senz8.in with your order number.",
+    // },
+    {
+      q: "Is BLIND DATE suitable for warm weather and summer?",
+      a: "Absolutely. The fresh Black Currant and Pear opening makes BLIND DATE ideal for spring and summer. It's one of the most season-versatile fragrances in the SENZ8 collection — light and fresh in warm weather, warm and cosy in cooler months.",
+    },
   ],
-  faqSection: { tag: "Frequently Asked Questions", title: "Got questions? We've got answers." },
+  faqSection: { tag: "Fragrance Questions", title: "Everything About BLIND DATE." },
   footer: {
     hashtag: "#WEARYOURIDENTITY", cta: "Shop LUXE Now",
     links: { scents: ["IMPERIAL SMOKE", "IT BOY", "REBEL GIRL", "BLIND DATE"], community: ["Scent Society", "Brand Ambassadors", "Affiliate Program"], company: ["Our Story", "Contact", "Press"] },

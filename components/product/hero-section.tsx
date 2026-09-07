@@ -3,24 +3,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Star, ChevronDown, Plus, ShoppingBag, Check, Loader2 } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
+import type { ProductData } from "@/types/product";
 
 gsap.registerPlugin(ScrollTrigger);
-
-export type ProductData = {
-  brand: { name: string; tagline: string };
-  product: {
-    name: string;
-    fullName: string;
-    price: number;
-    currency: string;
-    priceUnit: string;
-    rating: number;
-    reviewCount: number;
-    image: string;
-    heroBg: string;
-  };
-  hero: { title: string[]; description: string; scrollIndicator: string };
-};
 
 const GOLD = "#D4AF37";
 const GOLD_SOFT = "rgba(212,175,55,0.45)";
@@ -51,6 +36,8 @@ const buyNowBtnStyle: React.CSSProperties = {
   background: GOLD, border: "none", color: "#0A0A0A", cursor: "pointer",
 };
 
+// CornerBracket kept for future use
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function CornerBracket({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
   const base: React.CSSProperties = { position: "absolute", width: 28, height: 28, pointerEvents: "none" };
   const map: Record<string, React.CSSProperties> = {
@@ -160,14 +147,6 @@ export default function HeroSection({
     return () => ctx.revert();
   }, []);
 
-  const railItems: [string, string][] = [
-    ["01", "EXTRAIT DE PARFUM"],
-    ["02", "35% OIL CONCENTRATION"],
-    ["03", "12HR+ LONGEVITY"],
-    ["04", "STRONG PROJECTION"],
-    ["05", "50ML / 1.7 FL.OZ"],
-  ];
-
   return (
     <section ref={sectionRef} className="relative w-full h-[100dvh] overflow-hidden bg-black text-white">
       <div ref={bgRef} className="absolute inset-0 will-change-transform">
@@ -186,14 +165,14 @@ export default function HeroSection({
         </span>
       </div>
 
-      <div className="hidden lg:flex absolute top-6 left-1/2 -translate-x-1/2 items-center gap-3"
+      {/* <div className="hidden lg:flex absolute top-6 left-1/2 -translate-x-1/2 items-center gap-3"
         style={{ fontSize: 10, letterSpacing: "0.3em", color: GOLD_SOFT, textTransform: "uppercase" }}>
         <span>EDITION 01</span>
         <span style={{ width: 40, height: 1, background: GOLD_LINE }} />
         <span style={{ color: GOLD }}>FRAME 001 / 004</span>
         <span style={{ width: 40, height: 1, background: GOLD_LINE }} />
         <span>FW · 2026</span>
-      </div>
+      </div> */}
 
       <div className="relative z-10 h-full w-full grid grid-cols-1 lg:grid-cols-[1.05fr_1.1fr_0.85fr] gap-6 px-6 lg:px-16 pt-24 pb-10">
 
@@ -201,7 +180,7 @@ export default function HeroSection({
           <div className="flex items-center gap-3 mb-6">
             <span style={{ width: 32, height: 1, background: GOLD }} />
             <span style={{ fontSize: 10, letterSpacing: "0.35em", color: GOLD, textTransform: "uppercase" }}>
-              A Signature For Men
+              {data?.product?.tagline}
             </span>
           </div>
 
@@ -227,13 +206,17 @@ export default function HeroSection({
             </div>
             <div style={{ width: 1, height: 32, background: GOLD_LINE }} />
             <div>
-              <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>FAMILY</div>
-              <div className="text-sm text-white mt-1">Smoky · Oriental</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>TOP NOTE</div>
+              <div className="text-sm text-white mt-1">
+                {data.fragranceNotes.notes[0]?.title.replace(/\n/g, " · ")}
+              </div>
             </div>
             <div style={{ width: 1, height: 32, background: GOLD_LINE }} />
             <div>
-              <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>SILLAGE</div>
-              <div className="text-sm text-white mt-1">Heavy</div>
+              <div style={{ fontSize: 10, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>BASE NOTE</div>
+              <div className="text-sm text-white mt-1">
+                {data.fragranceNotes.notes[2]?.title.replace(/\n/g, " · ")}
+              </div>
             </div>
           </div>
         </div>
@@ -247,9 +230,24 @@ export default function HeroSection({
                 width: 380, height: 380, borderRadius: "50%",
                 background: "radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)"
               }} />
-            <NoteCallout label="Top Note · 01" title={"Oud Wood\nRaspberry"} dot={GOLD} style={{ top: "14%", left: "-2%" }} />
-            <NoteCallout label="Heart Note · 02" title={"Rose\nIncense"} dot="#c9c9c9" style={{ top: "44%", right: "-4%" }} />
-            <NoteCallout label="Base Note · 03" title={"Amberwood\nBenzoin"} dot="#8a5a2b" style={{ bottom: "12%", left: "4%" }} />
+            {/* Note callouts driven by data.fragranceNotes.notes */}
+            {data.fragranceNotes.notes.slice(0, 3).map((note, ni) => {
+              const positions: React.CSSProperties[] = [
+                { top: "14%", left: "-2%" },
+                { top: "44%", right: "-4%" },
+                { bottom: "12%", left: "4%" },
+              ];
+              const dots = [GOLD, "#c9c9c9", "#8a5a2b"];
+              return (
+                <NoteCallout
+                  key={ni}
+                  label={`${note.type} · 0${ni + 1}`}
+                  title={note.title}
+                  dot={dots[ni]}
+                  style={positions[ni]}
+                />
+              );
+            })}
           </div>
 
           <div ref={bottleWrapRef} className="relative will-change-transform">
@@ -265,11 +263,15 @@ export default function HeroSection({
               <span style={{ width: 6, height: 6, background: GOLD }} />
               <span style={{ fontSize: 9, letterSpacing: "0.3em", color: GOLD, textTransform: "uppercase" }}>Specifications</span>
             </div>
-            {railItems.map(([n, label]) => (
-              <div key={n} className="rail-item flex items-center justify-between py-2"
+            {data.stats.map((stat, idx) => (
+              <div key={stat.label} className="rail-item flex items-center justify-between py-2"
                 style={{ borderBottom: `1px solid ${GOLD_LINE}` }}>
-                <span style={{ fontSize: 10, color: GOLD_SOFT, letterSpacing: "0.2em" }}>{n}</span>
-                <span style={{ fontSize: 11, color: "#fff", letterSpacing: "0.15em" }}>{label}</span>
+                <span style={{ fontSize: 10, color: GOLD_SOFT, letterSpacing: "0.2em" }}>
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
+                <span style={{ fontSize: 11, color: "#fff", letterSpacing: "0.15em" }}>
+                  {stat.number} {stat.label}
+                </span>
               </div>
             ))}
           </div>

@@ -395,7 +395,7 @@ export default function HomeTestimonialsSection() {
                                 </span>
                             </div>
                             <div ref={headRef}>
-                                {["What They're", "Saying About Us."].map((line, li) => (
+                                {["What Zoomers'", "Say About Us."].map((line, li) => (
                                     <div key={li} style={{ overflow: "hidden" }}>
                                         <span
                                             className="tw block font-black uppercase"

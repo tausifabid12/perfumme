@@ -6,6 +6,7 @@ export interface Brand {
 export interface ProductInfo {
   name: string;
   fullName: string;
+  tagline: string;
   description: string;
   price: number;
   currency: string;

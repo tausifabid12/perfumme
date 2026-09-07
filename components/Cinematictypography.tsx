@@ -459,11 +459,11 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                 }
             `}</style>
 
-            <div className="ct-overlay">
+            <div className="ct-overlay mt-20">
 
                 {/* â•â•â• SECTION 1 â€” IMPERIAL SMOKE â•â•â• */}
                 <div ref={smokeRef} className="ct-smoke">
-                    <p className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>NÂ° 001</p>
+                    <p className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-001</p>
 
                     <h2 className="ct-h2">
                         <div><SplitChars text="IMPERIAL" /></div>
@@ -487,7 +487,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
                 {/* â•â•â• SECTION 2 â€” REBEL GIRL â•â•â• */}
                 <div ref={rebelRef} className="ct-rebel">
-                    <p data-rebel-label className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>NÂ° 002</p>
+                    <p data-rebel-label className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-002</p>
 
                     <h2 className="ct-h2">
                         <div data-rebel-word="0" style={{ display: "block" }}>REBEL</div>
@@ -532,7 +532,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                         <p data-it-sub className="ct-sub"
                             style={{ color: "rgba(255,255,255,0.52)", marginTop: "0.6rem" }}>
                             Fresh. Bold. Addictive. <br />
-                            The signature scent for Gen Z men
+                            The signature scent for GenZ Boys
                         </p>
 
                         <TransitionLink href="/collections" label="Discover Collection" data-it-sub className="ct-btn" style={{ marginTop: "1rem" }}>

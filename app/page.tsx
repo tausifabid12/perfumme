@@ -131,6 +131,7 @@ export default function Page() {
             {/* ── MOBILE experience ── fixed card deck, then normal scroll ── */}
             {isMobile ? (
                 <>
+
                     {/* Fixed overlay — sits above everything until user swipes through all 4 cards */}
                     <MobileHeroExperience onReady={handleVideoReady} />
                     {/* Normal page content — always in DOM, visible once hero dismisses */}
@@ -142,7 +143,7 @@ export default function Page() {
                 <>
                     <ScrollVelocity />
                     {/* WebGL particle field — fixed behind everything */}
-                    <GodModeScene />
+                    {/* <GodModeScene /> */}
                     {/* 1300vh cinematic scroll zone */}
                     <GodModeExperience onReady={handleVideoReady} />
                     {/* Fixed overlay — uses fixed 1200vh math */}

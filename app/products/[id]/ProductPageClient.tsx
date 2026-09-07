@@ -16,9 +16,8 @@ import DripTransition from "@/components/product/drip-transition";
 import MarqueeSection from "@/components/product/marquee-section";
 import HorizontalStorySection from "@/components/product/horizontal-story-section";
 import YouMayAlsoLikeSection from "@/components/product/you-may-also-like-section";
-import TestimonialsSection from "@/components/product/testimonials-section";
 import FAQSection from "@/components/product/faq-section";
-import Footer from "@/components/product/footer";
+import SiteFooter from "@/components/SiteFooter";
 import CinematicNav from "@/components/Cinematicnav";
 
 export default function ProductPageClient({
@@ -57,7 +56,7 @@ export default function ProductPageClient({
       {/* <TestimonialsSection data={data} /> */}
       <YouMayAlsoLikeSection data={data} />
       <FAQSection data={data} />
-      <Footer data={data} />
+      <SiteFooter />
     </div>
   );
 }
