@@ -64,7 +64,7 @@ const imperialSmoke: ProductData = {
     },
   },
   storySlides: [
-    { label: "PRESENCE", headline: "Walk In.\nOwn It.", sub: "Designed for men who don't wait for attention. They command it." },
+    { label: "PRESENCE", headline: "SENSE IT.\nOwn It.", sub: "Designed for men who don't wait for attention. They command it." },
     { label: "PERFORMANCE", headline: "12HR+\nLongevity", sub: "From classes to night drives. One spray keeps going." },
     { label: "INTENSITY", headline: "Dark.\nSmoky.", sub: "Oud, incense and amberwood create a powerful masculine trail." },
     { label: "ATTITUDE", headline: "Confidence\nBottled", sub: "Not a soft fragrance. This is attitude in liquid form." },
@@ -155,11 +155,11 @@ const itBoy: ProductData = {
     { number: "35%", label: "OIL CONCENTRATION" },
     { number: "50ML", label: "BOTTLE SIZE" },
     { number: "EXTRAIT", label: "DE PARFUM" },
-    { number: "MEN", label: "SIGNATURE SCENT" },
+    { number: "BOY", label: "SIGNATURE SCENT" },
   ],
   productTransform: {
     frames: [
-      { label: "IT BOY", headline: "Walk In.\nOwn It.", position: "top" },
+      { label: "IT BOY", headline: "Made to\nWin.", position: "top" },
       { label: "Powered by", stat: "35%", statLabel: "Oil Concentration", position: "bottom-right" },
       { label: "Crafted with", stat: "10HR+", statLabel: "Performance", sub: "Fresh enough for everyday. Bold enough to be remembered.", position: "right" },
       { label: "Available now", headline: "Become The\nTrend", cta: "Buy Now", position: "center" },
@@ -284,7 +284,7 @@ const rebelGirl: ProductData = {
     { number: "35%", label: "OIL CONCENTRATION" },
     { number: "50ML", label: "BOTTLE SIZE" },
     { number: "EXTRAIT", label: "DE PARFUM" },
-    { number: "WOMEN", label: "SIGNATURE SCENT" },
+    { number: "GIRLS", label: "SIGNATURE SCENT" },
   ],
   productTransform: {
     frames: [
@@ -417,7 +417,7 @@ const blindDate: ProductData = {
   ],
   productTransform: {
     frames: [
-      { label: "BLIND DATE", headline: "One Spray.\nChemistry.", position: "top" },
+      { label: "BLIND DATE", headline: "Build Your.\nChemistry.", position: "top" },
       { label: "Powered by", stat: "35%", statLabel: "Oil Concentration", position: "bottom-right" },
       { label: "Crafted with", stat: "10HR+", statLabel: "Performance", sub: "Fresh at first. Warm after. Just like falling for someone unexpectedly.", position: "right" },
       { label: "Available now", headline: "Feel The\nChemistry", cta: "Buy Now", position: "center" },

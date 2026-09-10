@@ -90,7 +90,7 @@ export default function HorizontalStorySection({
           {data.storySlides.map((slide, i) => (
             <div
               key={i}
-              className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 sm:px-10 lg:px-24 py-20 sm:py-24 gap-6 sm:gap-8 lg:gap-20"
+              className="relative flex flex-col md:flex-row items-start md:items-center justify-between px-6 sm:px-10 md:px-14 lg:px-24 py-20 sm:py-24 md:py-0 gap-6 sm:gap-8 md:gap-10 lg:gap-20"
               style={{
                 width: "100vw",
                 height: "100%",
@@ -99,14 +99,15 @@ export default function HorizontalStorySection({
               }}
             >
               <span
-                className="absolute top-6 left-6 sm:top-8 sm:left-8 lg:top-10 lg:left-12 text-[8px] sm:text-[9px] uppercase tracking-[0.4em] lg:tracking-[0.5em]"
+                className="absolute top-6 left-6 sm:top-8 sm:left-8 md:top-10 md:left-10 lg:left-12 text-[8px] sm:text-[9px] uppercase tracking-[0.4em] lg:tracking-[0.5em]"
                 style={{ color: "var(--text-secondary)" }}
               >
                 {String(i + 1).padStart(2, "0")} /{" "}
                 {String(data.storySlides.length).padStart(2, "0")}
               </span>
 
-              <div className="lg:flex-1 lg:max-w-xl mt-10 lg:mt-0">
+              {/* Headline column */}
+              <div className="md:flex-1 md:max-w-lg lg:max-w-xl mt-10 md:mt-0">
                 <span
                   className="inline-block px-3 py-1.5 rounded-tag text-[8px] sm:text-[9px] font-black uppercase tracking-[0.25em] lg:tracking-[0.3em] mb-4 sm:mb-6 lg:mb-8"
                   style={{
@@ -120,7 +121,9 @@ export default function HorizontalStorySection({
                 <h2
                   className="font-black uppercase"
                   style={{
-                    fontSize: "clamp(36px, 11vw, 130px)",
+                    /* Mobile: clamp to reasonable size; md: tighten the vw factor so it
+                       doesn't blow up on ~768-900px viewports; lg: full cinematic scale */
+                    fontSize: "clamp(32px, 7vw, 130px)",
                     letterSpacing: "-0.03em",
                     lineHeight: 0.92,
                     color: "var(--text-primary)",
@@ -131,8 +134,9 @@ export default function HorizontalStorySection({
                 </h2>
               </div>
 
+              {/* Divider — visible from md up */}
               <div
-                className="hidden lg:block"
+                className="hidden md:block"
                 style={{
                   width: 1,
                   height: "40%",
@@ -141,9 +145,10 @@ export default function HorizontalStorySection({
                 }}
               />
 
-              <div className="lg:flex-1 lg:max-w-sm">
+              {/* Body copy + CTA column */}
+              <div className="md:flex-1 md:max-w-xs lg:max-w-sm">
                 <p
-                  className="text-sm sm:text-base lg:text-lg xl:text-xl leading-relaxed"
+                  className="text-sm md:text-base lg:text-lg xl:text-xl leading-relaxed"
                   style={{ color: "var(--text-secondary)" }}
                 >
                   {slide.sub}

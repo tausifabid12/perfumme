@@ -53,7 +53,7 @@ function NoteCallout({
   label, title, dot, style,
 }: { label: string; title: string; dot: string; style?: React.CSSProperties }) {
   return (
-    <div className="note-callout pointer-events-none absolute hidden lg:block" style={style}>
+    <div className="note-callout pointer-events-none absolute hidden lg:block" style={{ zIndex: 20, ...style }}>
       <div className="flex items-center gap-2">
         <span style={{ width: 6, height: 6, borderRadius: 999, background: dot, boxShadow: `0 0 12px ${dot}` }} />
         <span style={{ fontSize: 9, letterSpacing: "0.25em", color: GOLD, textTransform: "uppercase" }}>{label}</span>
@@ -174,8 +174,10 @@ export default function HeroSection({
         <span>FW · 2026</span>
       </div> */}
 
-      <div className="relative z-10 h-full w-full grid grid-cols-1 lg:grid-cols-[1.05fr_1.1fr_0.85fr] gap-6 px-6 lg:px-16 pt-24 pb-10">
+      {/* ── DESKTOP (lg+): 3-column grid ── */}
+      <div className="relative z-10 h-full w-full hidden lg:grid grid-cols-[1.05fr_1.1fr_0.85fr] gap-6 px-16 pt-24 pb-10">
 
+        {/* Left column — title + desc + notes */}
         <div className="flex flex-col justify-center min-w-0">
           <div className="flex items-center gap-3 mb-6">
             <span style={{ width: 32, height: 1, background: GOLD }} />
@@ -187,15 +189,14 @@ export default function HeroSection({
           <div ref={titleRef}>
             {data.hero.title.map((word) => (
               <div key={word} className="overflow-hidden">
-                <h1 className="word-inner font-black leading-[0.85] tracking-tight text-white text-[16vw] lg:text-[5.8vw]">
+                <h1 className="word-inner font-black leading-[0.85] tracking-tight text-white text-[5.8vw]">
                   {word}
                 </h1>
               </div>
             ))}
           </div>
 
-
-          <p ref={descRef} className="mt-8 max-w-md text-sm lg:text-base text-white/65 leading-relaxed">
+          <p ref={descRef} className="mt-8 max-w-md text-base text-white/65 leading-relaxed">
             {data.hero.description}
           </p>
 
@@ -221,8 +222,9 @@ export default function HeroSection({
           </div>
         </div>
 
-        <div className="relative hidden lg:flex items-center justify-center">
-          <div ref={calloutsRef} className="absolute inset-0">
+        {/* Centre column — bottle */}
+        <div className="relative flex items-center justify-center">
+          <div ref={calloutsRef} className="absolute inset-0" style={{ zIndex: 10 }}>
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
               style={{ width: 520, height: 520, borderRadius: "50%", border: `1px dashed ${GOLD_LINE}` }} />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -230,7 +232,6 @@ export default function HeroSection({
                 width: 380, height: 380, borderRadius: "50%",
                 background: "radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%)"
               }} />
-            {/* Note callouts driven by data.fragranceNotes.notes */}
             {data.fragranceNotes.notes.slice(0, 3).map((note, ni) => {
               const positions: React.CSSProperties[] = [
                 { top: "14%", left: "-2%" },
@@ -250,14 +251,15 @@ export default function HeroSection({
             })}
           </div>
 
-          <div ref={bottleWrapRef} className="relative will-change-transform">
+          <div ref={bottleWrapRef} className="relative will-change-transform" style={{ zIndex: 5 }}>
             <img ref={bottleRef} src={data.product.image} alt={data.product.fullName}
               className="h-[68vh] w-auto object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)]" />
             <div className="absolute -top-4 -right-4"><Plus size={18} color={GOLD} strokeWidth={1.2} /></div>
           </div>
         </div>
 
-        <div className="hidden lg:flex flex-col justify-between items-end">
+        {/* Right column — specs + buy widget */}
+        <div className="flex flex-col justify-between items-end">
           <div ref={railRef} className="w-full max-w-[260px] flex flex-col gap-3 mt-4">
             <div className="flex items-center gap-2 mb-2">
               <span style={{ width: 6, height: 6, background: GOLD }} />
@@ -327,9 +329,162 @@ export default function HeroSection({
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="lg:hidden mt-auto" style={panelStyle}>
-          <div className="p-3 flex items-center justify-between">
+      {/* ── TABLET (md–lg): 2-column grid — text left, bottle right ── */}
+      <div className="relative z-10 h-full w-full hidden md:grid lg:hidden grid-cols-[1fr_1fr] gap-4 px-8 pt-24 pb-4">
+        {/* Left: text content */}
+        <div className="flex flex-col justify-center min-w-0 z-10">
+          <div className="flex items-center gap-3 mb-4">
+            <span style={{ width: 24, height: 1, background: GOLD }} />
+            <span style={{ fontSize: 9, letterSpacing: "0.3em", color: GOLD, textTransform: "uppercase" }}>
+              {data?.product?.tagline}
+            </span>
+          </div>
+
+          <div>
+            {data.hero.title.map((word) => (
+              <div key={word} className="overflow-hidden">
+                <h1 className="font-black leading-[0.88] tracking-tight text-white text-[8vw]">
+                  {word}
+                </h1>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-5 max-w-xs text-sm text-white/65 leading-relaxed">
+            {data.hero.description}
+          </p>
+
+          {/* Fragrance notes row */}
+          <div className="mt-5 flex items-center gap-4 flex-wrap">
+            <div>
+              <div style={{ fontSize: 9, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>TOP NOTE</div>
+              <div className="text-xs text-white mt-0.5">
+                {data.fragranceNotes.notes[0]?.title.replace(/\n/g, " · ")}
+              </div>
+            </div>
+            <div style={{ width: 1, height: 28, background: GOLD_LINE }} />
+            <div>
+              <div style={{ fontSize: 9, letterSpacing: "0.25em", color: "rgba(212,175,55,0.75)" }}>BASE NOTE</div>
+              <div className="text-xs text-white mt-0.5">
+                {data.fragranceNotes.notes[2]?.title.replace(/\n/g, " · ")}
+              </div>
+            </div>
+          </div>
+
+          {/* Buy widget */}
+          <div className="mt-6" style={panelStyle}>
+            <div className="p-3 flex flex-col gap-3">
+              <div className="flex items-end justify-between">
+                <div className="flex items-baseline gap-1">
+                  <span style={{ color: GOLD, fontSize: 20, fontWeight: 800 }}>
+                    {shopifyPrice ?? `${data.product.currency}${data.product.price}`}
+                  </span>
+                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 10 }}>/{data.product.priceUnit}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Star size={11} fill={GOLD} color={GOLD} />
+                  <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>{data.product.rating}</span>
+                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 10 }}>({data.product.reviewCount})</span>
+                </div>
+              </div>
+              <div style={{ height: 1, background: GOLD_LINE }} />
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={stepperBtnStyle}>−</button>
+                  <span style={{ color: "#fff", fontSize: 12, fontWeight: 700, minWidth: 16, textAlign: "center" }}>{qty}</span>
+                  <button onClick={() => setQty((q) => Math.min(24, q + 1))} style={stepperBtnStyle}>+</button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={handleAddToCart} disabled={adding || !shopifyVariantId}
+                    style={{
+                      ...addToCartBtnStyle,
+                      background: added ? "rgba(74,222,128,0.1)" : "transparent",
+                      borderColor: added ? "rgba(74,222,128,0.5)" : GOLD_SOFT,
+                      color: added ? "#4ade80" : GOLD,
+                      cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                      opacity: shopifyVariantId ? 1 : 0.5,
+                      display: "flex", alignItems: "center", gap: 5,
+                    }}>
+                    {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> :
+                      added ? <><Check size={9} /> Added</> :
+                        <><ShoppingBag size={9} /> Add to Cart</>}
+                  </button>
+                  <button onClick={handleBuyNow} disabled={adding || !shopifyVariantId}
+                    style={{
+                      ...buyNowBtnStyle,
+                      cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                      opacity: shopifyVariantId ? 1 : 0.5,
+                    }}>Buy Now</button>
+                </div>
+              </div>
+              <div style={{ fontSize: 9, letterSpacing: "0.15em", color: "rgba(212,175,55,0.75)", textTransform: "uppercase" }}>
+                ✦ Free shipping · arrives in 2–3 days
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: bottle — rendered behind a transparent overlay so text always stays on top */}
+        <div className="relative flex items-center justify-center">
+          {/* Decorative glow ring */}
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{
+              width: 320, height: 320, borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(212,175,55,0.07) 0%, transparent 70%)"
+            }} />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ width: 360, height: 360, borderRadius: "50%", border: `1px dashed ${GOLD_LINE}` }} />
+          <img
+            src={data.product.image}
+            alt={data.product.fullName}
+            className="relative h-[55vh] w-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]"
+          />
+        </div>
+      </div>
+
+      {/* ── MOBILE (<md): single column ── */}
+      <div className="relative z-10 h-full w-full flex md:hidden flex-col px-5 pt-20 pb-4">
+        {/* Bottle as background-ish layer, absolutely positioned so text flows on top */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
+          <img
+            src={data.product.image}
+            alt={data.product.fullName}
+            className="h-[55vh] w-auto object-contain opacity-60 drop-shadow-[0_20px_50px_rgba(0,0,0,0.9)]"
+          />
+          {/* Extra dark veil so text above remains legible */}
+          <div className="absolute inset-0"
+            style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.70) 100%)" }} />
+        </div>
+
+        {/* Text — always on top via z-10 */}
+        <div className="relative z-10 flex flex-col">
+          <div className="flex items-center gap-3 mb-4">
+            <span style={{ width: 24, height: 1, background: GOLD }} />
+            <span style={{ fontSize: 9, letterSpacing: "0.3em", color: GOLD, textTransform: "uppercase" }}>
+              {data?.product?.tagline}
+            </span>
+          </div>
+
+          <div>
+            {data.hero.title.map((word) => (
+              <div key={word} className="overflow-hidden">
+                <h1 className="font-black leading-[0.88] tracking-tight text-white text-[13vw]">
+                  {word}
+                </h1>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-4 text-xs text-white/65 leading-relaxed max-w-[75%]">
+            {data.hero.description}
+          </p>
+        </div>
+
+        {/* Buy widget pinned to bottom */}
+        <div className="relative z-10 mt-auto" style={panelStyle}>
+          <div className="p-3 flex items-center justify-between gap-3 flex-wrap">
             <div>
               <div style={{ color: GOLD, fontSize: 18, fontWeight: 800 }}>
                 {shopifyPrice ?? `${data.product.currency}${data.product.price}`}
@@ -343,6 +498,20 @@ export default function HeroSection({
               <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={stepperBtnStyle}>−</button>
               <span style={{ color: "#fff", fontSize: 12 }}>{qty}</span>
               <button onClick={() => setQty((q) => Math.min(24, q + 1))} style={stepperBtnStyle}>+</button>
+              <button onClick={handleAddToCart} disabled={adding || !shopifyVariantId}
+                style={{
+                  ...addToCartBtnStyle,
+                  background: added ? "rgba(74,222,128,0.1)" : "transparent",
+                  borderColor: added ? "rgba(74,222,128,0.5)" : GOLD_SOFT,
+                  color: added ? "#4ade80" : GOLD,
+                  cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                  opacity: shopifyVariantId ? 1 : 0.5,
+                  display: "flex", alignItems: "center", gap: 4,
+                }}>
+                {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> :
+                  added ? <><Check size={9} /> Added</> :
+                    <><ShoppingBag size={9} /> Cart</>}
+              </button>
               <button onClick={handleBuyNow} disabled={adding || !shopifyVariantId}
                 style={{
                   ...buyNowBtnStyle,
