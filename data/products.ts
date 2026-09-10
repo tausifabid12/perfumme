@@ -149,7 +149,7 @@ const itBoy: ProductData = {
     { name: "Blind Date", sku: "blind-date" },
   ],
   nav: { items: ["Shop All Scents", "About LUXE", "Fragrance Guide", "Store Locator", "Contact"] },
-  hero: { title: ["IT", "BOY"], description: "Fresh. Bold. Addictive. The signature scent for Gen Z men who don't follow trends — they become them.", scrollIndicator: "Scroll" },
+  hero: { title: ["IT", "BOY"], description: "Fresh. Bold. Addictive. The signature scent for GenZ Boys who don't follow trends — they become them.", scrollIndicator: "Scroll" },
   stats: [
     { number: "10HR+", label: "LONG LASTING" },
     { number: "35%", label: "OIL CONCENTRATION" },
