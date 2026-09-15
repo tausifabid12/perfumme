@@ -153,10 +153,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     cost: { subtotalAmount: { amount: string; currencyCode: string } };
     lines: { nodes: CartLine[] };
   }) => {
+    const filteredLines = cart.lines.nodes.filter((l: CartLine) => l.quantity > 0);
     setCartId(cart.id);
     setCheckoutUrl(cart.checkoutUrl);
-    setTotalQuantity(cart.totalQuantity);
-    setLines(cart.lines.nodes);
+    setTotalQuantity(filteredLines.reduce((sum: number, l: CartLine) => sum + l.quantity, 0));
+    setLines(filteredLines);
     setSubtotal(fmt(cart.cost.subtotalAmount.amount, cart.cost.subtotalAmount.currencyCode));
     if (typeof window !== "undefined") localStorage.setItem(CART_KEY, cart.id);
   }, []);

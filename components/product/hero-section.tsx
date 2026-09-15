@@ -12,18 +12,11 @@ const GOLD_SOFT = "rgba(212,175,55,0.45)";
 const GOLD_LINE = "rgba(212,175,55,0.18)";
 
 const panelStyle: React.CSSProperties = {
-  background: "rgba(10,10,10,0.72)",
-  backdropFilter: "blur(20px)",
-  border: `1px solid ${GOLD_LINE}`,
-  borderRadius: 12,
-  boxShadow: "0 8px 32px rgba(0,0,0,0.55)",
-};
-const stepperBtnStyle: React.CSSProperties = {
-  width: 26, height: 26, borderRadius: 6,
-  background: "rgba(212,175,55,0.08)",
-  border: `1px solid ${GOLD_SOFT}`,
-  color: GOLD, fontSize: 14, fontWeight: 700,
-  cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+  background: "rgba(8,8,10,0.85)",
+  backdropFilter: "blur(24px)",
+  border: `1px solid rgba(212,175,55,0.22)`,
+  borderRadius: 16,
+  boxShadow: "0 16px 48px rgba(0,0,0,0.7), inset 0 1px 0 rgba(212,175,55,0.08)",
 };
 const addToCartBtnStyle: React.CSSProperties = {
   padding: "9px 14px", borderRadius: 8, fontSize: 10, fontWeight: 800,
@@ -77,25 +70,23 @@ export default function HeroSection({
   const widgetRef = useRef<HTMLDivElement>(null);
   const calloutsRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
-  const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const { addToCart, adding, checkoutUrl } = useCart();
 
   const handleAddToCart = useCallback(async () => {
     if (!shopifyVariantId) return;
-    await addToCart(shopifyVariantId, qty);
+    await addToCart(shopifyVariantId, 1);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-  }, [shopifyVariantId, addToCart, qty]);
+  }, [shopifyVariantId, addToCart]);
 
   const handleBuyNow = useCallback(async () => {
     if (!shopifyVariantId) return;
-    await addToCart(shopifyVariantId, qty);
-    // Redirect to Shopify checkout
+    await addToCart(shopifyVariantId, 1);
     if (checkoutUrl) {
       window.location.href = checkoutUrl;
     }
-  }, [shopifyVariantId, addToCart, qty, checkoutUrl]);
+  }, [shopifyVariantId, addToCart, checkoutUrl]);
 
   const onCompleteRef = useRef(onAnimationComplete);
   useEffect(() => { onCompleteRef.current = onAnimationComplete; }, [onAnimationComplete]);
@@ -279,52 +270,73 @@ export default function HeroSection({
           </div>
 
           <div ref={widgetRef} className="w-full max-w-[340px]" style={panelStyle}>
-            <div className="p-4 flex flex-col gap-3">
-              <div className="flex items-end justify-between">
-                <div className="flex items-baseline gap-1">
-                  <span style={{ color: GOLD, fontSize: 22, fontWeight: 800 }}>
+            <div className="p-5 flex flex-col gap-4">
+              {/* Price + rating row */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-baseline gap-1.5">
+                  <span style={{ color: GOLD, fontSize: 26, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1 }}>
                     {shopifyPrice ?? `${data.product.currency}${data.product.price}`}
                   </span>
-                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 11 }}>/{data.product.priceUnit}</span>
+                  <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 11, letterSpacing: "0.06em" }}>/{data.product.priceUnit}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Star size={12} fill={GOLD} color={GOLD} />
-                  <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>{data.product.rating}</span>
-                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 10 }}>({data.product.reviewCount})</span>
-                </div>
-              </div>
-              <div style={{ height: 1, background: GOLD_LINE }} />
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={stepperBtnStyle}>−</button>
-                  <span style={{ color: "#fff", fontSize: 13, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{qty}</span>
-                  <button onClick={() => setQty((q) => Math.min(24, q + 1))} style={stepperBtnStyle}>+</button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={handleAddToCart} disabled={adding || !shopifyVariantId}
-                    style={{
-                      ...addToCartBtnStyle,
-                      background: added ? "rgba(74,222,128,0.1)" : "transparent",
-                      borderColor: added ? "rgba(74,222,128,0.5)" : GOLD_SOFT,
-                      color: added ? "#4ade80" : GOLD,
-                      cursor: shopifyVariantId ? "pointer" : "not-allowed",
-                      opacity: shopifyVariantId ? 1 : 0.5,
-                      display: "flex", alignItems: "center", gap: 5,
-                    }}>
-                    {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> :
-                      added ? <><Check size={9} /> Added</> :
-                        <><ShoppingBag size={9} /> Add to Cart</>}
-                  </button>
-                  <button onClick={handleBuyNow} disabled={adding || !shopifyVariantId}
-                    style={{
-                      ...buyNowBtnStyle,
-                      cursor: shopifyVariantId ? "pointer" : "not-allowed",
-                      opacity: shopifyVariantId ? 1 : 0.5,
-                    }}>Buy Now</button>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.15)" }}>
+                  <Star size={10} fill={GOLD} color={GOLD} />
+                  <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>{data.product.rating}</span>
+                  <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 10 }}>· {data.product.reviewCount}</span>
                 </div>
               </div>
-              <div style={{ fontSize: 10, letterSpacing: "0.18em", color: "rgba(212,175,55,0.75)", textTransform: "uppercase" }}>
-                ✦ Free shipping · arrives in 2–3 days
+
+              {/* Divider */}
+              <div style={{ height: 1, background: "linear-gradient(90deg, rgba(212,175,55,0.25), transparent)" }} />
+
+              {/* Buy Now — primary full-width */}
+              <button
+                onClick={handleBuyNow}
+                disabled={adding || !shopifyVariantId}
+                style={{
+                  width: "100%", padding: "13px 0", borderRadius: 10,
+                  fontSize: 12, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em",
+                  background: added ? "#4ade80" : shopifyVariantId ? GOLD : "rgba(212,175,55,0.3)",
+                  border: "none",
+                  color: "#0A0A0A",
+                  cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                  opacity: shopifyVariantId ? 1 : 0.5,
+                  transition: "filter 0.2s ease, transform 0.1s ease",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                }}
+                onMouseEnter={(e) => { if (shopifyVariantId) e.currentTarget.style.filter = "brightness(1.12)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.filter = "brightness(1)"; }}
+              >
+                {adding ? <Loader2 size={12} style={{ animation: "spin 1s linear infinite" }} /> : "Buy Now →"}
+              </button>
+
+              {/* Add to Cart — secondary full-width */}
+              <button
+                onClick={handleAddToCart}
+                disabled={adding || !shopifyVariantId}
+                style={{
+                  width: "100%", padding: "11px 0", borderRadius: 10,
+                  fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em",
+                  background: added ? "rgba(74,222,128,0.08)" : "rgba(212,175,55,0.05)",
+                  border: `1px solid ${added ? "rgba(74,222,128,0.4)" : "rgba(212,175,55,0.28)"}`,
+                  color: added ? "#4ade80" : GOLD,
+                  cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                  opacity: shopifyVariantId ? 1 : 0.5,
+                  transition: "all 0.2s ease",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                }}
+                onMouseEnter={(e) => { if (shopifyVariantId && !added) { e.currentTarget.style.background = "rgba(212,175,55,0.1)"; e.currentTarget.style.borderColor = "rgba(212,175,55,0.5)"; } }}
+                onMouseLeave={(e) => { if (!added) { e.currentTarget.style.background = "rgba(212,175,55,0.05)"; e.currentTarget.style.borderColor = "rgba(212,175,55,0.28)"; } }}
+              >
+                {adding ? <Loader2 size={10} style={{ animation: "spin 1s linear infinite" }} /> :
+                  added ? <><Check size={10} /> Added to Cart</> :
+                    <><ShoppingBag size={10} /> Add to Cart</>}
+              </button>
+
+              {/* Shipping badge */}
+              <div className="flex items-center justify-center gap-1.5" style={{ fontSize: 10, letterSpacing: "0.12em", color: "rgba(212,175,55,0.65)", textTransform: "uppercase" }}>
+                <span>✦</span>
+                <span>Free shipping · arrives in 2–3 days</span>
               </div>
             </div>
           </div>
@@ -375,51 +387,48 @@ export default function HeroSection({
 
           {/* Buy widget */}
           <div className="mt-6" style={panelStyle}>
-            <div className="p-3 flex flex-col gap-3">
-              <div className="flex items-end justify-between">
-                <div className="flex items-baseline gap-1">
-                  <span style={{ color: GOLD, fontSize: 20, fontWeight: 800 }}>
+            <div className="p-4 flex flex-col gap-3">
+              {/* Price + rating */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-baseline gap-1.5">
+                  <span style={{ color: GOLD, fontSize: 22, fontWeight: 900, letterSpacing: "-0.02em", lineHeight: 1 }}>
                     {shopifyPrice ?? `${data.product.currency}${data.product.price}`}
                   </span>
-                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 10 }}>/{data.product.priceUnit}</span>
+                  <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 10 }}>/{data.product.priceUnit}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <Star size={11} fill={GOLD} color={GOLD} />
-                  <span style={{ color: "#fff", fontSize: 11, fontWeight: 700 }}>{data.product.rating}</span>
-                  <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 10 }}>({data.product.reviewCount})</span>
-                </div>
-              </div>
-              <div style={{ height: 1, background: GOLD_LINE }} />
-              <div className="flex items-center justify-between gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={stepperBtnStyle}>−</button>
-                  <span style={{ color: "#fff", fontSize: 12, fontWeight: 700, minWidth: 16, textAlign: "center" }}>{qty}</span>
-                  <button onClick={() => setQty((q) => Math.min(24, q + 1))} style={stepperBtnStyle}>+</button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={handleAddToCart} disabled={adding || !shopifyVariantId}
-                    style={{
-                      ...addToCartBtnStyle,
-                      background: added ? "rgba(74,222,128,0.1)" : "transparent",
-                      borderColor: added ? "rgba(74,222,128,0.5)" : GOLD_SOFT,
-                      color: added ? "#4ade80" : GOLD,
-                      cursor: shopifyVariantId ? "pointer" : "not-allowed",
-                      opacity: shopifyVariantId ? 1 : 0.5,
-                      display: "flex", alignItems: "center", gap: 5,
-                    }}>
-                    {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> :
-                      added ? <><Check size={9} /> Added</> :
-                        <><ShoppingBag size={9} /> Add to Cart</>}
-                  </button>
-                  <button onClick={handleBuyNow} disabled={adding || !shopifyVariantId}
-                    style={{
-                      ...buyNowBtnStyle,
-                      cursor: shopifyVariantId ? "pointer" : "not-allowed",
-                      opacity: shopifyVariantId ? 1 : 0.5,
-                    }}>Buy Now</button>
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.15)" }}>
+                  <Star size={9} fill={GOLD} color={GOLD} />
+                  <span style={{ color: "#fff", fontSize: 10, fontWeight: 700 }}>{data.product.rating}</span>
+                  <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 9 }}>· {data.product.reviewCount}</span>
                 </div>
               </div>
-              <div style={{ fontSize: 9, letterSpacing: "0.15em", color: "rgba(212,175,55,0.75)", textTransform: "uppercase" }}>
+              <div style={{ height: 1, background: "linear-gradient(90deg, rgba(212,175,55,0.25), transparent)" }} />
+              {/* Buy Now primary */}
+              <button onClick={handleBuyNow} disabled={adding || !shopifyVariantId}
+                style={{
+                  width: "100%", padding: "12px 0", borderRadius: 9,
+                  fontSize: 11, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.14em",
+                  background: shopifyVariantId ? GOLD : "rgba(212,175,55,0.3)", border: "none",
+                  color: "#0A0A0A", cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                  opacity: shopifyVariantId ? 1 : 0.5, transition: "filter 0.2s ease",
+                }}>Buy Now →</button>
+              {/* Add to Cart secondary */}
+              <button onClick={handleAddToCart} disabled={adding || !shopifyVariantId}
+                style={{
+                  width: "100%", padding: "10px 0", borderRadius: 9,
+                  fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em",
+                  background: added ? "rgba(74,222,128,0.08)" : "rgba(212,175,55,0.05)",
+                  border: `1px solid ${added ? "rgba(74,222,128,0.4)" : "rgba(212,175,55,0.28)"}`,
+                  color: added ? "#4ade80" : GOLD,
+                  cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                  opacity: shopifyVariantId ? 1 : 0.5, transition: "all 0.2s ease",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                }}>
+                {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> :
+                  added ? <><Check size={9} /> Added</> :
+                    <><ShoppingBag size={9} /> Add to Cart</>}
+              </button>
+              <div className="text-center" style={{ fontSize: 9, letterSpacing: "0.12em", color: "rgba(212,175,55,0.6)", textTransform: "uppercase" }}>
                 ✦ Free shipping · arrives in 2–3 days
               </div>
             </div>
@@ -445,7 +454,7 @@ export default function HeroSection({
       </div>
 
       {/* ── MOBILE (<md): single column ── */}
-      <div className="relative z-10 h-full w-full flex md:hidden flex-col px-5 pt-20 pb-4">
+      <div className="relative z-10 h-full w-full flex md:hidden flex-col px-5 pt-20 pb-20">
         {/* Bottle as background-ish layer, absolutely positioned so text flows on top */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 0 }}>
           <img
@@ -484,43 +493,49 @@ export default function HeroSection({
 
         {/* Buy widget pinned to bottom */}
         <div className="relative z-10 mt-auto" style={panelStyle}>
-          <div className="p-3 flex items-center justify-between gap-3 flex-wrap">
-            <div>
-              <div style={{ color: GOLD, fontSize: 18, fontWeight: 800 }}>
-                {shopifyPrice ?? `${data.product.currency}${data.product.price}`}
+          <div className="p-4 flex flex-col gap-3">
+            {/* Price + rating row */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-baseline gap-1">
+                <span style={{ color: GOLD, fontSize: 20, fontWeight: 900, letterSpacing: "-0.02em", lineHeight: 1 }}>
+                  {shopifyPrice ?? `${data.product.currency}${data.product.price}`}
+                </span>
+                <span style={{ color: "rgba(255,255,255,0.4)", fontSize: 10 }}>/{data.product.priceUnit}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <Star size={10} fill={GOLD} color={GOLD} />
-                <span style={{ color: "#fff", fontSize: 10 }}>{data.product.rating}</span>
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-full" style={{ background: "rgba(212,175,55,0.08)", border: "1px solid rgba(212,175,55,0.15)" }}>
+                <Star size={9} fill={GOLD} color={GOLD} />
+                <span style={{ color: "#fff", fontSize: 10, fontWeight: 700 }}>{data.product.rating}</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button onClick={() => setQty((q) => Math.max(1, q - 1))} style={stepperBtnStyle}>−</button>
-              <span style={{ color: "#fff", fontSize: 12 }}>{qty}</span>
-              <button onClick={() => setQty((q) => Math.min(24, q + 1))} style={stepperBtnStyle}>+</button>
-              <button onClick={handleAddToCart} disabled={adding || !shopifyVariantId}
-                style={{
-                  ...addToCartBtnStyle,
-                  background: added ? "rgba(74,222,128,0.1)" : "transparent",
-                  borderColor: added ? "rgba(74,222,128,0.5)" : GOLD_SOFT,
-                  color: added ? "#4ade80" : GOLD,
-                  cursor: shopifyVariantId ? "pointer" : "not-allowed",
-                  opacity: shopifyVariantId ? 1 : 0.5,
-                  display: "flex", alignItems: "center", gap: 4,
-                }}>
-                {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> :
-                  added ? <><Check size={9} /> Added</> :
-                    <><ShoppingBag size={9} /> Cart</>}
-              </button>
-              <button onClick={handleBuyNow} disabled={adding || !shopifyVariantId}
-                style={{
-                  ...buyNowBtnStyle,
-                  cursor: shopifyVariantId ? "pointer" : "not-allowed",
-                  opacity: shopifyVariantId ? 1 : 0.5,
-                  display: "flex", alignItems: "center", gap: 5,
-                }}>
-                {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> : "Buy"}
-              </button>
+            {/* Buy Now primary */}
+            <button onClick={handleBuyNow} disabled={adding || !shopifyVariantId}
+              style={{
+                width: "100%", padding: "12px 0", borderRadius: 9,
+                fontSize: 12, fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.12em",
+                background: shopifyVariantId ? GOLD : "rgba(212,175,55,0.3)", border: "none",
+                color: "#0A0A0A", cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                opacity: shopifyVariantId ? 1 : 0.5, transition: "filter 0.2s ease",
+              }}>
+              Buy Now →
+            </button>
+            {/* Add to Cart secondary */}
+            <button onClick={handleAddToCart} disabled={adding || !shopifyVariantId}
+              style={{
+                width: "100%", padding: "10px 0", borderRadius: 9,
+                fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em",
+                background: added ? "rgba(74,222,128,0.08)" : "rgba(212,175,55,0.05)",
+                border: `1px solid ${added ? "rgba(74,222,128,0.4)" : "rgba(212,175,55,0.28)"}`,
+                color: added ? "#4ade80" : GOLD,
+                cursor: shopifyVariantId ? "pointer" : "not-allowed",
+                opacity: shopifyVariantId ? 1 : 0.5, transition: "all 0.2s ease",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              }}>
+              {adding ? <Loader2 size={9} style={{ animation: "spin 1s linear infinite" }} /> :
+                added ? <><Check size={9} /> Added</> :
+                  <><ShoppingBag size={9} /> Add to Cart</>}
+            </button>
+            <div className="text-center" style={{ fontSize: 9, letterSpacing: "0.1em", color: "rgba(212,175,55,0.55)", textTransform: "uppercase" }}>
+              ✦ Free shipping · 2–3 days
             </div>
           </div>
         </div>
@@ -546,7 +561,7 @@ export default function HeroSection({
         </span>
         <ChevronDown size={14} color={GOLD_SOFT} className="animate-bounce" />
       </div>
-    </section>
+    </section >
   );
 }
 
