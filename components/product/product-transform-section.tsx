@@ -374,6 +374,7 @@ export default function ProductTransformSection({
             zIndex: 20,
             width: "90%",
             maxWidth: 600,
+            pointerEvents: "auto",
           }}
         >
           <p

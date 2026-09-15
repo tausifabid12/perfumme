@@ -463,7 +463,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
                 {/* â•â•â• SECTION 1 â€” IMPERIAL SMOKE â•â•â• */}
                 <div ref={smokeRef} className="ct-smoke">
-                    <p className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-001</p>
+                    {/* <p className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-001</p> */}
 
                     <h2 className="ct-h2">
                         <div><SplitChars text="IMPERIAL" /></div>
@@ -487,7 +487,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
                 {/* â•â•â• SECTION 2 â€” REBEL GIRL â•â•â• */}
                 <div ref={rebelRef} className="ct-rebel">
-                    <p data-rebel-label className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-002</p>
+                    {/* <p data-rebel-label className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-002</p> */}
 
                     <h2 className="ct-h2">
                         <div data-rebel-word="0" style={{ display: "block" }}>REBEL</div>
@@ -519,9 +519,9 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
                     {/* IT BOY — unified bottom-left block */}
                     <div className="ct-it">
-                        <p data-it-sub className="ct-label" style={{ color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem" }}>
+                        {/* <p data-it-sub className="ct-label" style={{ color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem" }}>
                             N&#176; 003
-                        </p>
+                        </p> */}
 
                         <div data-it-word className="ct-giant">IT</div>
                         <div data-boy-word className="ct-giant ct-giant-italic">BOY</div>

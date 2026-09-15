@@ -102,7 +102,7 @@ export default function CompositionSection({
     <section
       ref={sectionRef}
       className="relative py-24 lg:py-36 overflow-hidden"
-      style={{ background: "var(--bg-cream)" }}
+      style={{ background: "#070709" }}
     >
       <div className="max-w-[1200px] mx-auto px-6 lg:px-10">
         <div className="mb-14 lg:mb-20">
@@ -121,7 +121,7 @@ export default function CompositionSection({
             text={composition.title}
             className="text-3xl lg:text-5xl font-black uppercase"
             style={{
-              color: "var(--text-dark)",
+              color: "var(--text-primary)",
               letterSpacing: "-0.03em",
               lineHeight: 1.1,
             }}
@@ -140,15 +140,16 @@ export default function CompositionSection({
                   key={ing.name}
                   className="flex flex-col items-center gap-2 p-5 rounded-card transition-all duration-300 hover:scale-105 hover:-translate-y-1 cursor-hover"
                   style={{
-                    background: "rgba(26,26,26,0.06)",
-                    border: "1px solid rgba(26,26,26,0.1)",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                     opacity: 0,
                   }}
                 >
                   <div
                     className="w-12 h-12 rounded-full flex items-center justify-center text-xs font-black"
                     style={{
-                      background: "var(--text-dark)",
+                      background: "#1a1a1a",
+                      border: "1px solid rgba(212,175,55,0.3)",
                       color: "#D4AF37",
                     }}
                   >
@@ -156,7 +157,7 @@ export default function CompositionSection({
                   </div>
                   <span
                     className="text-xs font-black uppercase tracking-wider text-center"
-                    style={{ color: "var(--text-dark)" }}
+                    style={{ color: "var(--text-primary)" }}
                   >
                     {ing.name}
                   </span>
@@ -164,8 +165,8 @@ export default function CompositionSection({
                     <span
                       className="text-[10px] uppercase tracking-wider"
                       style={{
-                        color: "var(--text-dark)",
-                        opacity: 0.5,
+                        color: "var(--text-secondary)",
+                        opacity: 0.7,
                       }}
                     >
                       {ing.sub}
@@ -177,7 +178,7 @@ export default function CompositionSection({
             <a
               href="/collections"
               className="inline-flex items-center gap-2 mt-8 text-sm font-black uppercase tracking-wider cursor-hover"
-              style={{ color: "var(--text-dark)" }}
+              style={{ color: "var(--accent-gold)" }}
             >
               VIEW FULL COLLECTION <ArrowRight size={14} />
             </a>
@@ -187,15 +188,16 @@ export default function CompositionSection({
               ref={labelRef}
               className="w-full sm:max-w-[300px] p-6 rounded-xl"
               style={{
-                background: "#fff",
-                border: "2px solid rgba(26,26,26,0.12)",
-                boxShadow: "var(--shadow-card)",
+                background: "#111113",
+                border: "2px solid rgba(255,255,255,0.08)",
+                boxShadow: "0 8px 40px rgba(0,0,0,0.4)",
               }}
             >
               <h3
-                className="text-xl font-bold border-b-2 border-black pb-2 mb-3"
+                className="text-xl font-bold border-b-2 pb-2 mb-3"
                 style={{
-                  color: "var(--text-dark)",
+                  color: "var(--text-primary)",
+                  borderColor: "rgba(255,255,255,0.2)",
                   fontFamily: "var(--font-inter), system-ui, sans-serif",
                 }}
               >
@@ -203,21 +205,21 @@ export default function CompositionSection({
               </h3>
               <p
                 className="text-xs mb-3"
-                style={{ color: "var(--text-dark)" }}
+                style={{ color: "var(--text-secondary)" }}
               >
                 {composition.facts.serving}
               </p>
-              <div className="border-b border-black pb-2 mb-2">
+              <div className="border-b pb-2 mb-2" style={{ borderColor: "rgba(255,255,255,0.15)" }}>
                 <div className="flex justify-between items-baseline">
                   <span
                     className="text-lg font-bold"
-                    style={{ color: "var(--text-dark)" }}
+                    style={{ color: "var(--text-primary)" }}
                   >
                     Concentration
                   </span>
                   <span
                     className="text-2xl font-bold"
-                    style={{ color: "var(--text-dark)" }}
+                    style={{ color: "var(--accent-gold)" }}
                   >
                     {composition.facts.items[0][1]}
                   </span>
@@ -226,17 +228,18 @@ export default function CompositionSection({
               {composition.facts.items.slice(1).map(([label, val]) => (
                 <div
                   key={label}
-                  className="flex justify-between py-1 border-b border-gray-200"
+                  className="flex justify-between py-1 border-b"
+                  style={{ borderColor: "rgba(255,255,255,0.07)" }}
                 >
                   <span
                     className="text-xs"
-                    style={{ color: "var(--text-dark)" }}
+                    style={{ color: "var(--text-secondary)" }}
                   >
                     {label}
                   </span>
                   <span
                     className="text-xs font-semibold"
-                    style={{ color: "var(--text-dark)" }}
+                    style={{ color: "var(--text-primary)" }}
                   >
                     {val}
                   </span>

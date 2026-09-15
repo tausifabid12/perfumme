@@ -123,14 +123,14 @@ export default function StatsSection({ data }: { data: ProductData }) {
             willChange: "transform",
           }}
         />
-        <BlurReveal delay={0.2} style={{ marginTop: 40 }}>
+        {/* <BlurReveal delay={0.2} style={{ marginTop: 40 }}>
           <p
             className="text-lg lg:text-xl font-black italic tracking-wide uppercase text-center px-4"
             style={{ color: "var(--text-primary)" }}
           >
             *MEANWHILE FREAKING DELICIOUS
           </p>
-        </BlurReveal>
+        </BlurReveal> */}
       </div>
     </section>
   );
