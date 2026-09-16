@@ -1,13 +1,15 @@
 ﻿"use client";
 
 import { useEffect, useRef } from "react";
-import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2 } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2, LogIn } from "lucide-react";
 import gsap from "gsap";
 import { useCart } from "@/components/providers/CartProvider";
+import { useAuth } from "@/lib/hooks/useAuth";
 import TransitionLink from "@/components/TransitionLink";
 
 export default function CartDrawer() {
     const { lines, subtotal, totalQuantity, checkoutUrl, cartOpen, setCartOpen, removeFromCart, updateQty, adding } = useCart();
+    const { customer, loading: authLoading } = useAuth();
 
     const drawerRef = useRef<HTMLDivElement>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
@@ -43,7 +45,21 @@ export default function CartDrawer() {
     }, [cartOpen]);
 
     const handleCheckout = () => {
-        if (checkoutUrl) window.location.href = checkoutUrl;
+        if (!checkoutUrl) return;
+
+        // If still checking auth, wait — button is disabled
+        if (authLoading) return;
+
+        // Not logged in → save the checkout URL and send to login
+        if (!customer) {
+            sessionStorage.setItem("senz8_checkout_url", checkoutUrl);
+            setCartOpen(false);
+            window.location.href = "/login?from=checkout";
+            return;
+        }
+
+        // Logged in → go straight to Shopify checkout
+        window.location.href = checkoutUrl;
     };
 
     return (
@@ -169,17 +185,20 @@ export default function CartDrawer() {
                             {/* Checkout CTA */}
                             <button
                                 onClick={handleCheckout}
-                                disabled={!checkoutUrl || adding}
+                                disabled={!checkoutUrl || adding || authLoading}
                                 className="flex items-center justify-center gap-2 w-full py-4 rounded-pill font-black uppercase tracking-widest text-[10px] transition-all duration-300 cursor-pointer"
                                 style={{
                                     background: "var(--accent-gold)",
                                     color: "#0a0a0a",
-                                    opacity: (!checkoutUrl || adding) ? 0.5 : 1,
+                                    opacity: (!checkoutUrl || adding || authLoading) ? 0.5 : 1,
                                 }}
                                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.12)"; }}
                                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}
                             >
-                                Checkout <ArrowRight size={12} />
+                                {!authLoading && !customer
+                                    ? <><LogIn size={12} /> Sign In to Checkout</>
+                                    : <>Checkout <ArrowRight size={12} /></>
+                                }
                             </button>
 
                             {/* Continue shopping */}

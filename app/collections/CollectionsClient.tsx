@@ -19,13 +19,8 @@ gsap.registerPlugin(ScrollTrigger);
 // Accent palettes  (fall-through to gold for unknown slugs)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const DEFAULT_PAL = { primary: "#D4AF37", rgb: "212,175,55", glow: "rgba(212,175,55,0.25)" };
-const PALETTE: Record<string, typeof DEFAULT_PAL> = {
-    "imperial-smoke": { primary: "#D4AF37", rgb: "212,175,55", glow: "rgba(212,175,55,0.25)" },
-    "it-boy": { primary: "#C8A96E", rgb: "200,169,110", glow: "rgba(200,169,110,0.25)" },
-    "rebel-girl": { primary: "#D4697E", rgb: "212,105,126", glow: "rgba(212,105,126,0.28)" },
-    "blind-date": { primary: "#A89FC8", rgb: "168,159,200", glow: "rgba(168,159,200,0.28)" },
-};
-const P = (slug: string) => PALETTE[slug] ?? DEFAULT_PAL;
+const PALETTE: Record<string, typeof DEFAULT_PAL> = {};
+const P = (_slug: string) => DEFAULT_PAL;
 
 // filter tags derived from the unified CollectionProduct.tag field
 const FILTERS = ["All", "For Him", "For Her", "Unisex"];
@@ -424,6 +419,7 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
     const bottleRef = useRef<HTMLImageElement>(null);
     const bgRef = useRef<HTMLDivElement>(null);
     const shineRef = useRef<HTMLDivElement>(null);
+    const [hov, setHov] = useState(false);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -442,24 +438,28 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
     }, [index]);
 
     const onEnter = () => {
+        setHov(true);
         gsap.to(bottleRef.current, { y: -14, scale: 1.06, duration: 0.7, ease: "power3.out" });
         gsap.fromTo(shineRef.current,
             { x: "-110%", opacity: 0 },
             { x: "110%", opacity: 0, keyframes: { opacity: [0, 0.22, 0.22, 0] }, duration: 0.9, ease: "power2.inOut" });
     };
-    const onLeave = () => gsap.to(bottleRef.current, { y: 0, scale: 1, duration: 0.6, ease: "power2.out" });
+    const onLeave = () => {
+        setHov(false);
+        gsap.to(bottleRef.current, { y: 0, scale: 1, duration: 0.6, ease: "power2.out" });
+    };
 
     return (
         <div ref={cardRef} className="h-full" style={{ opacity: 0 }}>
             <div onMouseEnter={onEnter} onMouseLeave={onLeave}
                 className="relative overflow-hidden flex flex-col h-full"
-                style={{ borderRadius: 20, minHeight: 380 }}>
+                style={{ borderRadius: 20, minHeight: 380, border: "1px solid rgba(212,175,55,0.18)" }}>
 
                 {/* BG image */}
                 <div ref={bgRef} className="absolute inset-0"
                     style={{
                         backgroundImage: `url(${product.image})`, backgroundSize: "cover", backgroundPosition: "center",
-                        filter: "brightness(0.18) saturate(0.5)", willChange: "transform"
+                        filter: "brightness(0.32) saturate(0.6)", willChange: "transform"
                     }} />
                 <div className="absolute inset-0"
                     style={{ background: `linear-gradient(115deg,rgba(7,7,10,0.96) 0%,rgba(7,7,10,0.75) 50%,rgba(${p.rgb},0.05) 100%)` }} />
@@ -499,8 +499,12 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
                         </div>
                         {/* Price + Discover row */}
                         <div className="flex items-center gap-4">
-                            <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill text-[9px] font-black uppercase tracking-widest"
-                                style={{ background: p.primary, color: "#0A0A0A" }}>
+                            <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill text-[9px] font-black uppercase tracking-widest transition-all duration-300"
+                                style={{
+                                    background: hov ? p.primary : "transparent",
+                                    color: hov ? "#0A0A0A" : p.primary,
+                                    border: `1px solid ${hov ? p.primary : `rgba(${p.rgb},0.45)`}`,
+                                }}>
                                 Discover <ArrowRight size={11} />
                             </span>
                             <div>

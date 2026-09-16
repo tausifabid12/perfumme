@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Star, ChevronDown, Plus, ShoppingBag, Check, Loader2 } from "lucide-react";
 import { useCart } from "@/components/providers/CartProvider";
+import { useAuth } from "@/lib/hooks/useAuth";
 import type { ProductData } from "@/types/product";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -72,6 +73,7 @@ export default function HeroSection({
   const railRef = useRef<HTMLDivElement>(null);
   const [added, setAdded] = useState(false);
   const { addToCart, adding, checkoutUrl } = useCart();
+  const { customer } = useAuth();
 
   const handleAddToCart = useCallback(async () => {
     if (!shopifyVariantId) return;
@@ -83,10 +85,15 @@ export default function HeroSection({
   const handleBuyNow = useCallback(async () => {
     if (!shopifyVariantId) return;
     await addToCart(shopifyVariantId, 1);
-    if (checkoutUrl) {
-      window.location.href = checkoutUrl;
+    const url = checkoutUrl;
+    if (!url) return;
+    if (!customer) {
+      sessionStorage.setItem("senz8_checkout_url", url);
+      window.location.href = "/login?from=checkout";
+      return;
     }
-  }, [shopifyVariantId, addToCart, checkoutUrl]);
+    window.location.href = url;
+  }, [shopifyVariantId, addToCart, checkoutUrl, customer]);
 
   const onCompleteRef = useRef(onAnimationComplete);
   useEffect(() => { onCompleteRef.current = onAnimationComplete; }, [onAnimationComplete]);

@@ -8,6 +8,7 @@ import CustomCursor from "@/lib/animations/custom-cursor";
 import ScrollProgress from "@/lib/animations/scroll-progress";
 import TransitionLink from "@/components/TransitionLink";
 import { useCart } from "@/components/providers/CartProvider";
+import { useAuth } from "@/lib/hooks/useAuth";
 import type { ShopifyProduct, ShopifyProductVariant } from "@/lib/shopify/types";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -44,6 +45,7 @@ export default function ShopifyProductClient({
     longevity, concentration, topNotes, heartNotes, baseNotes,
 }: Props) {
     const { addToCart, adding, checkoutUrl } = useCart();
+    const { customer } = useAuth();
     const [selectedVariant, setSelectedVariant] = useState<ShopifyProductVariant>(
         product.variants.nodes[0]
     );
@@ -92,11 +94,15 @@ export default function ShopifyProductClient({
 
     const handleBuyNow = useCallback(async () => {
         await addToCart(selectedVariant.id, qty);
-        // Redirect to Shopify checkout after cart is created
-        if (checkoutUrl) {
-            window.location.href = checkoutUrl;
+        const url = checkoutUrl;
+        if (!url) return;
+        if (!customer) {
+            sessionStorage.setItem("senz8_checkout_url", url);
+            window.location.href = "/login?from=checkout";
+            return;
         }
-    }, [addToCart, selectedVariant.id, qty, checkoutUrl]);
+        window.location.href = url;
+    }, [addToCart, selectedVariant.id, qty, checkoutUrl, customer]);
 
     return (
         <div className="relative min-h-screen" style={{ background: "var(--bg-primary)" }}>
