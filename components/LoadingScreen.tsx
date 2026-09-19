@@ -349,7 +349,7 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                             textAlign: "center",
                         }}
                     >
-                        Parfum Maison &nbsp;·&nbsp; Est. 2024
+                        Parfum Maison &nbsp;·&nbsp; Est. 2026
                     </p>
                 </div>
 
