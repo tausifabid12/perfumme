@@ -18,7 +18,7 @@ export interface LegalSection {
 
 interface Props {
     badge: string;         // e.g. "Legal"
-    title: string[];       // words split for animation, e.g. ["Privacy", "Policy."]
+    title: string[];       // words split for animation, e.g. ["Privacy", "Policy"]
     subtitle: string;
     lastUpdated: string;
     sections: LegalSection[];

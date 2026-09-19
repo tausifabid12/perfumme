@@ -3,7 +3,7 @@
 export const CUSTOMER_CREATE = /* GraphQL */ `
   mutation customerCreate($input: CustomerCreateInput!) {
     customerCreate(input: $input) {
-      customer { id email firstName lastName }
+      customer { id email firstName lastName phone }
       customerUserErrors { code field message }
     }
   }

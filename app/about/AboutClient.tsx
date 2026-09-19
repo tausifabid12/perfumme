@@ -82,7 +82,7 @@ function Hero() {
         return () => ctx.revert();
     }, []);
 
-    const headline = ["Our", "Story."];
+    const headline = ["Our", "Story"];
 
     return (
         <div ref={sectionRef}
@@ -201,7 +201,7 @@ function OriginStory() {
                             color: "var(--text-primary)"
                         }}>
                         "Wear Your<br />
-                        <span style={{ color: "var(--accent-gold)" }}>Identity."</span>
+                        <span style={{ color: "var(--accent-gold)" }}>Identity"</span>
                     </blockquote>
                     <div className="mt-8" style={{ height: 1, width: 200, background: "linear-gradient(90deg, #D4AF37, transparent)" }} />
                     <p className="mt-6 text-[9px] uppercase tracking-[0.4em]"
@@ -312,7 +312,7 @@ function Pillars() {
                         <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
                     </div>
                     <div ref={headRef}>
-                        {["Our", "Pillars."].map((w, i) => (
+                        {["Our", "Pillars"].map((w, i) => (
                             <div key={w} style={{ overflow: "hidden" }}>
                                 <span className="hw block font-black uppercase"
                                     style={{
@@ -393,7 +393,7 @@ function Timeline() {
                         <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
                     </div>
                     <div>
-                        {["The", "Journey."].map((w, i) => (
+                        {["The", "Journey"].map((w, i) => (
                             <div key={w} style={{ overflow: "hidden" }}>
                                 <span className="tl-head block font-black uppercase"
                                     style={{
@@ -514,7 +514,7 @@ function CollectionTeaser() {
                             <div style={{ width: 32, height: 1, background: "rgba(212,175,55,0.35)" }} />
                         </div>
                         <div>
-                            {["The", "Collection."].map((w, i) => (
+                            {["The", "Collection"].map((w, i) => (
                                 <div key={w} style={{ overflow: "hidden" }}>
                                     <span className="ct-item block font-black uppercase opacity-0"
                                         style={{

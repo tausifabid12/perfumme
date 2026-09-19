@@ -125,7 +125,7 @@ export default function TermsPage() {
     return (
         <LegalPageLayout
             badge="Legal"
-            title={["Terms of", "Service."]}
+            title={["Terms of", "Service"]}
             subtitle="Please read these terms carefully before using our website or placing an order."
             lastUpdated="July 2026"
             sections={sections}

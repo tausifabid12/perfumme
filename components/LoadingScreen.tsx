@@ -275,15 +275,6 @@ export default function LoadingScreen({ onComplete, onRegister }: Props) {
                                 {ch}
                             </span>
                         ))}
-                        {/* Gold pulse dot */}
-                        <span
-                            className="ml-2 w-[5px] h-[5px] md:w-[7px] md:h-[7px] rounded-full animate-pulse flex-shrink-0"
-                            style={{
-                                background: "#D4AF37",
-                                boxShadow: "0 0 12px rgba(212,175,55,0.9), 0 0 24px rgba(212,175,55,0.4)",
-                                alignSelf: "center",
-                            }}
-                        />
                     </div>
                 </div>
 

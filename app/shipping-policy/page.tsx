@@ -34,7 +34,7 @@ export default function ShippingPolicyPage() {
     return (
         <LegalPageLayout
             badge="Legal"
-            title={["Shipping", "Policy."]}
+            title={["Shipping", "Policy"]}
             subtitle="Everything you need to know about how we process, ship, and deliver your order."
             lastUpdated="June 2025"
             sections={sections}

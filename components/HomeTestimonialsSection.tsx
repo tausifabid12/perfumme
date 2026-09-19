@@ -395,7 +395,7 @@ export default function HomeTestimonialsSection() {
                                 </span>
                             </div>
                             <div ref={headRef}>
-                                {["What Zoomers'", "Say About Us."].map((line, li) => (
+                                {["What Zoomers'", "Say About Us"].map((line, li) => (
                                     <div key={li} style={{ overflow: "hidden" }}>
                                         <span
                                             className="tw block font-black uppercase"
@@ -510,7 +510,7 @@ export default function HomeTestimonialsSection() {
                         <div>
                             <p className="font-black uppercase"
                                 style={{ fontSize: "clamp(24px,2.5vw,40px)", letterSpacing: "-0.04em", color: "var(--text-primary)", lineHeight: 1 }}>
-                                Wear Your Identity.
+                                Wear Your Identity
                             </p>
                             <p style={{ fontSize: 13, color: "rgba(245,245,245,0.45)", marginTop: 8, letterSpacing: "0.05em" }}>
                                 Join 4,400+ customers who made the switch.
@@ -592,7 +592,7 @@ export default function HomeTestimonialsSection() {
 
                     {/* Mobile headline */}
                     <div ref={headRef} className="mb-8">
-                        {["Real People.", "Real Reactions."].map((line, li) => (
+                        {["Real People", "Real Reactions"].map((line, li) => (
                             <div key={li} style={{ overflow: "hidden" }}>
                                 <span className="tw block font-black uppercase"
                                     style={{

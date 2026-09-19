@@ -108,7 +108,7 @@ function BrandStory() {
                     <div className="flex-1 min-w-0">
                         <Overline label="Our Philosophy" />
                         <div ref={headRef} className="mb-7">
-                            {["Wear Your", "Identity."].map((line, li) => (
+                            {["Wear Your", "Identity"].map((line, li) => (
                                 <div key={li} style={{ overflow: "hidden" }}>
                                     <span
                                         className="bs-hw block font-black uppercase"
@@ -199,7 +199,7 @@ function CollectionPreview() {
                     <div>
                         <Overline label="The Collection" />
                         <div ref={headRef}>
-                            {["Our", "Signatures."].map((w, i) => (
+                            {["Our", "Signatures"].map((w, i) => (
                                 <div key={w} style={{ overflow: "hidden" }}>
                                     <span
                                         className="hw block font-black uppercase"

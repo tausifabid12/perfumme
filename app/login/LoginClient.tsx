@@ -157,6 +157,7 @@ function LoginForm() {
     const [regFirst, setRegFirst] = useState("");
     const [regLast, setRegLast] = useState("");
     const [regEmail, setRegEmail] = useState("");
+    const [regPhone, setRegPhone] = useState("");
     const [regPassword, setRegPassword] = useState("");
 
     // Forgot password
@@ -210,7 +211,7 @@ function LoginForm() {
         e.preventDefault(); setError(""); setLoading(true);
         const res = await fetch("/api/auth/register", {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ firstName: regFirst, lastName: regLast, email: regEmail, password: regPassword }),
+            body: JSON.stringify({ firstName: regFirst, lastName: regLast, email: regEmail, phone: regPhone, password: regPassword }),
         });
         const data = await res.json();
         setLoading(false);
@@ -298,7 +299,7 @@ function LoginForm() {
                         marginBottom: 24,
                     }}>
                         Good to<br />
-                        <span style={{ color: GOLD }}>see you.</span>
+                        <span style={{ color: GOLD }}>see you</span>
                     </h1>
 
                     <p style={{
@@ -484,6 +485,7 @@ function LoginForm() {
                                                     <Field label="Last name" type="text" value={regLast} onChange={setRegLast} placeholder="Sharma" />
                                                 </div>
                                                 <Field label="Email" type="email" value={regEmail} onChange={setRegEmail} placeholder="you@example.com" />
+                                                <Field label="Phone / WhatsApp number" type="tel" value={regPhone} onChange={setRegPhone} placeholder="+91 98765 43210" />
                                                 <Field label="Password" type="password" value={regPassword} onChange={setRegPassword} placeholder="Min. 5 characters" />
                                             </>
                                         )}

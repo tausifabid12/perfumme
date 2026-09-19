@@ -114,7 +114,7 @@ export default function RefundPolicyPage() {
     return (
         <LegalPageLayout
             badge="Legal"
-            title={["Refund", "Policy."]}
+            title={["Refund", "Policy"]}
             subtitle="Everything you need to know about cancellations, refunds, and returns."
             lastUpdated="June 2025"
             sections={sections}

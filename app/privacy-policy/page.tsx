@@ -211,7 +211,7 @@ export default function PrivacyPolicyPage() {
     return (
         <LegalPageLayout
             badge="Legal"
-            title={["Privacy", "Policy."]}
+            title={["Privacy", "Policy"]}
             subtitle="How we collect, use, and protect your personal information when you shop with us."
             lastUpdated="July 2026"
             sections={sections}

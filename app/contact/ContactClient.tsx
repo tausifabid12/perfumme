@@ -75,7 +75,7 @@ function Hero() {
         return () => ctx.revert();
     }, []);
 
-    const words = ["Get", "In", "Touch."];
+    const words = ["Get", "In", "Touch"];
 
     return (
         <div ref={sectionRef} className="relative min-h-[55vh] flex flex-col justify-end px-6 lg:px-12 pb-16 pt-32 overflow-hidden"
