@@ -206,7 +206,7 @@ export default function MobileHeroExperience({ onReady }: { onReady?: () => void
             <div ref={pinRef} className="relative overflow-hidden" style={{ height: "100dvh" }}>
 
                 {/* Scrolling track */}
-                <div ref={trackRef} className="flex h-full" style={{ width: `${CARDS.length * 100}vw` }}>
+                <div ref={trackRef} className="flex h-full pt-3" style={{ width: `${CARDS.length * 100}vw` }}>
                     {CARDS.map((card, i) => (
                         <div
                             key={card.id}

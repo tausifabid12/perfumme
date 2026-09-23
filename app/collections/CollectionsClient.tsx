@@ -419,6 +419,7 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
     const bottleRef = useRef<HTMLImageElement>(null);
     const bgRef = useRef<HTMLDivElement>(null);
     const shineRef = useRef<HTMLDivElement>(null);
+    const glowRef = useRef<HTMLDivElement>(null);
     const [hov, setHov] = useState(false);
 
     useEffect(() => {
@@ -453,24 +454,97 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
         <div ref={cardRef} className="h-full" style={{ opacity: 0 }}>
             <div onMouseEnter={onEnter} onMouseLeave={onLeave}
                 className="relative overflow-hidden flex flex-col h-full"
-                style={{ borderRadius: 20, minHeight: 380, border: "1px solid rgba(212,175,55,0.18)" }}>
+                style={{ borderRadius: 20, border: "1px solid rgba(212,175,55,0.18)", background: "linear-gradient(160deg,#141419 0%,#0f0f14 100%)" }}>
 
-                {/* BG image */}
-                <div ref={bgRef} className="absolute inset-0"
-                    style={{
-                        backgroundImage: `url(${product.image})`, backgroundSize: "cover", backgroundPosition: "center",
-                        filter: "brightness(0.32) saturate(0.6)", willChange: "transform"
-                    }} />
-                <div className="absolute inset-0"
-                    style={{ background: `linear-gradient(115deg,rgba(7,7,10,0.96) 0%,rgba(7,7,10,0.75) 50%,rgba(${p.rgb},0.05) 100%)` }} />
-                <div ref={shineRef} className="absolute inset-0 pointer-events-none z-10"
-                    style={{ background: `linear-gradient(105deg,transparent 28%,rgba(${p.rgb},0.3) 50%,transparent 72%)`, opacity: 0 }} />
-                <div className="absolute top-0 left-0 right-0 h-[1px]"
-                    style={{ background: `linear-gradient(90deg,${p.primary},transparent 60%)` }} />
+                {/* Accent top edge */}
+                <div className="absolute top-0 left-0 right-0 h-[1px] z-10 pointer-events-none transition-opacity duration-500"
+                    style={{ background: `linear-gradient(90deg,${p.primary},transparent 60%)`, opacity: hov ? 0.65 : 0.2 }} />
 
-                {/* Content */}
+                {/* ── MOBILE (<sm): ProductCard-style layout — image top, info bottom ── */}
+                <div className="sm:hidden">
+                    {/* Image zone */}
+                    <div className="relative flex items-center justify-center overflow-hidden"
+                        style={{ height: 260, background: `radial-gradient(ellipse 80% 70% at 50% 60%, rgba(${p.rgb},0.07) 0%, transparent 70%)` }}>
+                        <span className="absolute top-4 left-4 z-20 px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.28em]"
+                            style={{ background: `rgba(${p.rgb},0.1)`, border: `1px solid rgba(${p.rgb},0.28)`, color: p.primary, borderRadius: 6 }}>
+                            {product.tag}
+                        </span>
+                        <div ref={glowRef} className="absolute pointer-events-none"
+                            style={{ width: 190, height: 190, background: `radial-gradient(circle,${p.glow} 0%,transparent 65%)`, opacity: 0 }} />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img ref={bottleRef} src={product.image} alt={product.name}
+                            className="relative z-10 object-contain"
+                            style={{ height: 210, width: "auto", filter: `drop-shadow(0 24px 48px rgba(0,0,0,0.8)) drop-shadow(0 0 28px ${p.glow})`, willChange: "transform" }} />
+                        <div className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none z-10"
+                            style={{ background: "linear-gradient(to bottom,transparent,#0f0f14)" }} />
+                    </div>
+                    {/* Info zone */}
+                    <TransitionLink href={product.href} label={product.name} className="block cursor-hover">
+                        <div className="flex flex-col px-5 pt-4 pb-5 gap-3">
+                            <div style={{ height: 1, background: `linear-gradient(90deg,rgba(${p.rgb},0.2),rgba(255,255,255,0.04),transparent)` }} />
+                            <div>
+                                <h3 className="font-black uppercase leading-none mb-0.5"
+                                    style={{ fontSize: "clamp(16px,1.9vw,21px)", letterSpacing: "-0.03em", color: "var(--text-primary)" }}>
+                                    {product.name}
+                                </h3>
+                                <p className="text-[10px] uppercase tracking-[0.22em]" style={{ color: "var(--text-secondary)" }}>
+                                    {product.subtitle || "Extrait de Parfum"}
+                                </p>
+                            </div>
+                            {(product.note0 || product.note2) && (
+                                <div className="flex flex-wrap gap-1.5">
+                                    {[product.note0, product.note2].filter(Boolean).map((n) => (
+                                        <span key={n} className="px-2 py-0.5 text-[10px] uppercase tracking-[0.15em] font-semibold"
+                                            style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: 999, color: "rgba(245,245,245,0.72)" }}>
+                                            {n}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                            <div className="flex items-center gap-4">
+                                <div>
+                                    <p className="font-black leading-none" style={{ fontSize: 12, color: p.primary, letterSpacing: "-0.03em" }}>{product.stat0.number}</p>
+                                    <p className="text-[10px] uppercase tracking-[0.12em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.stat0.label}</p>
+                                </div>
+                                <div>
+                                    <p className="font-black leading-none" style={{ fontSize: 12, color: p.primary, letterSpacing: "-0.03em" }}>{product.stat1.number}</p>
+                                    <p className="text-[10px] uppercase tracking-[0.12em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.stat1.label}</p>
+                                </div>
+                                {product.rating && (
+                                    <div className="flex items-center gap-1 ml-auto">
+                                        <Star size={8} fill={p.primary} stroke={p.primary} />
+                                        <span className="text-[9px] font-bold" style={{ color: "var(--text-primary)" }}>{product.rating}</span>
+                                        {product.reviewCount && <span className="text-[8px]" style={{ color: "rgba(245,245,245,0.65)" }}>({product.reviewCount})</span>}
+                                    </div>
+                                )}
+                            </div>
+                            <div style={{ height: 1, background: "rgba(255,255,255,0.05)" }} />
+                            <div className="flex items-center justify-between gap-3">
+                                <div>
+                                    <p className="font-black leading-none" style={{ fontSize: 18, color: p.primary, letterSpacing: "-0.04em" }}>{product.price}</p>
+                                    <p className="text-[10px] uppercase tracking-[0.1em] mt-0.5" style={{ color: "var(--text-secondary)" }}>{product.priceUnit}</p>
+                                </div>
+                                <div className="flex items-center gap-1.5 px-4 py-2 rounded-pill text-[8px] font-black uppercase tracking-widest transition-all duration-300"
+                                    style={{ background: "transparent", color: p.primary, border: `1px solid rgba(${p.rgb},0.3)`, whiteSpace: "nowrap" }}>
+                                    Discover <ArrowRight size={9} />
+                                </div>
+                            </div>
+                        </div>
+                    </TransitionLink>
+                </div>
+
+                {/* ── DESKTOP (sm+): original cinematic layout ── */}
+                <div className="hidden sm:block absolute inset-0">
+                    <div ref={bgRef} className="absolute inset-0"
+                        style={{ backgroundImage: `url(${product.image})`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.32) saturate(0.6)", willChange: "transform" }} />
+                    <div className="absolute inset-0"
+                        style={{ background: `linear-gradient(115deg,rgba(7,7,10,0.96) 0%,rgba(7,7,10,0.75) 50%,rgba(${p.rgb},0.05) 100%)` }} />
+                    <div ref={shineRef} className="absolute inset-0 pointer-events-none z-10"
+                        style={{ background: `linear-gradient(105deg,transparent 28%,rgba(${p.rgb},0.3) 50%,transparent 72%)`, opacity: 0 }} />
+                </div>
+
                 <TransitionLink href={product.href} label={product.name}
-                    className="relative z-20 flex items-center flex-1 w-full px-8 lg:px-12 py-10 gap-8 cursor-hover">
+                    className="hidden sm:flex relative z-20 items-center flex-1 w-full px-8 lg:px-12 py-10 gap-8 cursor-hover">
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-5">
                             <span className="px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.28em]"
@@ -497,14 +571,9 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
                                 </div>
                             ))}
                         </div>
-                        {/* Price + Discover row */}
                         <div className="flex items-center gap-4">
                             <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-pill text-[9px] font-black uppercase tracking-widest transition-all duration-300"
-                                style={{
-                                    background: hov ? p.primary : "transparent",
-                                    color: hov ? "#0A0A0A" : p.primary,
-                                    border: `1px solid ${hov ? p.primary : `rgba(${p.rgb},0.45)`}`,
-                                }}>
+                                style={{ background: hov ? p.primary : "transparent", color: hov ? "#0A0A0A" : p.primary, border: `1px solid ${hov ? p.primary : `rgba(${p.rgb},0.45)`}` }}>
                                 Discover <ArrowRight size={11} />
                             </span>
                             <div>
@@ -513,26 +582,18 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
                             </div>
                         </div>
                     </div>
-                    {/* Bottle */}
-                    <div className="hidden sm:flex flex-shrink-0 items-center justify-center relative">
-                        <div style={{
-                            position: "absolute", width: 220, height: 220,
-                            background: `radial-gradient(circle,${p.glow} 0%,transparent 65%)`
-                        }} />
+                    <div className="flex-shrink-0 flex items-center justify-center relative">
+                        <div style={{ position: "absolute", width: 220, height: 220, background: `radial-gradient(circle,${p.glow} 0%,transparent 65%)` }} />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img ref={bottleRef} src={product.image} alt={product.name}
                             className="relative z-10"
-                            style={{
-                                height: "clamp(170px,25vh,270px)", width: "auto",
-                                filter: `drop-shadow(0 28px 60px rgba(0,0,0,0.85)) drop-shadow(0 0 32px ${p.glow})`,
-                                willChange: "transform"
-                            }} />
+                            style={{ height: "clamp(170px,25vh,270px)", width: "auto", filter: `drop-shadow(0 28px 60px rgba(0,0,0,0.85)) drop-shadow(0 0 32px ${p.glow})`, willChange: "transform" }} />
                     </div>
                 </TransitionLink>
 
-                {/* Add to Cart â€” sits below the link zone */}
+                {/* Add to Cart */}
                 {product.shopifyVariantId && (
-                    <div className="relative z-20 px-8 lg:px-12 pb-8">
+                    <div className="relative z-20 px-5 sm:px-8 lg:px-12 pb-5 sm:pb-8">
                         <AddToCartBtn product={product} accent={p} />
                     </div>
                 )}
@@ -540,7 +601,6 @@ function FeaturedCard({ product, index }: { product: CollectionProduct; index: n
         </div>
     );
 }
-
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Product grid  (3 cards â†’ featured+1 â†’ repeat)
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

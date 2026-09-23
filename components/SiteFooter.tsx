@@ -132,17 +132,13 @@ export default function SiteFooter() {
                     ref={headRef}
                     className="font-black uppercase mb-8"
                     style={{
-                        fontSize: "clamp(28px,8vw,100px)", letterSpacing: "-0.04em",
+                        fontSize: "clamp(22px,7.5vw,100px)", letterSpacing: "-0.04em",
                         lineHeight: 0.92, color: "var(--text-primary)",
                         clipPath: "inset(0 0 100% 0)", opacity: 0,
-                        wordBreak: "break-word",
-                        overflowWrap: "break-word",
-                        padding: "0 4px",
+                        whiteSpace: "nowrap",
                     }}
                 >
-                    #WEARYOUR
-                    <br className="lg:hidden" />
-                    IDENTITY
+                    #WEARYOURIDENTITY
                 </h2>
 
                 <p className="text-sm max-w-sm mx-auto mb-10" style={{ color: "var(--text-secondary)", lineHeight: 1.8 }}>

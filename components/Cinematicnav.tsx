@@ -20,6 +20,8 @@ const NAV_LINKS = [
 
 export default function CinematicNav({ canAnimate = false }: { canAnimate?: boolean }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(false);
     const { totalQuantity, setCartOpen } = useCart();
 
     const circleRef = useRef<HTMLDivElement>(null);
@@ -57,6 +59,22 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
             { opacity: 1, y: 0, duration: 0.9, ease: "expo.out", delay: 0.15 }
         );
     }, [canAnimate]);
+
+    // ── Scroll detection for frosted background (mobile only) ─────────
+    useEffect(() => {
+        const onScroll = () => {
+            const mobile = window.innerWidth < 1024;
+            setIsMobileView(mobile);
+            setScrolled(mobile && window.scrollY > 40);
+        };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll, { passive: true });
+        onScroll();
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onScroll);
+        };
+    }, []);
 
     useEffect(() => {
         const move = (e: MouseEvent) => {
@@ -121,7 +139,18 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
             />
 
             {/* â”€â”€ Header bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-            <header ref={headerRef} className="fixed top-0 left-0 w-full z-[210] px-6 py-4 md:py-7 md:px-12 flex justify-between items-center mix-blend-difference" style={{ opacity: 0 }}>
+            <header ref={headerRef} className="fixed top-0 left-0 w-full z-[210] px-6 py-4 md:py-7 md:px-12 flex justify-between items-center transition-all duration-500"
+                style={{
+                    opacity: 0,
+                    // Desktop: mix-blend-difference for the cinematic overlay effect
+                    // Mobile: always normal so the frosted glass shows correctly
+                    mixBlendMode: isMobileView ? "normal" : "difference",
+                    background: scrolled ? "rgba(7,7,10,0.82)" : "transparent",
+                    backdropFilter: scrolled ? "blur(20px) saturate(150%)" : "none",
+                    WebkitBackdropFilter: scrolled ? "blur(20px) saturate(150%)" : "none",
+                    borderBottom: scrolled ? "1px solid rgba(212,175,55,0.1)" : "none",
+                    boxShadow: scrolled ? "0 2px 32px rgba(0,0,0,0.4)" : "none",
+                }}>
 
                 {/* Logo */}
                 <Link href="/">

@@ -254,10 +254,11 @@ export default function CompositionSection({
               <img
                 src={data.product.image}
                 alt={data.product.name}
-                className="h-[300px] lg:h-[380px] w-auto object-contain"
+                className="w-auto object-contain"
                 style={{
-                  filter:
-                    "drop-shadow(0 10px 40px rgba(0,0,0,0.2))",
+                  height: "clamp(200px, 45vw, 380px)",
+                  maxWidth: "100%",
+                  filter: "drop-shadow(0 10px 40px rgba(0,0,0,0.2))",
                 }}
               />
             </div>
