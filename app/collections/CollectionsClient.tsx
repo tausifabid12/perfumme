@@ -140,7 +140,7 @@ function PageHeader({ total }: { total: number }) {
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
                     <div>
                         <div className="flex items-center gap-3 mb-5">
-                            <span className="text-[10px] uppercase tracking-[0.6em]" style={{ color: "var(--accent-gold)" }}>The Collection</span>
+                            <span className="text-[10px] uppercase tracking-[0.35em]" style={{ color: "var(--accent-gold)" }}>Senz8 Aroma Private Limited</span>
                             <div style={{ width: 36, height: 1, background: "rgba(212,175,55,0.35)" }} />
                             <span className="text-[10px] uppercase tracking-[0.45em]" style={{ color: "var(--text-secondary)" }}>Extrait de Parfum</span>
                         </div>

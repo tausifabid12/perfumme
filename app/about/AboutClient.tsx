@@ -37,8 +37,8 @@ const PILLARS = [
 
 const TIMELINE = [
     { year: "2023", event: "The Idea", detail: "Three friends, one shared obsession: why did luxury fragrance feel so exclusive, so out of reach for young India?" },
-    { year: "2024", event: "Born in Bangalore", detail: "Senz eight Aroma Private Limited was incorporated. Our first formulations came to life in a small studio in Domlur, Bangalore." },
-    { year: "2024", event: "First Four Drops", detail: "Imperial Smoke, IT Boy, Rebel Girl, and Blind Date — four scents, four identities, one house. Extrait de Parfum, each one." },
+    { year: "2026", event: "Born in Bangalore", detail: "Senz eight Aroma Private Limited was incorporated. Our first formulations came to life in a small studio in Domlur, Bangalore." },
+    { year: "2026", event: "First Four Drops", detail: "Imperial Smoke, IT Boy, Rebel Girl, and Blind Date — four scents, four identities, one house. Extrait de Parfum, each one." },
     { year: "2025", event: "The Community Grows", detail: "Thousands of wearers later, the community defines us. Every review, every story, every tagged moment tells us we got it right." },
 ];
 
@@ -191,7 +191,7 @@ function OriginStory() {
                 {/* Left — pull quote */}
                 <div className="os-item opacity-0">
                     <p className="text-[10px] uppercase tracking-[0.55em] font-bold mb-6"
-                        style={{ color: "var(--accent-gold)" }}>Est. 2024 · Bangalore</p>
+                        style={{ color: "var(--accent-gold)" }}>Est. 2026 · Bangalore</p>
                     <blockquote className="font-black uppercase"
                         style={{
                             fontFamily: "var(--font-inter), system-ui, sans-serif",
@@ -202,6 +202,8 @@ function OriginStory() {
                         }}>
                         "Wear Your<br />
                         <span style={{ color: "var(--accent-gold)" }}>Identity"</span>
+                        Wear Your<br />
+                        <span style={{ color: "var(--accent-gold)" }}>Identity.</span>
                     </blockquote>
                     <div className="mt-8" style={{ height: 1, width: 200, background: "linear-gradient(90deg, #D4AF37, transparent)" }} />
                     <p className="mt-6 text-[9px] uppercase tracking-[0.4em]"
@@ -455,7 +457,7 @@ function MarqueeStrip() {
         const tw = gsap.to(rowRef.current, { xPercent: -50, duration: 20, repeat: -1, ease: "linear" });
         return () => { tw.kill(); };
     }, []);
-    const items = ["WEAR YOUR IDENTITY", "EST. 2024", "BANGALORE", "EXTRAIT DE PARFUM", "35% OIL", "GEN Z · FOR REAL"];
+    const items = ["WEAR YOUR IDENTITY", "EST. 2026", "BANGALORE", "EXTRAIT DE PARFUM", "35% OIL", "GEN Z · FOR REAL"];
     const row = items.map((n, i) => (
         <span key={i} className="flex items-center gap-8 shrink-0">
             <span className="font-black uppercase tracking-tight whitespace-nowrap"
@@ -658,7 +660,7 @@ export default function AboutClient() {
             <StatsBar />
             <Pillars />
             <MarqueeStrip />
-            <Timeline />
+            {/* <Timeline /> */}
             <CollectionTeaser />
             <CTABanner />
             <SiteFooter />

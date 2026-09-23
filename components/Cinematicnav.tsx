@@ -343,7 +343,7 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
 
                 {/* Bottom â€” tagline */}
                 <p className="absolute bottom-10 right-10 hidden md:block text-[10px] tracking-[0.35em] text-white/50 uppercase select-none">
-                    Fine Fragrance Â· Est. 2024
+                    Fine Fragrance Â· Est. 2026
                 </p>
             </nav>
         </>
