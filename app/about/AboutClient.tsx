@@ -109,13 +109,13 @@ function Hero() {
                 style={{ background: "linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)" }} />
 
             <div className="relative max-w-[900px]">
-                <TransitionLink href="/" label="Home"
+                {/* <TransitionLink href="/" label="Home"
                     className="inline-flex items-center gap-2 mb-8 text-[10px] uppercase tracking-[0.35em] cursor-hover transition-colors duration-300"
                     style={{ color: "rgba(245,245,245,0.65)" }}
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--accent-gold)"; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.65)"; }}>
                     <ArrowLeft size={11} /> Back to Home
-                </TransitionLink>
+                </TransitionLink> */}
 
                 <div ref={badgeRef} className="flex items-center gap-3 mb-5 opacity-0">
                     <span className="text-[10px] uppercase tracking-[0.6em] font-bold" style={{ color: "var(--accent-gold)" }}>
@@ -202,8 +202,7 @@ function OriginStory() {
                         }}>
                         "Wear Your<br />
                         <span style={{ color: "var(--accent-gold)" }}>Identity"</span>
-                        Wear Your<br />
-                        <span style={{ color: "var(--accent-gold)" }}>Identity.</span>
+
                     </blockquote>
                     <div className="mt-8" style={{ height: 1, width: 200, background: "linear-gradient(90deg, #D4AF37, transparent)" }} />
                     <p className="mt-6 text-[9px] uppercase tracking-[0.4em]"
