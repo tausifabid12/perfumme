@@ -16,9 +16,9 @@ const INFO = [
     {
         icon: Mail,
         label: "Email Us",
-        value: "contact@senz8.in",
+        value: "wecare@senz8.in",
         sub: "We reply within 24 hours",
-        href: "mailto:contact@senz8.in",
+        href: "mailto:wecare@senz8.in",
     },
     {
         icon: Phone,
@@ -30,8 +30,8 @@ const INFO = [
     {
         icon: MapPin,
         label: "Visit Us",
-        value: "No. 427 Srinivasa Nilaya,6th Cross, Domlur,Domlur,Bangalore North,Bangalore-560071,Karnataka",
-        sub: "Senz eight Aroma Private Limited",
+        value: " 2nd floor, Four Square, 301, 85, Haudin Rd, Yellappa Chetty Layout, Bengaluru, Karnataka 560042",
+        sub: "Senz Eight Aroma Private Limited",
         href: "#",
     },
 ];
@@ -213,6 +213,7 @@ function ContactForm() {
     const [subject, setSubject] = useState(SUBJECTS[0]);
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [form, setForm] = useState({ name: "", email: "", message: "" });
 
     // Scroll reveal
@@ -239,11 +240,24 @@ function ContactForm() {
     const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         setSending(true);
-        // Simulate send — replace with real API call
-        await new Promise(r => setTimeout(r, 1400));
-        setSending(false);
-        setSent(true);
-    }, []);
+        setError(null);
+        try {
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...form, subject }),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error ?? "Something went wrong. Please try again.");
+            }
+            setSent(true);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+        } finally {
+            setSending(false);
+        }
+    }, [form, subject]);
 
     const inputBase: React.CSSProperties = {
         width: "100%",
@@ -273,52 +287,31 @@ function ContactForm() {
             <div className="mb-12"
                 style={{ height: 1, background: "linear-gradient(90deg, var(--accent-gold), rgba(212,175,55,0.1), transparent)" }} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-20">
+            {/* Full-width success takeover */}
+            {sent ? (
+                <SuccessState />
+            ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-20">
 
-                {/* Left — heading + note */}
-                <div ref={headRef} className="opacity-0">
-                    <span className="text-[8px] uppercase tracking-[0.6em] font-bold block mb-4"
-                        style={{ color: "var(--accent-gold)" }}>Send a Message</span>
-                    <h2 className="font-black uppercase mb-5"
-                        style={{
-                            fontFamily: "var(--font-inter), system-ui, sans-serif",
-                            fontSize: "clamp(30px,3.8vw,54px)", letterSpacing: "-0.04em",
-                            lineHeight: 0.9, color: "var(--text-primary)"
-                        }}>
-                        We'd Love<br />To Hear<br />From You.
-                    </h2>
-                    <p className="text-sm leading-relaxed mb-8" style={{ color: "var(--text-secondary)", lineHeight: 1.9 }}>
-                        Fill in the form and our team will get back to you within 24 hours.
-                        Or reach out directly via email or phone.
-                    </p>
-
-                    {/* Social links */}
-                    <div className="flex flex-col gap-3">
-                        <p className="text-[8px] uppercase tracking-[0.5em]" style={{ color: "var(--text-secondary)" }}>
-                            Follow Our World
+                    {/* Left — heading + note */}
+                    <div ref={headRef} className="opacity-0">
+                        <span className="text-[8px] uppercase tracking-[0.6em] font-bold block mb-4"
+                            style={{ color: "var(--accent-gold)" }}>Send a Message</span>
+                        <h2 className="font-black uppercase mb-5"
+                            style={{
+                                fontFamily: "var(--font-inter), system-ui, sans-serif",
+                                fontSize: "clamp(30px,3.8vw,54px)", letterSpacing: "-0.04em",
+                                lineHeight: 0.9, color: "var(--text-primary)"
+                            }}>
+                            We'd Love<br />To Hear<br />From You.
+                        </h2>
+                        <p className="text-sm leading-relaxed mb-8" style={{ color: "var(--text-secondary)", lineHeight: 1.9 }}>
+                            Fill in the form and our team will get back to you within 24 hours.
+                            Or reach out directly via email or phone.
                         </p>
-                        <div className="flex items-center gap-4">
-                            {[
-                                { name: "Instagram", href: "https://instagram.com" },
-                                { name: "TikTok", href: "https://tiktok.com" },
-                                { name: "YouTube", href: "https://youtube.com" },
-                            ].map(s => (
-                                <a key={s.name} href={s.href} target="_blank" rel="noopener noreferrer"
-                                    className="text-[9px] uppercase tracking-[0.35em] font-bold transition-colors duration-300 cursor-hover"
-                                    style={{ color: "rgba(245,245,245,0.3)" }}
-                                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = "var(--accent-gold)"; }}
-                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.3)"; }}>
-                                    {s.name}
-                                </a>
-                            ))}
-                        </div>
                     </div>
-                </div>
 
-                {/* Right — form */}
-                {sent ? (
-                    <SuccessState />
-                ) : (
+                    {/* Right — form */}
                     <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-5">
 
                         {/* Name + Email row */}
@@ -375,6 +368,14 @@ function ContactForm() {
                                 onBlur={blurStyle as unknown as React.FocusEventHandler<HTMLTextAreaElement>} />
                         </div>
 
+                        {/* Error message */}
+                        {error && (
+                            <p className="text-xs px-4 py-3 rounded-lg"
+                                style={{ color: "#f87171", background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)" }}>
+                                {error}
+                            </p>
+                        )}
+
                         {/* Submit */}
                         <div className="form-field opacity-0">
                             <button type="submit" disabled={sending}
@@ -393,8 +394,8 @@ function ContactForm() {
                             </button>
                         </div>
                     </form>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -402,46 +403,107 @@ function ContactForm() {
 // ── Success state ─────────────────────────────────────────────────────────────
 function SuccessState() {
     const ref = useRef<HTMLDivElement>(null);
+    const glowRef = useRef<HTMLDivElement>(null);
+    const checkRef = useRef<HTMLDivElement>(null);
+    const textRef = useRef<HTMLDivElement>(null);
+    const btnRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
-        gsap.fromTo(ref.current,
-            { opacity: 0, y: 24, scale: 0.96 },
-            { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "expo.out" }
-        );
+        const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+
+        // Floating glow pulse
+        gsap.to(glowRef.current, {
+            scale: 1.4, opacity: 0.8, duration: 2.8,
+            ease: "sine.inOut", repeat: -1, yoyo: true,
+        });
+
+        tl.fromTo(ref.current,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.4 }, 0)
+            .fromTo(checkRef.current,
+                { scale: 0, opacity: 0, rotate: -20 },
+                { scale: 1, opacity: 1, rotate: 0, duration: 0.9, ease: "back.out(1.8)" }, 0.1)
+            .fromTo(textRef.current,
+                { opacity: 0, y: 28, filter: "blur(8px)" },
+                { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.8 }, 0.55)
+            .fromTo(btnRef.current,
+                { opacity: 0, y: 16 },
+                { opacity: 1, y: 0, duration: 0.6 }, 0.85);
     }, []);
 
     return (
-        <div ref={ref} className="flex flex-col items-start justify-center gap-6 py-12">
-            {/* Check icon */}
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                style={{ background: "rgba(212,175,55,0.1)", border: "1px solid rgba(212,175,55,0.3)" }}>
-                <Check size={28} style={{ color: "var(--accent-gold)" }} />
+        <div ref={ref} className="relative flex flex-col items-center justify-center text-center py-20 px-6 overflow-hidden opacity-0">
+
+            {/* Ambient glow behind icon */}
+            <div ref={glowRef} className="absolute pointer-events-none"
+                style={{
+                    width: 400, height: 400,
+                    background: "radial-gradient(circle, rgba(212,175,55,0.12) 0%, transparent 65%)",
+                    willChange: "transform, opacity",
+                }} />
+
+            {/* Animated check ring */}
+            <div ref={checkRef} className="relative mb-10 flex items-center justify-center" style={{ willChange: "transform" }}>
+                {/* Outer ring */}
+                <div className="absolute rounded-full"
+                    style={{
+                        width: 120, height: 120,
+                        border: "1px solid rgba(212,175,55,0.2)",
+                        animation: "spin 12s linear infinite",
+                    }} />
+                {/* Inner ring */}
+                <div className="absolute rounded-full"
+                    style={{
+                        width: 96, height: 96,
+                        border: "1px solid rgba(212,175,55,0.35)",
+                    }} />
+                {/* Icon box */}
+                <div className="relative z-10 w-20 h-20 rounded-full flex items-center justify-center"
+                    style={{
+                        background: "radial-gradient(135deg, rgba(212,175,55,0.18) 0%, rgba(212,175,55,0.06) 100%)",
+                        border: "1.5px solid rgba(212,175,55,0.5)",
+                        boxShadow: "0 0 40px rgba(212,175,55,0.2), inset 0 0 20px rgba(212,175,55,0.05)",
+                    }}>
+                    <Check size={30} strokeWidth={2.5} style={{ color: "var(--accent-gold)" }} />
+                </div>
             </div>
 
-            <div>
-                <h3 className="font-black uppercase mb-3"
+            {/* Text */}
+            <div ref={textRef} className="flex flex-col items-center gap-4 opacity-0">
+                <span className="text-[8px] uppercase tracking-[0.7em] font-bold"
+                    style={{ color: "var(--accent-gold)" }}>
+                    Message Sent
+                </span>
+                <h3 className="font-black uppercase"
                     style={{
                         fontFamily: "var(--font-inter), system-ui, sans-serif",
-                        fontSize: "clamp(26px,3vw,42px)", letterSpacing: "-0.03em",
-                        lineHeight: 0.9, color: "var(--text-primary)"
+                        fontSize: "clamp(38px, 6vw, 80px)",
+                        letterSpacing: "-0.04em",
+                        lineHeight: 0.88,
+                        color: "var(--text-primary)",
                     }}>
-                    Message<br />Received.
+                    We'll Be In<br />
+                    <span style={{ color: "var(--accent-gold)" }}>Touch.</span>
                 </h3>
-                <p className="text-sm leading-relaxed max-w-sm" style={{ color: "var(--text-secondary)", lineHeight: 1.9 }}>
-                    Thank you for reaching out. Our team will get back to you within 24 hours.
-                    While you wait, explore our full collection.
+                <p className="text-sm max-w-sm mt-2" style={{ color: "var(--text-secondary)", lineHeight: 1.9 }}>
+                    Our team will respond within 24 hours. In the meantime,
+                    discover the world of Senz8.
                 </p>
             </div>
 
-            <TransitionLink href="/collections" label="The Collection"
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-pill font-black uppercase tracking-widest text-[10px] cursor-hover transition-all duration-300"
-                style={{
-                    background: "var(--accent-gold)", color: "#0A0A0A",
-                    boxShadow: "0 0 24px rgba(212,175,55,0.3)"
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.1)"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}>
-                Explore Collection <ArrowRight size={11} />
-            </TransitionLink>
+            {/* CTA */}
+            <div ref={btnRef} className="mt-10 flex items-center gap-4 opacity-0">
+                <TransitionLink href="/collections" label="The Collection"
+                    className="inline-flex items-center gap-2.5 px-8 py-4 rounded-pill font-black uppercase tracking-widest text-[10px] cursor-hover transition-all duration-300"
+                    style={{
+                        background: "var(--accent-gold)", color: "#0A0A0A",
+                        boxShadow: "0 0 0 3px rgba(212,175,55,0.15), 0 0 32px rgba(212,175,55,0.4)",
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1.12)"; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}>
+                    Explore Collection <ArrowRight size={12} />
+                </TransitionLink>
+            </div>
         </div>
     );
 }

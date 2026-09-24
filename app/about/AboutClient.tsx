@@ -457,17 +457,17 @@ function MarqueeStrip() {
         const tw = gsap.to(rowRef.current, { xPercent: -50, duration: 20, repeat: -1, ease: "linear" });
         return () => { tw.kill(); };
     }, []);
-    const items = ["WEAR YOUR IDENTITY", "EST. 2026", "BANGALORE", "EXTRAIT DE PARFUM", "35% OIL", "GEN Z · FOR REAL"];
+    const items = ["WEAR YOUR IDENTITY", "EXTRAIT DE PARFUM", "35% OIL", "GEN Z · FOR REAL"];
     const row = items.map((n, i) => (
         <span key={i} className="flex items-center gap-8 shrink-0">
             <span className="font-black uppercase tracking-tight whitespace-nowrap"
-                style={{ fontSize: "clamp(20px,3vw,40px)", color: "rgba(245,245,245,0.04)" }}>{n}</span>
-            <span style={{ color: "rgba(212,175,55,0.12)", fontSize: 12 }}>◆</span>
+                style={{ fontSize: "clamp(20px,3vw,40px)", color: "rgba(245,245,245,0.55)" }}>{n}</span>
+            <span style={{ color: "rgba(212,175,55,0.6)", fontSize: 12 }}>◆</span>
         </span>
     ));
     return (
         <div className="overflow-hidden py-6"
-            style={{ background: "#050508", borderTop: "1px solid rgba(212,175,55,0.05)", borderBottom: "1px solid rgba(212,175,55,0.05)" }}>
+            style={{ background: "#050508", borderTop: "1px solid rgba(212,175,55,0.12)", borderBottom: "1px solid rgba(212,175,55,0.12)" }}>
             <div ref={rowRef} className="inline-flex items-center gap-8" style={{ willChange: "transform" }}>
                 {row}{row}
             </div>
@@ -659,7 +659,7 @@ export default function AboutClient() {
             <OriginStory />
             <StatsBar />
             <Pillars />
-            <MarqueeStrip />
+            {/* <MarqueeStrip /> */}
             {/* <Timeline /> */}
             <CollectionTeaser />
             <CTABanner />
