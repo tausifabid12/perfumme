@@ -459,6 +459,17 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     .ct-rebel-btn-row { justify-content: flex-start; }
                     .ct-rebel-rule { margin-left: 0; margin-right: auto; }
 
+                    /* Subtitles sit over the bright bottle on mobile — make them
+                       larger, brighter and shadowed so they stay readable.
+                       !important beats the inline desktop color. */
+                    .ct-sub {
+                        font-size: 11px;
+                        font-weight: 500;
+                        letter-spacing: 0.22em;
+                        color: rgba(255,255,255,0.92) !important;
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.75);
+                    }
+
                     /* IT BOY */
                     .ct-it { left: 4%; bottom: 6%; }
                     .ct-boy { position: static; text-align: left; }
