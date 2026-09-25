@@ -459,6 +459,22 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     .ct-rebel-btn-row { justify-content: flex-start; }
                     .ct-rebel-rule { margin-left: 0; margin-right: auto; }
 
+                    /* Dark fade behind the bottom-left text block so it reads over
+                       bright frames (Rebel Girl). Part of the overlay, so it
+                       disappears with the text when HomeSections appear. */
+                    .ct-overlay::before {
+                        content: "";
+                        position: absolute;
+                        left: 0; right: 0; bottom: 0;
+                        height: 55%;
+                        background: linear-gradient(to top,
+                            rgba(0,0,0,0.85) 0%,
+                            rgba(0,0,0,0.6) 35%,
+                            rgba(0,0,0,0.25) 65%,
+                            transparent 100%);
+                        pointer-events: none;
+                    }
+
                     /* Subtitles sit over the bright bottle on mobile — make them
                        larger, brighter and shadowed so they stay readable.
                        !important beats the inline desktop color. */
