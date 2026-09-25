@@ -90,8 +90,10 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
 
         ScrollTrigger.create({
             trigger: document.body,
-            start: () => `${getScrollPx(0.31)}px top`,
-            end: () => `${getScrollPx(0.64)}px top`,
+            // Mobile range starts earlier so the text is fully in at the
+            // MobileCinematicSnap stop (0.435), where the bottle frame is sharp.
+            start: () => `${getScrollPx(isMobile ? 0.22 : 0.31)}px top`,
+            end: () => `${getScrollPx(isMobile ? 0.55 : 0.64)}px top`,
             scrub: 1.2,
             animation: rebelTl,
             onUpdate: self => {

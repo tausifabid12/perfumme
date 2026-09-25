@@ -18,7 +18,15 @@ const NAV_LINKS = [
     { name: "Contact", text: "3", href: "/contact" },
 ];
 
-export default function CinematicNav({ canAnimate = false }: { canAnimate?: boolean }) {
+export default function CinematicNav({
+    canAnimate = false,
+    transparentHero = false,
+}: {
+    canAnimate?: boolean;
+    // Home page: keep the bar transparent over the full-screen cinematic hero
+    // (1200vh scroll zone) so it doesn't cover the top of the image.
+    transparentHero?: boolean;
+}) {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [isMobileView, setIsMobileView] = useState(false);
@@ -65,7 +73,8 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
         const onScroll = () => {
             const mobile = window.innerWidth < 1024;
             setIsMobileView(mobile);
-            setScrolled(mobile && window.scrollY > 40);
+            const threshold = transparentHero ? window.innerHeight * 12 : 40;
+            setScrolled(mobile && window.scrollY > threshold);
         };
         window.addEventListener("scroll", onScroll, { passive: true });
         window.addEventListener("resize", onScroll, { passive: true });
@@ -74,7 +83,7 @@ export default function CinematicNav({ canAnimate = false }: { canAnimate?: bool
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onScroll);
         };
-    }, []);
+    }, [transparentHero]);
 
     useEffect(() => {
         const move = (e: MouseEvent) => {

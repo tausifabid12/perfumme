@@ -127,7 +127,7 @@ export default function Page() {
                 />
             )}
 
-            <CinematicNav canAnimate={!loading} />
+            <CinematicNav canAnimate={!loading} transparentHero />
 
             {/* ──  TEMPORARY DISABLE MOBILE experience ── fixed card deck, then normal scroll ── */}
             {isMobile ? (

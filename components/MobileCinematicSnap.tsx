@@ -11,10 +11,11 @@ import gsap from "gsap";
 // Stops are fractions of the cinematic scroll max (12 × innerHeight), matching
 // the ScrollTrigger ranges in CinematicTypography:
 //   0     → IMPERIAL SMOKE (product 1)
-//   0.52  → REBEL GIRL (product 2, fully revealed inside its 0.31–0.64 range)
+//   0.435 → REBEL GIRL (product 2 — frame ~131, before the glow bloom blurs the
+//           bottle; text fully revealed inside its mobile 0.22–0.55 range)
 //   0.9   → IT BOY (product 3, triggers at 0.81)
 //   end   → top of HomeSections
-const STOPS = [0, 0.52, 0.9];
+const STOPS = [0, 0.435, 0.9];
 const STEP_DURATION = 1.6;
 const SWIPE_THRESHOLD = 25;
 const EPS = 4;
