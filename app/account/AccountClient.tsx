@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import gsap from "gsap";
 import CinematicNav from "@/components/Cinematicnav";
@@ -45,7 +44,6 @@ type Tab = typeof TABS[number];
 
 // ── root ──────────────────────────────────────────────────────────────────────
 export default function AccountClient({ customer }: { customer: Customer }) {
-    const router = useRouter();
     const [tab, setTab] = useState<Tab>("Orders");
     const contentRef = useRef<HTMLDivElement>(null);
     const heroRef = useRef<HTMLDivElement>(null);
@@ -62,8 +60,11 @@ export default function AccountClient({ customer }: { customer: Customer }) {
 
     const logout = async () => {
         await fetch("/api/auth/logout", { method: "POST" });
-        router.push("/");
-        router.refresh();
+        // The cart is linked to this customer at checkout — drop it so the next
+        // person on this device doesn't check out under their account.
+        localStorage.removeItem("senz8_cart_id");
+        // Full reload so the in-memory cart state resets too
+        window.location.href = "/";
     };
 
     const initials = `${customer.firstName?.charAt(0) ?? ""}${customer.lastName?.charAt(0) ?? ""}`.toUpperCase() || "U";

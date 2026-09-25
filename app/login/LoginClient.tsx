@@ -6,6 +6,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ArrowRight, Eye, EyeOff, ShoppingBag } from "lucide-react";
 import CinematicNav from "@/components/Cinematicnav";
+import { useCart } from "@/components/providers/CartProvider";
 
 // ── constants ──────────────────────────────────────────────────────────────────
 const GOLD = "#D4AF37";
@@ -138,6 +139,7 @@ function ErrorBox({ msg }: { msg: string }) {
 // ── Main form component ────────────────────────────────────────────────────────
 function LoginForm() {
     const router = useRouter();
+    const { goToCheckout } = useCart();
     const params = useSearchParams();
     const fromParam = params.get("from") ?? "/account";
     const isCheckoutFlow = fromParam === "checkout";
@@ -169,10 +171,11 @@ function LoginForm() {
 
     /** Resume checkout or go to redirect target after successful auth */
     const handlePostAuth = () => {
-        if (isCheckoutFlow) {
-            const saved = sessionStorage.getItem("senz8_checkout_url");
-            sessionStorage.removeItem("senz8_checkout_url");
-            if (saved) { window.location.href = saved; return; }
+        if (isCheckoutFlow && localStorage.getItem("senz8_cart_id")) {
+            // Now that the token cookie is set, link the customer to the cart
+            // and continue to Shopify checkout signed in.
+            goToCheckout();
+            return;
         }
         router.push(redirectTo);
         router.refresh();

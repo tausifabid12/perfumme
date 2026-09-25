@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import TransitionLink from "@/components/TransitionLink";
 
 export default function CartDrawer() {
-    const { lines, subtotal, totalQuantity, checkoutUrl, cartOpen, setCartOpen, removeFromCart, updateQty, adding } = useCart();
+    const { lines, subtotal, totalQuantity, checkoutUrl, cartOpen, setCartOpen, removeFromCart, updateQty, adding, goToCheckout } = useCart();
     const { customer, loading: authLoading } = useAuth();
 
     const drawerRef = useRef<HTMLDivElement>(null);
@@ -50,16 +50,15 @@ export default function CartDrawer() {
         // If still checking auth, wait — button is disabled
         if (authLoading) return;
 
-        // Not logged in → save the checkout URL and send to login
+        // Not logged in → go to login, which resumes checkout afterwards
         if (!customer) {
-            sessionStorage.setItem("senz8_checkout_url", checkoutUrl);
             setCartOpen(false);
             window.location.href = "/login?from=checkout";
             return;
         }
 
-        // Logged in → go straight to Shopify checkout
-        window.location.href = checkoutUrl;
+        // Logged in → attach customer to the cart, then go to Shopify checkout
+        goToCheckout();
     };
 
     return (

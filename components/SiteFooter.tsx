@@ -171,13 +171,7 @@ export default function SiteFooter() {
                         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.filter = "brightness(1)"; }}>
                         Shop All Scents <ArrowRight size={13} />
                     </TransitionLink>
-                    <TransitionLink href="/" label="Home"
-                        className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-pill text-sm font-bold uppercase tracking-widest cursor-hover transition-all duration-300 w-full sm:w-auto"
-                        style={{ border: "1px solid rgba(212,175,55,0.3)", color: "var(--text-secondary)" }}
-                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,175,55,0.6)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
-                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,175,55,0.3)"; (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)"; }}>
-                        Back to Home
-                    </TransitionLink>
+
                 </div>
             </div>
 

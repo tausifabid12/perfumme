@@ -38,6 +38,7 @@ interface CartCtx {
   addToCart: (variantId: string, qty?: number) => Promise<void>;
   removeFromCart: (lineId: string) => Promise<void>;
   updateQty: (lineId: string, qty: number) => Promise<void>;
+  goToCheckout: () => Promise<void>;
 }
 
 const Ctx = createContext<CartCtx>({
@@ -47,6 +48,7 @@ const Ctx = createContext<CartCtx>({
   addToCart: async () => { },
   removeFromCart: async () => { },
   updateQty: async () => { },
+  goToCheckout: async () => { },
 });
 
 export const useCart = () => useContext(Ctx);
@@ -205,8 +207,34 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (data?.cartLinesUpdate?.cart) applyCart(data.cartLinesUpdate.cart);
   }, [cartId, applyCart, removeFromCart]);
 
+  // Link the logged-in customer to the cart server-side, then open Shopify
+  // checkout so the user stays signed in there. Not logged in → login first;
+  // LoginClient calls this again after auth (via the ?from=checkout flow).
+  const goToCheckout = useCallback(async () => {
+    // Read from storage: callers may run right after addToCart, before state updates
+    const id = (typeof window !== "undefined" ? localStorage.getItem(CART_KEY) : null) ?? cartId;
+    if (!id) return;
+
+    const res = await fetch("/api/cart/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ cartId: id }),
+    }).catch(() => null);
+
+    if (res?.status === 401) {
+      setCartOpen(false);
+      window.location.href = "/login?from=checkout";
+      return;
+    }
+
+    const data = res?.ok ? await res.json() : null;
+    const url = data?.checkoutUrl ?? checkoutUrl;
+    if (url) window.location.href = url;
+  }, [cartId, checkoutUrl]);
+
   return (
-    <Ctx.Provider value={{ cartId, checkoutUrl, totalQuantity, lines, subtotal, adding, cartOpen, setCartOpen, addToCart, removeFromCart, updateQty }}>
+    <Ctx.Provider value={{ cartId, checkoutUrl, totalQuantity, lines, subtotal, adding, cartOpen, setCartOpen, addToCart, removeFromCart, updateQty, goToCheckout }}>
       {children}
     </Ctx.Provider>
   );

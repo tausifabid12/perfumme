@@ -72,7 +72,7 @@ export default function HeroSection({
   const calloutsRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLDivElement>(null);
   const [added, setAdded] = useState(false);
-  const { addToCart, adding, checkoutUrl } = useCart();
+  const { addToCart, adding, goToCheckout } = useCart();
   const { customer } = useAuth();
 
   const handleAddToCart = useCallback(async () => {
@@ -85,15 +85,12 @@ export default function HeroSection({
   const handleBuyNow = useCallback(async () => {
     if (!shopifyVariantId) return;
     await addToCart(shopifyVariantId, 1);
-    const url = checkoutUrl;
-    if (!url) return;
     if (!customer) {
-      sessionStorage.setItem("senz8_checkout_url", url);
       window.location.href = "/login?from=checkout";
       return;
     }
-    window.location.href = url;
-  }, [shopifyVariantId, addToCart, checkoutUrl, customer]);
+    await goToCheckout();
+  }, [shopifyVariantId, addToCart, goToCheckout, customer]);
 
   const onCompleteRef = useRef(onAnimationComplete);
   useEffect(() => { onCompleteRef.current = onAnimationComplete; }, [onAnimationComplete]);

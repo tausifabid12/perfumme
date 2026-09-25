@@ -44,7 +44,7 @@ export default function ShopifyProductClient({
     product, defaultVariantId, price,
     longevity, concentration, topNotes, heartNotes, baseNotes,
 }: Props) {
-    const { addToCart, adding, checkoutUrl } = useCart();
+    const { addToCart, adding, goToCheckout } = useCart();
     const { customer } = useAuth();
     const [selectedVariant, setSelectedVariant] = useState<ShopifyProductVariant>(
         product.variants.nodes[0]
@@ -94,15 +94,12 @@ export default function ShopifyProductClient({
 
     const handleBuyNow = useCallback(async () => {
         await addToCart(selectedVariant.id, qty);
-        const url = checkoutUrl;
-        if (!url) return;
         if (!customer) {
-            sessionStorage.setItem("senz8_checkout_url", url);
             window.location.href = "/login?from=checkout";
             return;
         }
-        window.location.href = url;
-    }, [addToCart, selectedVariant.id, qty, checkoutUrl, customer]);
+        await goToCheckout();
+    }, [addToCart, selectedVariant.id, qty, goToCheckout, customer]);
 
     return (
         <div className="relative min-h-screen" style={{ background: "var(--bg-primary)" }}>
