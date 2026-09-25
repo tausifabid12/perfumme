@@ -110,7 +110,12 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
     // ── EXIT: cover screen then navigate ────────────────────────────────────
     const navigate = useCallback((href: string, lbl = "") => {
         if (isAnimating.current) return;
-        if (href === pathname) return;
+        // Link to the current page (e.g. footer "Shop All Scents" on /collections):
+        // no page transition, just bring the user back to the top.
+        if (href === pathname) {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+        }
 
         isAnimating.current = true;
         setLabel(lbl);
