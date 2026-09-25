@@ -108,6 +108,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
         const itWord = itEl.querySelector<HTMLElement>("[data-it-word]")!;
         const boyWord = itEl.querySelector<HTMLElement>("[data-boy-word]")!;
         const itSubs = itEl.querySelectorAll<HTMLElement>("[data-it-sub]");
+        const itBlock = itEl.querySelector<HTMLElement>(".ct-it")!;
 
         gsap.set(itEl, { opacity: 0, pointerEvents: "none" });
         gsap.set(itWord, { opacity: 0, y: 55, filter: "blur(18px)" });
@@ -125,8 +126,8 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
             trigger: document.body,
             start: () => `${getScrollPx(0.81)}px top`,
             scrub: false,
-            onEnter: () => { itEl.style.pointerEvents = "auto"; itInTl.play(); },
-            onLeaveBack: () => { itEl.style.pointerEvents = "none"; itInTl.reverse(); },
+            onEnter: () => { itBlock.style.pointerEvents = "auto"; itInTl.play(); },
+            onLeaveBack: () => { itBlock.style.pointerEvents = "none"; itInTl.reverse(); },
         });
 
         // ── Hide the entire fixed overlay once the user scrolls past the
@@ -281,7 +282,10 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     position: absolute;
                     bottom: 5%;
                     left: 4%;
-                    pointer-events: auto;
+                    /* Toggled in JS only while IT BOY is on screen — while hidden it
+                       sits right on top of the IMPERIAL SMOKE button and would steal
+                       its clicks/hover. */
+                    pointer-events: none;
                 }
 
                 /* BOY — stacked under IT in same column */
@@ -329,7 +333,8 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     position: relative;
                     overflow: hidden;
                     transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
-                    pointer-events: auto;
+                    /* pointer-events inherited from the section, so hidden
+                       sections' buttons can't intercept clicks */
                     min-width: 148px;
                     touch-action: manipulation;
                     box-shadow:
