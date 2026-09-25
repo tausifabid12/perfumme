@@ -1,22 +1,26 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Bodoni_Moda } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import { PageTransitionProvider } from "@/components/PageTransition";
 import { CartProvider } from "@/components/providers/CartProvider";
 import CartDrawer from "@/components/CartDrawer";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+// Self-hosted (latin, variable weight) instead of next/font/google: Turbopack
+// fails to resolve Google's "/l/font?kit=…&skey=…" URLs on some networks.
+const inter = localFont({
+  src: "./fonts/Inter-latin.woff2",
+  weight: "300 900",
+  style: "normal",
   display: "swap",
   variable: "--font-inter",
 });
 
-const bodoniModa = Bodoni_Moda({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
+const bodoniModa = localFont({
+  src: [
+    { path: "./fonts/BodoniModa-latin.woff2", weight: "400 900", style: "normal" },
+    { path: "./fonts/BodoniModa-latin-italic.woff2", weight: "400 900", style: "italic" },
+  ],
   display: "swap",
   variable: "--font-bodoni",
 });
