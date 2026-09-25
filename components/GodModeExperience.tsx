@@ -70,8 +70,12 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
         const loop = () => {
             raf.current = requestAnimationFrame(loop);
             currentFrame.current += (targetFrame.current - currentFrame.current) * 0.12;
-            const safeIndex = Math.max(0, Math.min(Math.round(currentFrame.current), TOTAL_FRAMES - 1));
-            const img = images.current[safeIndex];
+            let i = Math.max(0, Math.min(Math.round(currentFrame.current), TOTAL_FRAMES - 1));
+            // Fall back to the nearest earlier frame that actually loaded (the tail
+            // frames may be missing). Otherwise a resize — e.g. the mobile address
+            // bar showing/hiding — clears the canvas and nothing redraws it: black.
+            while (i > 0 && !(images.current[i]?.complete && images.current[i].naturalWidth > 0)) i--;
+            const img = images.current[i];
             if (img?.complete && img.naturalWidth > 0) {
                 drawFrame(img);
             }
