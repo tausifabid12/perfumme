@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, Check, Loader2 } from "lucide-react";
 import TransitionLink from "@/components/TransitionLink";
+import { BsInstagram } from "react-icons/bs";
+import { FaFacebook } from "react-icons/fa";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -259,6 +261,30 @@ export default function SiteFooter() {
                         onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.25)"; }}>
                         Contact
                     </TransitionLink>
+
+                    {/* Social links */}
+                    <a
+                        href="https://www.instagram.com/senzeight/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                        className="transition-colors duration-300 cursor-hover"
+                        style={{ color: "rgba(245,245,245,0.25)" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--accent-gold)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.25)"; }}>
+                        <BsInstagram size={15} />
+                    </a>
+                    <a
+                        href="https://www.facebook.com/senzeight/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                        className="transition-colors duration-300 cursor-hover"
+                        style={{ color: "rgba(245,245,245,0.25)" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "var(--accent-gold)"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(245,245,245,0.25)"; }}>
+                        <FaFacebook size={15} />
+                    </a>
                 </div>
             </div>
         </footer>

@@ -10,7 +10,6 @@ import HomeSections from "@/components/HomeSections";
 import SiteFooter from "@/components/SiteFooter";
 import LoadingScreen from "@/components/LoadingScreen";
 import MobileHeroExperience from "@/components/MobileHeroExperience";
-import MobileCinematicSnap from "@/components/MobileCinematicSnap";
 
 const jsonLd = {
     "@context": "https://schema.org",
@@ -149,8 +148,6 @@ export default function Page() {
                     <GodModeExperience onReady={handleVideoReady} />
                     {/* Fixed overlay — uses fixed 1200vh math */}
                     <CinematicTypography canAnimate={!loading} />
-                    {/* Mobile only (<768px): swipe steps product 1 → 2 → 3 → HomeSections */}
-                    <MobileCinematicSnap endRef={belowFoldRef} />
                     {/* Revealed at end of cinematic scroll */}
                     <div
                         ref={belowFoldRef}
