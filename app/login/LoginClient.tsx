@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import gsap from "gsap";
 import { ArrowRight, Eye, EyeOff, ShoppingBag } from "lucide-react";
@@ -138,12 +138,13 @@ function ErrorBox({ msg }: { msg: string }) {
 
 // ── Main form component ────────────────────────────────────────────────────────
 function LoginForm() {
-    const router = useRouter();
     const { goToCheckout } = useCart();
     const params = useSearchParams();
     const fromParam = params.get("from") ?? "/account";
     const isCheckoutFlow = fromParam === "checkout";
-    const redirectTo = isCheckoutFlow ? "/account" : fromParam;
+    // Only same-site paths — "?from=https://evil.com" or "//evil.com" must not redirect off-site
+    const isSafePath = fromParam.startsWith("/") && !fromParam.startsWith("//") && !fromParam.startsWith("/\\");
+    const redirectTo = isCheckoutFlow || !isSafePath ? "/account" : fromParam;
 
     const [tab, setTab] = useState<"login" | "register">("login");
     const [loading, setLoading] = useState(false);
@@ -177,8 +178,24 @@ function LoginForm() {
             goToCheckout();
             return;
         }
-        router.push(redirectTo);
-        router.refresh();
+        // Full page load (not router.push): components in the root layout, like
+        // the cart drawer, only check login status on mount — a client-side
+        // navigation would leave them thinking the user is still logged out.
+        window.location.href = redirectTo;
+    };
+
+    /** POST JSON and always resolve — a failed/non-JSON response becomes { ok: false, data.error } */
+    const postJson = async (url: string, body: unknown) => {
+        try {
+            const res = await fetch(url, {
+                method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body),
+            });
+            const data = await res.json().catch(() => ({}));
+            return { ok: res.ok, data };
+        } catch {
+            return { ok: false, data: { error: "Network error. Please check your connection and try again." } };
+        }
     };
 
     // Entry animation
@@ -200,35 +217,30 @@ function LoginForm() {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault(); setError(""); setLoading(true);
-        const res = await fetch("/api/auth/login", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: loginEmail, password: loginPassword }),
-        });
-        const data = await res.json();
+        const { ok, data } = await postJson("/api/auth/login", { email: loginEmail, password: loginPassword });
         setLoading(false);
-        if (!res.ok) { setError(data.error); return; }
+        if (!ok) { setError(data.error ?? "Login failed. Please try again."); return; }
         handlePostAuth();
     };
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault(); setError(""); setLoading(true);
-        const res = await fetch("/api/auth/register", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ firstName: regFirst, lastName: regLast, email: regEmail, phone: regPhone, password: regPassword }),
-        });
-        const data = await res.json();
+        const { ok, data } = await postJson("/api/auth/register", { firstName: regFirst, lastName: regLast, email: regEmail, phone: regPhone, password: regPassword });
         setLoading(false);
-        if (!res.ok) { setError(data.error); return; }
-        if (data.redirect) { router.push(data.redirect); return; }
+        if (!ok) { setError(data.error ?? "Registration failed. Please try again."); return; }
+        if (data.redirect) {
+            // Account created but auto-login failed — ask them to sign in
+            setTab("login");
+            setLoginEmail(regEmail);
+            setSuccess("Account created. Please sign in.");
+            return;
+        }
         handlePostAuth();
     };
 
     const handleForgot = async (e: React.FormEvent) => {
         e.preventDefault(); setError(""); setLoading(true);
-        await fetch("/api/auth/forgot", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email: forgotEmail }),
-        });
+        await postJson("/api/auth/forgot", { email: forgotEmail });
         setLoading(false);
         setSuccess("If that email exists, a reset link has been sent.");
         setShowForgot(false);

@@ -239,10 +239,10 @@ function ProfileTab({ customer }: { customer: Customer }) {
         const res = await fetch("/api/auth/update", {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "updateProfile", firstName, lastName, email, phone }),
-        });
-        const data = await res.json();
+        }).catch(() => null);
+        const data = res ? await res.json().catch(() => ({})) : {};
         setSaving(false);
-        if (!res.ok) { setErr(data.error); return; }
+        if (!res?.ok) { setErr(data.error ?? "Could not save. Please try again."); return; }
         setMsg("Profile updated successfully.");
     };
 
@@ -370,23 +370,30 @@ function AddressForm({ initial, isNew, defaultAddressId, onDone, onCancel }: {
 
     const save = async (e: React.FormEvent) => {
         e.preventDefault(); setErr(""); setSaving(true);
-        const action = isNew ? "createAddress" : "updateAddress";
-        const body = isNew ? { action, address: form } : { action, id: initial!.id, address: form };
-        const res = await fetch("/api/auth/update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-        const data = await res.json();
-        if (!res.ok) { setErr(data.error); setSaving(false); return; }
 
-        // Set as default if requested
-        if (makeDefault) {
-            if (!isNew && initial?.id) {
-                // For edits, we know the address ID
-                await fetch("/api/auth/update", {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ action: "setDefaultAddress", addressId: initial.id }),
-                });
+        // Shopify rejects Indian numbers without a country code ("Phone is invalid")
+        const digits = form.phone.replace(/[\s-]/g, "");
+        const phone = /^india$/i.test(form.country.trim()) && /^\d{10}$/.test(digits) ? `+91${digits}` : form.phone;
+        const address = { ...form, phone };
+
+        const action = isNew ? "createAddress" : "updateAddress";
+        // makeDefault is applied server-side, using the (new) address ID
+        const body = isNew
+            ? { action, address, makeDefault }
+            : { action, id: initial!.id, address, makeDefault };
+
+        try {
+            const res = await fetch("/api/auth/update", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                setErr(data.error ?? "Could not save address. Please try again.");
+                setSaving(false);
+                return;
             }
-            // For new addresses, Shopify auto-sets first address as default;
-            // for subsequent ones the user can set it from the address card
+        } catch {
+            setErr("Network error. Please try again.");
+            setSaving(false);
+            return;
         }
         onDone();
     };

@@ -13,7 +13,10 @@ export default async function AccountPage() {
     if (!token) redirect("/login");
 
     const customer = await getCustomer(token);
-    if (!customer) redirect("/login");
+    // Token rejected/expired: clear the cookie first, or /login ↔ /account loops
+    if (customer === null) redirect("/api/auth/logout");
+    // Shopify unreachable — show the error page rather than logging the user out
+    if (!customer) throw new Error("Could not load your account. Please try again.");
 
     return <AccountClient customer={customer} />;
 }

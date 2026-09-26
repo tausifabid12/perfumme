@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { customerRegister, customerLogin } from "@/lib/shopify/customer-api";
+import { getBuyerIp, setTokenCookie } from "@/lib/shopify/auth-cookie";
 
 export async function POST(req: NextRequest) {
-    const { firstName, lastName, email, phone, password } = await req.json();
+    const body = await req.json();
+    const firstName = String(body.firstName ?? "").trim();
+    const lastName = String(body.lastName ?? "").trim();
+    const email = String(body.email ?? "").trim();
+    const { phone, password } = body;
 
     if (!firstName || !lastName || !email || !phone || !password) {
         return NextResponse.json({ error: "All fields are required" }, { status: 400 });
@@ -21,29 +26,32 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Password must be at least 5 characters" }, { status: 400 });
     }
 
-    const result = await customerRegister({ firstName, lastName, email, phone: normalisedPhone, password, acceptsMarketing: false });
+    const buyerIp = getBuyerIp(req);
 
-    if (result.customerUserErrors.length || !result.customer) {
-        const msg = result.customerUserErrors[0]?.message ?? "Registration failed";
-        return NextResponse.json({ error: msg }, { status: 400 });
+    try {
+        const result = await customerRegister(
+            { firstName, lastName, email, phone: normalisedPhone, password, acceptsMarketing: false },
+            buyerIp
+        );
+
+        if (result.customerUserErrors.length || !result.customer) {
+            const msg = result.customerUserErrors[0]?.message ?? "Registration failed";
+            return NextResponse.json({ error: msg }, { status: 400 });
+        }
+
+        // Auto-login after register
+        const loginResult = await customerLogin(email, password, buyerIp);
+        if (!loginResult.customerAccessToken) {
+            // Registered but couldn't auto-login — send to login
+            return NextResponse.json({ ok: true, redirect: "/login" });
+        }
+
+        const { accessToken, expiresAt } = loginResult.customerAccessToken;
+        const res = NextResponse.json({ ok: true });
+        setTokenCookie(res, accessToken, expiresAt);
+        return res;
+    } catch (err) {
+        console.error("register failed:", err);
+        return NextResponse.json({ error: "Registration is unavailable right now. Please try again." }, { status: 500 });
     }
-
-    // Auto-login after register
-    const loginResult = await customerLogin(email, password);
-    if (!loginResult.customerAccessToken) {
-        // Registered but couldn't auto-login — redirect to login
-        return NextResponse.json({ ok: true, redirect: "/login" });
-    }
-
-    const { accessToken, expiresAt } = loginResult.customerAccessToken;
-    const res = NextResponse.json({ ok: true });
-    res.cookies.set("shopify_customer_token", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        expires: new Date(expiresAt),
-        path: "/",
-    });
-
-    return res;
 }

@@ -58,13 +58,13 @@ export type Customer = {
 type UserError = { code: string; field: string[]; message: string };
 
 // ── Login ─────────────────────────────────────────────────────────────────────
-export async function customerLogin(email: string, password: string) {
+export async function customerLogin(email: string, password: string, buyerIp?: string) {
     const data = await shopifyFetch<{
         customerAccessTokenCreate: {
             customerAccessToken: { accessToken: string; expiresAt: string } | null;
             customerUserErrors: UserError[];
         };
-    }>(CUSTOMER_ACCESS_TOKEN_CREATE, { input: { email, password } });
+    }>(CUSTOMER_ACCESS_TOKEN_CREATE, { input: { email, password } }, buyerIp);
 
     return data.customerAccessTokenCreate;
 }
@@ -77,13 +77,13 @@ export async function customerRegister(input: {
     phone?: string;
     password: string;
     acceptsMarketing?: boolean;
-}) {
+}, buyerIp?: string) {
     const data = await shopifyFetch<{
         customerCreate: {
             customer: { id: string; email: string } | null;
             customerUserErrors: UserError[];
         };
-    }>(CUSTOMER_CREATE, { input });
+    }>(CUSTOMER_CREATE, { input }, buyerIp);
 
     return data.customerCreate;
 }
@@ -94,15 +94,18 @@ export async function customerLogout(token: string) {
 }
 
 // ── Get profile ───────────────────────────────────────────────────────────────
-export async function getCustomer(token: string): Promise<Customer | null> {
+// null      → Shopify rejected the token (expired/invalid)
+// undefined → request failed (network/API error) — token may still be fine
+export async function getCustomer(token: string): Promise<Customer | null | undefined> {
     try {
         const data = await shopifyFetch<{ customer: Customer | null }>(
             GET_CUSTOMER,
             { customerAccessToken: token }
         );
         return data.customer;
-    } catch {
-        return null;
+    } catch (err) {
+        console.error("getCustomer failed:", err);
+        return undefined;
     }
 }
 
@@ -158,10 +161,10 @@ export async function setDefaultAddress(token: string, addressId: string) {
 }
 
 // ── Password reset ────────────────────────────────────────────────────────────
-export async function sendPasswordReset(email: string) {
+export async function sendPasswordReset(email: string, buyerIp?: string) {
     const data = await shopifyFetch<{
         customerRecover: { customerUserErrors: UserError[] };
-    }>(CUSTOMER_PASSWORD_RESET, { email });
+    }>(CUSTOMER_PASSWORD_RESET, { email }, buyerIp);
 
     return data.customerRecover;
 }

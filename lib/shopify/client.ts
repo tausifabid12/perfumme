@@ -24,7 +24,10 @@ const ENDPOINT = `https://${DOMAIN}/api/2024-04/graphql.json`;
 
 export async function shopifyFetch<T = unknown>(
     query: string,
-    variables: Record<string, unknown> = {}
+    variables: Record<string, unknown> = {},
+    // The customer's real IP. All requests come from our server's IP, so without
+    // this Shopify rate-limits logins for every customer together.
+    buyerIp?: string
 ): Promise<T> {
     if (!DOMAIN || (!PUBLIC_TOKEN && !PRIVATE_TOKEN)) {
         throw new Error(
@@ -42,16 +45,24 @@ export async function shopifyFetch<T = unknown>(
     if (PRIVATE_TOKEN && PRIVATE_TOKEN.startsWith("shpst_")) {
         // Real Storefront private token
         headers["Shopify-Storefront-Private-Token"] = PRIVATE_TOKEN;
+        // Only honoured together with the private token
+        if (buyerIp) headers["Shopify-Storefront-Buyer-IP"] = buyerIp;
     } else {
         // Public Storefront access token (also works with shpat_ stripped out)
         headers["X-Shopify-Storefront-Access-Token"] = PUBLIC_TOKEN;
     }
 
+    // Never cache mutations or customer-specific reads — otherwise the account
+    // page shows stale data (e.g. a just-saved address) and mutations can be
+    // served from cache. Public catalog queries keep the 60 s ISR cache.
+    const isPrivate =
+        /^\s*mutation\b/.test(query) || "customerAccessToken" in variables;
+
     const res = await fetch(ENDPOINT, {
         method: "POST",
         headers,
         body: JSON.stringify({ query, variables }),
-        next: { revalidate: 60 }, // ISR – refresh every 60 s
+        ...(isPrivate ? { cache: "no-store" as const } : { next: { revalidate: 60 } }), // ISR – refresh every 60 s
     });
 
     if (!res.ok) throw new Error(`Shopify fetch failed: ${res.status} ${res.statusText}`);
