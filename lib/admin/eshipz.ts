@@ -6,7 +6,9 @@
  *
  * Env:
  *   ESHIPZ_API_TOKEN          required — from eShipz (hello@eshipz.com)
- *   ESHIPZ_VENDOR_ID          required — Blue Dart shipper account id
+ *   ESHIPZ_VENDOR_ID          optional — Blue Dart shipper account id. When blank it's
+ *                             discovered from /api/v2/services (which returns vendor_id
+ *                             for each courier account linked to the API token).
  *                             (app.eshipz.com → Integrations → Shipper accounts)
  *   ESHIPZ_SERVICE_PREPAID    default "eTailPrePaidAir" (all orders are prepaid — no COD)
  *   ESHIPZ_BASE_URL           default "https://app.eshipz.com"
@@ -34,7 +36,6 @@ export const eshipzConfig = {
 export function eshipzMissingConfig(): string[] {
     const required = [
         "ESHIPZ_API_TOKEN",
-        "ESHIPZ_VENDOR_ID",
         "SHIP_FROM_NAME",
         "SHIP_FROM_PHONE",
         "SHIP_FROM_EMAIL",
@@ -155,7 +156,7 @@ export async function createShipment(input: CreateShipmentInput): Promise<Create
     const from = shipFromAddress();
     const body = {
         billing: { paid_by: "shipper" },
-        vendor_id: eshipzConfig.vendorId,
+        vendor_id: await getVendorId(),
         description: "BlueDart",
         slug: SLUG,
         purpose: "commercial",
@@ -286,7 +287,7 @@ export async function cancelShipments(eshipzOrderIds: string[]): Promise<void> {
 export async function schedulePickup(eshipzOrderIds: string[], pickAt: string): Promise<void> {
     await eshipzFetch("/api/v1/pickup", {
         method: "POST",
-        body: { vendor_id: eshipzConfig.vendorId, pick_datetime: pickAt, order_id: eshipzOrderIds, slug: SLUG },
+        body: { vendor_id: await getVendorId(), pick_datetime: pickAt, order_id: eshipzOrderIds, slug: SLUG },
     });
 }
 
@@ -357,29 +358,27 @@ export interface ServiceOption {
     transitTime?: string | null;
 }
 
-/** Blue Dart service types available for this lane, from our configured vendor account. */
-export async function availableServices(opts: {
+type ServicesRate = {
+    vendor_id?: string;
+    slug?: string;
+    code?: number;
+    description?: string;
+    technicality?: {
+        service_type?: string;
+        error_message?: string | null;
+        total_charge?: { amount?: number | string | null };
+        transit_time?: string | null;
+    }[];
+};
+
+async function servicesRequest(opts: {
     shipTo: EshipzAddress;
     weightKg: number;
     box: { length: number; width: number; height: number };
     value: number;
-}): Promise<ServiceOption[]> {
+}): Promise<ServicesRate[]> {
     const from = shipFromAddress();
-    const res = await eshipzFetch<{
-        data?: {
-            rates?: {
-                vendor_id?: string;
-                slug?: string;
-                code?: number;
-                technicality?: {
-                    service_type?: string;
-                    error_message?: string | null;
-                    total_charge?: { amount?: number | string | null };
-                    transit_time?: string | null;
-                }[];
-            }[];
-        };
-    }>("/api/v2/services", {
+    const res = await eshipzFetch<{ data?: { rates?: ServicesRate[] } }>("/api/v2/services", {
         method: "POST",
         body: {
             is_document: false,
@@ -411,10 +410,51 @@ export async function availableServices(opts: {
             },
         },
     });
+    return res?.data?.rates ?? [];
+}
 
-    const rate =
-        res?.data?.rates?.find((r) => r.vendor_id === eshipzConfig.vendorId) ??
-        res?.data?.rates?.find((r) => r.slug === SLUG);
+/** Our Blue Dart account among the carrier accounts eShipz returns. */
+function pickBlueDartRate(rates: ServicesRate[]): ServicesRate | undefined {
+    if (eshipzConfig.vendorId) return rates.find((r) => r.vendor_id === eshipzConfig.vendorId);
+    const blueDart = rates.filter((r) => r.slug === SLUG && r.vendor_id);
+    return blueDart.find((r) => r.code === 200) ?? blueDart[0];
+}
+
+let discoveredVendorId: string | null = null;
+
+/**
+ * Blue Dart vendor_id: ESHIPZ_VENDOR_ID if set, otherwise looked up once from
+ * eShipz (a service check on our own pickup lane) and cached in memory.
+ */
+export async function getVendorId(): Promise<string> {
+    if (eshipzConfig.vendorId) return eshipzConfig.vendorId;
+    if (discoveredVendorId) return discoveredVendorId;
+
+    const rates = await servicesRequest({
+        shipTo: { ...shipFromAddress(), type: "residential" },
+        weightKg: eshipzConfig.defaultWeightKg,
+        box: eshipzConfig.defaultBox,
+        value: 1000,
+    });
+    const rate = pickBlueDartRate(rates);
+    if (!rate?.vendor_id) {
+        throw new EshipzError(
+            "No Blue Dart account is linked to this eShipz API token. Connect Blue Dart in the eShipz dashboard (or set ESHIPZ_VENDOR_ID)."
+        );
+    }
+    discoveredVendorId = rate.vendor_id;
+    return rate.vendor_id;
+}
+
+/** Blue Dart service types available for this lane, from our Blue Dart account. */
+export async function availableServices(opts: {
+    shipTo: EshipzAddress;
+    weightKg: number;
+    box: { length: number; width: number; height: number };
+    value: number;
+}): Promise<ServiceOption[]> {
+    const rate = pickBlueDartRate(await servicesRequest(opts));
+    if (rate?.vendor_id && !eshipzConfig.vendorId) discoveredVendorId ??= rate.vendor_id;
     return (rate?.technicality ?? [])
         .filter((t) => t.service_type)
         .map((t) => ({

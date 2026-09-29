@@ -15,7 +15,6 @@ import {
     cleanPhone,
     createManifest,
     createShipment,
-    eshipzConfig,
     eshipzMissingConfig,
     getPod,
     ndrReattempt,
@@ -230,7 +229,6 @@ export async function schedulePickupAction(eshipzOrderIds: string[], pickAt: str
     if (new Date(`${pickAt}:00+05:30`).getTime() < Date.now() - 5 * 60_000) {
         return { ok: false, error: "Pickup time must be in the future." };
     }
-    if (!eshipzConfig.vendorId) return { ok: false, error: "ESHIPZ_VENDOR_ID is not set." };
     try {
         await schedulePickup(eshipzOrderIds, `${pickAt}:00`);
         refresh();
