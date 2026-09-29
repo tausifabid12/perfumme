@@ -243,3 +243,45 @@ body {
 .page-auth input[type="tel"] {
   cursor: text !important;
 }
+/* ── Admin dashboard — native cursor + readable defaults ── */
+.admin-root,
+.admin-root * {
+  cursor: auto !important;
+}
+
+.admin-root a,
+.admin-root button:not(:disabled),
+.admin-root label,
+.admin-root select,
+.admin-root summary,
+.admin-root [role="button"] {
+  cursor: pointer !important;
+}
+
+.admin-root input[type="text"],
+.admin-root input[type="email"],
+.admin-root input[type="password"],
+.admin-root input[type="search"] {
+  cursor: text !important;
+}
+
+.admin-root {
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+.admin-root ::selection {
+  background: rgba(201, 163, 106, 0.35);
+}
+
+@keyframes admin-shimmer {
+  from { background-position: -400px 0; }
+  to { background-position: 400px 0; }
+}
+
+.admin-skeleton {
+  background: linear-gradient(90deg, rgba(245,237,224,0.04) 0%, rgba(245,237,224,0.09) 50%, rgba(245,237,224,0.04) 100%);
+  background-size: 800px 100%;
+  animation: admin-shimmer 1.4s linear infinite;
+  border-radius: 8px;
+}

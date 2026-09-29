@@ -44,6 +44,15 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        admin: {
+          bg: '#0C0B0A',
+          surface: '#141311',
+          raised: '#1B1917',
+          line: 'rgba(245, 237, 224, 0.08)',
+          text: '#F3ECE2',
+          muted: '#9B9086',
+          accent: '#C9A36A',
+        },
         spylt: {
           bg: '#0A0A0B',
           'bg-brown': '#1A0F0A',

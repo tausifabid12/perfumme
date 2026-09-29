@@ -13,6 +13,9 @@ export default function SmoothScrollProvider({
     children: React.ReactNode;
 }) {
     useEffect(() => {
+        // The admin dashboard uses native scrolling (tables, sticky headers)
+        if (window.location.pathname.startsWith("/admin")) return;
+
         const lenis = new Lenis({
             duration: 1.2,
             smoothWheel: true,
