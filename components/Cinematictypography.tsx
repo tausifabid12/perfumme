@@ -1,199 +1,241 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import TransitionLink from "@/components/TransitionLink";
+import {
+    cinematicMaxScroll,
+    getCinematicVariant,
+    isMobileViewport,
+    type ProductKey,
+} from "@/lib/cinematic";
 
 gsap.registerPlugin(ScrollTrigger);
 
+interface Product {
+    key: ProductKey;
+    lines: [string, string];
+    tag: string;
+    sub: [string, string];
+    // Desktop placement — alternates so consecutive products never share a corner.
+    side: "left" | "right";
+}
+
+const PRODUCTS: Product[] = [
+    {
+        key: "blind-date",
+        lines: ["BLIND", "DATE"],
+        tag: "Unisex",
+        sub: ["Fresh. Warm. Irresistible.", "Made for close encounters."],
+        side: "left",
+    },
+    {
+        key: "rebel-girl",
+        lines: ["REBEL", "GIRL"],
+        tag: "For Her",
+        sub: ["Wild confidence.", "Wrapped in elegance."],
+        side: "right",
+    },
+    {
+        key: "it-boy",
+        lines: ["IT", "BOY"],
+        tag: "For Him",
+        sub: ["Fresh. Bold. Addictive.", "The signature scent for GenZ Boys."],
+        side: "left",
+    },
+    {
+        key: "imperial-smoke",
+        lines: ["IMPERIAL", "SMOKE"],
+        tag: "For Him",
+        sub: ["Crafted in shadow.", "Remembered forever."],
+        side: "right",
+    },
+];
+
+// Scrubbed timelines run 0 → 1 across their scroll window.
+const IN_END = 0.28;
+const OUT_START = 0.82;
+
 export default function CinematicTypography({ canAnimate = false }: { canAnimate?: boolean }) {
-    const smokeRef = useRef<HTMLDivElement>(null);
-    const rebelRef = useRef<HTMLDivElement>(null);
-    const itboyRef = useRef<HTMLDivElement>(null);
+    const overlayRef = useRef<HTMLDivElement>(null);
     const mouseX = useRef(0);
     const mouseY = useRef(0);
-    //@ts-ignore
-    const rafRef = useRef<number>();
-
     useEffect(() => {
         if (!canAnimate) return;
-        // Fonts loaded globally via next/font in layout.tsx — no runtime injection needed
+        const overlayEl = overlayRef.current!;
+        const variant = getCinematicVariant();
+        const isMobile = isMobileViewport();
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const blur = (px: number) => `blur(${reduceMotion ? 0 : px}px)`;
+        const at = (pct: number) => `${cinematicMaxScroll() * pct}px top`;
 
-        const isMobile = window.innerWidth < 768;
+        const sectionOf = (key: ProductKey) =>
+            overlayEl.querySelector<HTMLElement>(`[data-product="${key}"]`)!;
 
+        // Parts of a section. Animations run on .ct-inner; the outer .ct-sec
+        // only receives the desktop mouse parallax so the two never fight.
+        const partsOf = (key: ProductKey) => {
+            const sec = sectionOf(key);
+            const product = PRODUCTS.find(p => p.key === key)!;
+            return {
+                sec,
+                inner: sec.querySelector<HTMLElement>(".ct-inner")!,
+                label: sec.querySelector<HTMLElement>("[data-label]")!,
+                lines: sec.querySelectorAll<HTMLElement>("[data-line]"),
+                chars: sec.querySelectorAll<HTMLElement>("[data-char]"),
+                subs: sec.querySelectorAll<HTMLElement>("[data-sub]"),
+                // Words slide in from the edge the block is anchored to.
+                fromX: isMobile || product.side === "left" ? -60 : 60,
+            };
+        };
+
+        const setInteractive = (sec: HTMLElement, on: boolean) => {
+            sec.style.pointerEvents = on ? "auto" : "none";
+        };
+
+        // Bottle order differs between the web and mobile frame sequences, so
+        // the "02 / 04" counters are filled in once we know which one plays.
+        variant.order.forEach((key, i) => {
+            const el = sectionOf(key).querySelector<HTMLElement>("[data-index]");
+            if (el) el.textContent = `0${i + 1}`;
+        });
+
+        const [firstKey, , , lastKey] = variant.order;
+        const middleKeys = variant.order.slice(1, 3);
+
+        const ctx = gsap.context(() => {
+            // ── PRODUCT 1 — revealed on load, scrubbed out as the bottle
+            //    zooms past the camera.
+            const first = partsOf(firstKey);
+            gsap.set(first.sec, { autoAlpha: 1 });
+            setInteractive(first.sec, true);
+            gsap.fromTo(first.label,
+                { opacity: 0, y: 10 },
+                { opacity: 1, y: 0, duration: 0.9, ease: "power2.out", delay: 0.1 });
+            gsap.fromTo(first.chars,
+                { opacity: 0, filter: blur(40), y: 10 },
+                {
+                    opacity: 1, filter: blur(0), y: 0,
+                    duration: 1.4, ease: "power3.out",
+                    stagger: { each: 0.05, from: "start" },
+                    delay: 0.2,
+                });
+            gsap.fromTo(first.subs,
+                { opacity: 0, y: 18, filter: blur(6) },
+                { opacity: 1, y: 0, filter: blur(0), duration: 1.0, ease: "power2.out", stagger: 0.15, delay: 1.1 });
+
+            ScrollTrigger.create({
+                trigger: document.body,
+                start: () => at(variant.introOut[0]),
+                end: () => at(variant.introOut[1]),
+                scrub: 1,
+                animation: gsap.to(first.inner, {
+                    opacity: 0, y: -28, filter: blur(10),
+                    ease: "power2.in", paused: true,
+                }),
+                onUpdate: self => setInteractive(first.sec, self.progress < 0.9),
+            });
+
+            // ── PRODUCTS 2 & 3 — scrubbed in → hold → out, bracketing the
+            //    frames where each bottle is sharp.
+            middleKeys.forEach(key => {
+                const [start, end] = variant.middle[key]!;
+                const p = partsOf(key);
+
+                gsap.set(p.sec, { autoAlpha: 0 });
+                gsap.set(p.label, { opacity: 0, x: p.fromX * 0.4 });
+                gsap.set(p.lines[0], { opacity: 0, x: p.fromX, rotation: p.fromX < 0 ? -3 : 3, filter: blur(14) });
+                gsap.set(p.lines[1], { opacity: 0, x: p.fromX, rotation: p.fromX < 0 ? -3 : 3, filter: blur(14) });
+                gsap.set(p.subs, { opacity: 0, y: 18, filter: blur(6) });
+
+                const tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+                tl.to(p.sec, { autoAlpha: 1, duration: 0.06, ease: "none" }, 0)
+                    .to(p.label, { opacity: 1, x: 0, duration: 0.14 }, 0.02)
+                    .to(p.lines[0], { opacity: 1, x: 0, rotation: 0, filter: blur(0), duration: 0.16 }, 0.04)
+                    .to(p.lines[1], { opacity: 1, x: 0, rotation: 0, filter: blur(0), duration: 0.16 }, 0.09)
+                    .to(p.subs, { opacity: 1, y: 0, filter: blur(0), duration: 0.12, stagger: 0.02, ease: "power2.out" }, 0.14)
+                    .to(p.inner, { opacity: 0, y: -22, filter: blur(8), duration: 1 - OUT_START, ease: "power1.in" }, OUT_START)
+                    .set(p.sec, { autoAlpha: 0 }, 1);
+
+                ScrollTrigger.create({
+                    trigger: document.body,
+                    start: () => at(start),
+                    end: () => at(end),
+                    scrub: 1.2,
+                    animation: tl,
+                    onUpdate: self =>
+                        setInteractive(p.sec, self.progress > IN_END * 0.5 && self.progress < OUT_START + 0.08),
+                });
+            });
+
+            // ── PRODUCT 4 — plays in and stays until the overlay hides at
+            //    the end of the cinematic zone.
+            const last = partsOf(lastKey);
+            gsap.set(last.sec, { autoAlpha: 0 });
+            gsap.set(last.label, { opacity: 0, y: 12 });
+            gsap.set(last.lines, { opacity: 0, y: 55, filter: blur(18) });
+            gsap.set(last.subs, { opacity: 0, y: 14 });
+
+            const lastTl = gsap.timeline({ paused: true });
+            lastTl
+                .to(last.sec, { autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 0)
+                .to(last.label, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.05)
+                .to(last.lines[0], { opacity: 1, y: 0, filter: blur(0), duration: 0.8, ease: "expo.out" }, 0.1)
+                .to(last.lines[1], { opacity: 1, y: 0, filter: blur(0), duration: 0.8, ease: "expo.out" }, 0.22)
+                .to(last.subs, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 }, 0.45);
+
+            ScrollTrigger.create({
+                trigger: document.body,
+                start: () => at(variant.finalAt),
+                onEnter: () => { setInteractive(last.sec, true); lastTl.play(); },
+                onLeaveBack: () => { setInteractive(last.sec, false); lastTl.reverse(); },
+            });
+
+            // ── Hide the whole overlay once the user scrolls past the
+            //    cinematic zone into HomeSections (same point page.tsx reveals them).
+            ScrollTrigger.create({
+                trigger: document.body,
+                start: () => at(0.998),
+                onEnter: () => { overlayEl.style.display = "none"; },
+                onLeaveBack: () => { overlayEl.style.display = ""; },
+            });
+        }, overlayEl);
+
+        // ── Floating parallax (desktop pointer only) ───────────────────
+        let raf = 0;
         const onMouse = (e: MouseEvent) => {
             mouseX.current = (e.clientX / window.innerWidth - 0.5) * 2;
             mouseY.current = (e.clientY / window.innerHeight - 0.5) * 2;
         };
-        window.addEventListener("mousemove", onMouse, { passive: true });
-
-        const getScrollPx = (pct: number) => {
-            // GodModeExperience = 1300vh. Cinematic scroll max = 1200vh (1300 - 100 viewport).
-            const cinematicScrollMax = window.innerHeight * 12; // 1200vh
-            return cinematicScrollMax * pct;
-        };
-
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        // SECTION 1 â€” IMPERIAL SMOKE
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        const smokeEl = smokeRef.current!;
-
-        const chars = smokeEl.querySelectorAll<HTMLElement>("[data-char]");
-        gsap.set(chars, { opacity: 0, filter: "blur(40px)", y: 10 });
-        gsap.to(chars, {
-            opacity: 1, filter: "blur(0px)", y: 0,
-            duration: 1.4, ease: "power3.out",
-            stagger: { each: 0.05, from: "start" },
-            delay: 0.2,
-        });
-
-        gsap.fromTo(
-            smokeEl.querySelectorAll("[data-smoke-sub]"),
-            { opacity: 0, y: 18, filter: "blur(6px)" },
-            { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.0, ease: "power2.out", stagger: 0.15, delay: 1.1 }
-        );
-
-        ScrollTrigger.create({
-            trigger: document.body,
-            start: () => `${getScrollPx(0.035)}px top`,
-            end: () => `${getScrollPx(0.075)}px top`,
-            scrub: 1.5,
-            animation: gsap.to(smokeEl, {
-                opacity: 0, y: -28, filter: "blur(10px)",
-                ease: "power2.in", paused: true,
-            }),
-            onUpdate: self => {
-                smokeEl.style.pointerEvents = self.progress > 0.9 ? "none" : "auto";
-            },
-        });
-
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        // SECTION 2 â€” REBEL GIRL
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        const rebelEl = rebelRef.current!;
-        gsap.set(rebelEl, { opacity: 0, pointerEvents: "none" });
-        gsap.set("[data-rebel-label]", { opacity: 0, x: 24 });
-        gsap.set("[data-rebel-word='0']", { opacity: 0, x: -70, rotation: -3, filter: "blur(14px)" });
-        gsap.set("[data-rebel-word='1']", { opacity: 0, x: 70, rotation: 3, filter: "blur(14px)" });
-        gsap.set(rebelEl.querySelectorAll("[data-rebel-sub]"), { opacity: 0, y: 18, filter: "blur(6px)" });
-
-        const rebelTl = gsap.timeline({ paused: true });
-        rebelTl
-            .to(rebelEl, { opacity: 1, duration: 0.15 }, 0)
-            .to("[data-rebel-label]", { opacity: 1, x: 0, duration: 0.25, ease: "power2.out" }, 0.03)
-            .to("[data-rebel-word='0']", { opacity: 1, x: 0, rotation: 0, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 0.05)
-            .to("[data-rebel-word='1']", { opacity: 1, x: 0, rotation: 0, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 0.12)
-            .to(rebelEl.querySelectorAll("[data-rebel-sub]"), { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power2.out", stagger: 0.05 }, 0.22)
-            .to({}, { duration: 0.25 }, 0.6)
-            .to(rebelEl, { opacity: 0, y: -22, filter: "blur(8px)", duration: 0.25, ease: "power1.in" }, 0.85);
-
-        ScrollTrigger.create({
-            trigger: document.body,
-            // Mobile range starts earlier so the text is fully in at the
-            // MobileCinematicSnap stop (0.435), where the bottle frame is sharp.
-            start: () => `${getScrollPx(isMobile ? 0.22 : 0.31)}px top`,
-            end: () => `${getScrollPx(isMobile ? 0.55 : 0.64)}px top`,
-            scrub: 1.2,
-            animation: rebelTl,
-            onUpdate: self => {
-                rebelEl.style.pointerEvents = (self.progress > 0.05 && self.progress < 0.92) ? "auto" : "none";
-            },
-        });
-
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        // SECTION 3 â€” IT BOY
-        // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-        const itEl = itboyRef.current!;
-        const itWord = itEl.querySelector<HTMLElement>("[data-it-word]")!;
-        const boyWord = itEl.querySelector<HTMLElement>("[data-boy-word]")!;
-        const itSubs = itEl.querySelectorAll<HTMLElement>("[data-it-sub]");
-        const itBlock = itEl.querySelector<HTMLElement>(".ct-it")!;
-
-        gsap.set(itEl, { opacity: 0, pointerEvents: "none" });
-        gsap.set(itWord, { opacity: 0, y: 55, filter: "blur(18px)" });
-        gsap.set(boyWord, { opacity: 0, y: 55, filter: "blur(18px)" });
-        gsap.set(itSubs, { opacity: 0, y: 14 });
-
-        const itInTl = gsap.timeline({ paused: true });
-        itInTl
-            .to(itEl, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0)
-            .to(itWord, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, 0.1)
-            .to(boyWord, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, 0.22)
-            .to(itSubs, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 }, 0.45);
-
-        ScrollTrigger.create({
-            trigger: document.body,
-            start: () => `${getScrollPx(0.81)}px top`,
-            scrub: false,
-            onEnter: () => { itBlock.style.pointerEvents = "auto"; itInTl.play(); },
-            onLeaveBack: () => { itBlock.style.pointerEvents = "none"; itInTl.reverse(); },
-        });
-
-        // ── Hide the entire fixed overlay once the user scrolls past the
-        //    cinematic zone (800vh GodModeExperience) into the normal page.
-        //    This is the ONLY thing that clears the IT BOY text — no early fade.
-        const overlayEl = smokeEl.closest<HTMLElement>(".ct-overlay");
-        if (overlayEl) {
-            ScrollTrigger.create({
-                trigger: document.body,
-                start: () => `${getScrollPx(0.998)}px top`,
-                onEnter: () => {
-                    overlayEl.style.visibility = "hidden";
-                    overlayEl.style.pointerEvents = "none";
-                },
-                onLeaveBack: () => {
-                    overlayEl.style.visibility = "";
-                    overlayEl.style.pointerEvents = "";
-                },
-            });
-        }
-
-        // â”€â”€ Floating breathe (desktop only â€” skip on touch) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        if (!isMobile) {
+        if (!isMobile && !reduceMotion) {
+            window.addEventListener("mousemove", onMouse, { passive: true });
+            const secs = Array.from(overlayEl.querySelectorAll<HTMLElement>(".ct-sec"));
             const breathe = (t: number) => {
-                rafRef.current = requestAnimationFrame(breathe);
+                raf = requestAnimationFrame(breathe);
                 const s = t * 0.001;
-
-                gsap.set(smokeEl, {
-                    x: mouseX.current * 7 + Math.sin(s * 0.45) * 3,
-                    y: mouseY.current * 5 + Math.sin(s * 0.38) * 4,
-                    overwrite: false,
+                secs.forEach((sec, i) => {
+                    if (sec.style.visibility === "hidden") return;
+                    sec.style.transform =
+                        `translate3d(${mouseX.current * 7 + Math.sin(s * 0.45 + i) * 3}px,` +
+                        `${mouseY.current * 5 + Math.cos(s * 0.38 + i) * 3}px,0)`;
                 });
-
-                if (parseFloat(rebelEl.style.opacity || "0") > 0.05) {
-                    gsap.set(rebelEl, {
-                        x: mouseX.current * 7 + Math.sin(s * 0.5 + 1.2) * 3,
-                        y: mouseY.current * 5 + Math.cos(s * 0.4 + 1.2) * 3,
-                        overwrite: false,
-                    });
-                }
-
-                if (parseFloat(itEl.style.opacity || "0") > 0.05) {
-                    gsap.set(itEl, {
-                        x: mouseX.current * 3,
-                        y: mouseY.current * 2,
-                        overwrite: false,
-                    });
-                }
             };
-            rafRef.current = requestAnimationFrame(breathe);
+            raf = requestAnimationFrame(breathe);
         }
 
         return () => {
             window.removeEventListener("mousemove", onMouse);
-            if (rafRef.current) cancelAnimationFrame(rafRef.current);
-            ScrollTrigger.getAll().forEach(t => t.kill());
+            cancelAnimationFrame(raf);
+            ctx.revert();
+            overlayEl.style.display = "";
         };
     }, [canAnimate]);
 
     const SplitChars = ({ text }: { text: string }) => (
-        <span aria-label={text} className="inline-block">
+        <span aria-hidden className="inline-block">
             {text.split("").map((ch, i) => (
-                <span key={i} data-char className="inline-block"
-                    style={{ whiteSpace: ch === " " ? "pre" : "normal" }}>
-                    {ch === " " ? "\u00A0" : ch}
-                </span>
+                <span key={i} data-char className="inline-block">{ch}</span>
             ))}
         </span>
     );
@@ -201,22 +243,36 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
     return (
         <>
             <style>{`
-
                 .ct-overlay {
                     position: fixed; inset: 0; z-index: 10; pointer-events: none;
                 }
 
-                /* â”€â”€â”€ LABEL / NUMBER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── SECTIONS ─────────────────────────────────────────── */
+                .ct-sec {
+                    position: absolute;
+                    bottom: 8%;
+                    max-width: 90vw;
+                    pointer-events: none;
+                    visibility: hidden;
+                    will-change: transform;
+                }
+                .ct-sec.ct-left  { left: 5%; text-align: left; }
+                .ct-sec.ct-right { right: 5%; text-align: right; }
+                .ct-inner { will-change: transform, opacity, filter; }
+
+                /* ─── LABEL ─────────────────────────────────────────────── */
                 .ct-label {
                     font-family: var(--font-inter), system-ui, sans-serif;
-                    font-weight: 300;
+                    font-weight: 400;
                     font-size: 9px;
-                    letter-spacing: 0.55em;
+                    letter-spacing: 0.45em;
                     text-transform: uppercase;
-                    margin: 0 0 0.6rem;
+                    color: rgba(255,255,255,0.55);
+                    margin: 0 0 0.9rem;
                 }
+                .ct-label b { color: #D4AF37; font-weight: 600; }
 
-                /* â”€â”€â”€ HEADLINE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── HEADLINE ──────────────────────────────────────────── */
                 .ct-h2 {
                     font-family: var(--font-inter), system-ui, sans-serif;
                     font-weight: 800;
@@ -224,11 +280,18 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     color: #fff;
                     margin: 0;
                     letter-spacing: -0.01em;
-                    /* Mobile default */
+                    white-space: nowrap;
+                    text-shadow: 0 2px 30px rgba(0,0,0,0.45);
                     font-size: clamp(38px, 10vw, 60px);
                 }
+                .ct-h2 [data-line] { display: block; }
+                .ct-h2 [data-line]:nth-child(2) {
+                    font-style: italic;
+                    font-weight: 700;
+                    color: #F3E2B3;
+                }
 
-                /* â”€â”€â”€ SUBTEXT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── SUBTEXT ───────────────────────────────────────────── */
                 .ct-sub {
                     font-family: var(--font-inter), system-ui, sans-serif;
                     font-weight: 300;
@@ -236,81 +299,23 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     letter-spacing: 0.28em;
                     text-transform: uppercase;
                     line-height: 1.9;
+                    color: rgba(255,255,255,0.68);
                     margin: 0;
                 }
 
-                /* â”€â”€â”€ RULE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── RULE ──────────────────────────────────────────────── */
                 .ct-rule {
                     width: 36px; height: 1px;
-                    margin: 0.8rem 0;
+                    margin: 0.9rem 0;
+                    background: linear-gradient(to right, rgba(212,175,55,0.85), transparent);
+                }
+                .ct-right .ct-rule {
+                    margin-left: auto;
+                    background: linear-gradient(to left, rgba(212,175,55,0.85), transparent);
                 }
 
-                /* â”€â”€â”€ SECTION WRAPPERS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-                /* SMOKE â€” bottom-left */
-                .ct-smoke {
-                    position: absolute;
-                    bottom: 6%;
-                    left: 5%;
-                    max-width: 90vw;
-                    pointer-events: auto;
-                    will-change: transform, opacity, filter;
-                }
-
-                /* REBEL â€” top-right */
-                .ct-rebel {
-                    position: absolute;
-                    top: 6%;
-                    right: 5%;
-                    max-width: 90vw;
-                    text-align: right;
-                    pointer-events: none;
-                    opacity: 0;
-                    will-change: transform, opacity, filter;
-                }
-
-                /* ITBOY wrapper */
-                .ct-itboy {
-                    position: absolute;
-                    inset: 0;
-                    pointer-events: none;
-                    opacity: 0;
-                    will-change: transform, opacity;
-                }
-
-                /* IT BOY — bottom-left, unified block */
-                .ct-it {
-                    position: absolute;
-                    bottom: 5%;
-                    left: 4%;
-                    /* Toggled in JS only while IT BOY is on screen — while hidden it
-                       sits right on top of the IMPERIAL SMOKE button and would steal
-                       its clicks/hover. */
-                    pointer-events: none;
-                }
-
-                /* BOY — stacked under IT in same column */
-                .ct-boy {
-                    display: block;
-                    position: static;
-                    text-align: left;
-                }
-
-                /* IT / BOY giant word */
-                .ct-giant {
-                    font-family: var(--font-inter), system-ui, sans-serif;
-                    font-weight: 800;
-                    line-height: 0.85;
-                    color: #fff;
-                    letter-spacing: 0.02em;
-                    text-shadow: 0 0 80px rgba(212,175,55,0.25);
-                    user-select: none;
-                    /* Mobile */
-                    font-size: clamp(52px, 14vw, 80px);
-                }
-                .ct-giant-italic {
-                    font-style: italic;
-                    font-weight: 700;
-                }
+                .ct-btn-row { display: flex; margin-top: 1.2rem; }
+                .ct-right .ct-btn-row { justify-content: flex-end; }
 
                 /* --- BUTTON -------------------------------------------- */
                 .ct-btn {
@@ -333,8 +338,6 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     position: relative;
                     overflow: hidden;
                     transition: background 0.3s, border-color 0.3s, color 0.3s, box-shadow 0.3s, transform 0.2s;
-                    /* pointer-events inherited from the section, so hidden
-                       sections' buttons can't intercept clicks */
                     min-width: 148px;
                     touch-action: manipulation;
                     box-shadow:
@@ -367,106 +370,64 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     transform: scale(1.04);
                 }
                 .ct-btn:active { transform: scale(0.97); }
+                .ct-btn:focus-visible { outline: 2px solid #F3E2B3; outline-offset: 4px; }
 
-                /* dark outlined variant */
-                .ct-btn-gold {
-                    background: rgba(0,0,0,0.55);
-                    border-color: #D4AF37;
-                    color: #D4AF37;
-                    box-shadow: 0 0 20px rgba(212,175,55,0.25), 0 4px 16px rgba(0,0,0,0.5);
-                }
-                .ct-btn-gold svg { color: #D4AF37; }
-                .ct-btn-gold:hover {
-                    background: #D4AF37;
-                    color: #0A0A0A;
-                    box-shadow: 0 0 36px rgba(212,175,55,0.45), 0 4px 20px rgba(0,0,0,0.5);
-                }
-                .ct-btn-gold:hover svg { color: #0A0A0A; }
-
-                /* â”€â”€â”€ TABLET â‰¥ 768px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── TABLET ≥ 768px ────────────────────────────────────── */
                 @media (min-width: 768px) {
-                    .ct-label  { font-size: 9px; }
                     .ct-sub    { font-size: 11px; }
-                    .ct-h2     { font-size: clamp(44px, 5.5vw, 84px); }
-                    .ct-giant  { font-size: clamp(72px, 11vw, 140px); }
-                    .ct-smoke  { max-width: 42vw; bottom: 8%; }
-                    .ct-rebel  { max-width: 40vw; }
-                    .ct-btn    { height: 48px; padding: 0 1.8rem; font-size: 11px; letter-spacing: 0.28em; }
+                    .ct-h2     { font-size: clamp(48px, 6vw, 92px); }
+                    .ct-sec    { max-width: 40vw; }
+                    .ct-btn    { font-size: 11px; letter-spacing: 0.28em; }
                     .ct-rule   { width: 44px; }
                 }
 
-                /* â”€â”€â”€ DESKTOP â‰¥ 1280px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── DESKTOP ≥ 1280px ──────────────────────────────────── */
                 @media (min-width: 1280px) {
                     .ct-label  { font-size: 10px; }
                     .ct-sub    { font-size: 12px; }
-                    .ct-h2     { font-size: clamp(60px, 5.5vw, 100px); }
-                    .ct-giant  { font-size: clamp(100px, 11vw, 168px); }
-                    .ct-smoke  { max-width: 38vw; }
-                    .ct-rebel  { max-width: 36vw; }
-                    .ct-btn    { height: 50px; padding: 0 2rem; font-size: 11px; letter-spacing: 0.28em; }
+                    .ct-h2     { font-size: clamp(64px, 6vw, 112px); }
+                    .ct-sec    { max-width: 36vw; }
+                    .ct-btn    { height: 50px; padding: 0 2rem; }
                 }
 
-                /* â”€â”€â”€ ULTRAWIDE â‰¥ 2000px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── ULTRAWIDE ≥ 2000px ────────────────────────────────── */
                 @media (min-width: 2000px) {
-                    .ct-label  { font-size: 12px; letter-spacing: 0.6em; }
+                    .ct-label  { font-size: 12px; letter-spacing: 0.5em; }
                     .ct-sub    { font-size: 15px; }
-                    .ct-h2     { font-size: clamp(100px, 5.2vw, 160px); }
-                    .ct-giant  { font-size: clamp(160px, 10vw, 260px); }
-                    .ct-smoke  { max-width: 36vw; bottom: 10%; }
-                    .ct-rebel  { max-width: 34vw; }
+                    .ct-h2     { font-size: clamp(110px, 5.6vw, 170px); }
+                    .ct-sec    { bottom: 10%; max-width: 34vw; }
                     .ct-btn    { height: 58px; padding: 0 2.4rem; font-size: 13px; gap: 12px; }
                     .ct-rule   { width: 56px; }
                 }
 
-                /* rebel button row â€” right on desktop, left on mobile */
-                .ct-rebel-btn-row { justify-content: flex-end; }
-
-                /* rebel gold rule â€” right on desktop */
-                .ct-rebel-rule { margin-left: auto; margin-right: 0; }
-
-                /* â”€â”€â”€ MOBILE < 768px â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+                /* ─── MOBILE < 768px ────────────────────────────────────── */
                 @media (max-width: 767px) {
-                    /*
-                     * Both sections stack at bottom-left.
-                     * Smoke = lower slot, Rebel = upper slot above it.
-                     * Sections are shown one at a time via scroll so they
-                     * never visually overlap â€” positioning just needs to be
-                     * sensible for each section's own moment on screen.
-                     */
-
-                    /* Smoke â€” left, bottom, no wrapping */
-                    .ct-smoke {
-                        left: 5%;
+                    /* Portrait frames keep the bottle centred in the upper
+                       two-thirds, so every product's copy shares the
+                       bottom-left slot — one at a time, never overlapping. */
+                    .ct-sec,
+                    .ct-sec.ct-right {
+                        left: 6%;
                         right: auto;
-                        bottom: 6%;
-                        max-width: 82vw;
+                        bottom: calc(4.5% + env(safe-area-inset-bottom, 0px));
+                        max-width: 88vw;
                         text-align: left;
                     }
-                    .ct-smoke .ct-h2 {
-                        white-space: nowrap;
-                        font-size: clamp(30px, 9vw, 50px);
+                    .ct-right .ct-rule {
+                        margin-left: 0;
+                        background: linear-gradient(to right, rgba(212,175,55,0.85), transparent);
                     }
+                    .ct-right .ct-btn-row { justify-content: flex-start; }
+                    .ct-h2 { font-size: clamp(34px, 10.5vw, 52px); }
 
-                    /* Rebel â€” left, bottom (shows AFTER smoke scrolls away) */
-                    .ct-rebel {
-                        top: auto;
-                        bottom: 6%;
-                        right: auto;
-                        left: 5%;
-                        max-width: 82vw;
-                        text-align: left;
-                    }
-                    .ct-rebel-btn-row { justify-content: flex-start; }
-                    .ct-rebel-rule { margin-left: 0; margin-right: auto; }
-
-                    /* Dark fade behind the bottom-left text block so it reads over
-                       bright frames (Rebel Girl). Part of the overlay, so it
-                       disappears with the text when HomeSections appear. */
+                    /* Dark fade behind the copy so it reads over bright frames
+                       (Rebel Girl's glow). Part of the overlay, so it leaves
+                       with the text when HomeSections appear. */
                     .ct-overlay::before {
                         content: "";
                         position: absolute;
                         left: 0; right: 0; bottom: 0;
-                        height: 55%;
+                        height: 58%;
                         background: linear-gradient(to top,
                             rgba(0,0,0,0.85) 0%,
                             rgba(0,0,0,0.6) 35%,
@@ -475,114 +436,79 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                         pointer-events: none;
                     }
 
-                    /* Subtitles sit over the bright bottle on mobile — make them
-                       larger, brighter and shadowed so they stay readable.
-                       !important beats the inline desktop color. */
                     .ct-sub {
                         font-size: 11px;
                         font-weight: 500;
                         letter-spacing: 0.22em;
-                        color: rgba(255,255,255,0.92) !important;
+                        color: rgba(255,255,255,0.92);
                         text-shadow: 0 1px 2px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.75);
                     }
 
-                    /* IT BOY */
-                    .ct-it { left: 4%; bottom: 6%; }
-                    .ct-boy { position: static; text-align: left; }
-                    .ct-giant { font-size: clamp(44px, 12vw, 68px); }
+                    /* The label sits over the bright bottle base — give it a
+                       dark frosted pill so it reads on any frame. */
+                    .ct-label {
+                        display: inline-flex;
+                        align-items: center;
+                        padding: 6px 12px 6px 13px;
+                        border-radius: 999px;
+                        background: rgba(0,0,0,0.6);
+                        border: 1px solid rgba(212,175,55,0.35);
+                        -webkit-backdrop-filter: blur(8px);
+                        backdrop-filter: blur(8px);
+                        font-size: 10px;
+                        font-weight: 600;
+                        letter-spacing: 0.3em;
+                        color: rgba(255,255,255,0.95);
+                        text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+                        margin-bottom: 0.8rem;
+                    }
+                    .ct-label b { font-weight: 800; }
                 }
             `}</style>
 
-            <div className="ct-overlay mt-20">
+            <div ref={overlayRef} className="ct-overlay mt-20">
+                {PRODUCTS.map((p, i) => {
+                    const isFirst = i === 0;
+                    const name = `${p.lines[0]} ${p.lines[1]}`;
+                    return (
+                        <section
+                            key={p.key}
+                            data-product={p.key}
+                            className={`ct-sec ct-${p.side}`}
+                        >
+                            <div className="ct-inner">
+                                <p data-label className="ct-label">
+                                    <b data-index />&nbsp;/&nbsp;04&nbsp;&nbsp;·&nbsp;&nbsp;
+                                    {p.tag}
+                                </p>
 
-                {/* â•â•â• SECTION 1 â€” IMPERIAL SMOKE â•â•â• */}
-                <div ref={smokeRef} className="ct-smoke">
-                    {/* <p className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-001</p> */}
+                                <h2 className="ct-h2" aria-label={name}>
+                                    {p.lines.map(line => (
+                                        <span key={line} data-line>
+                                            {isFirst ? <SplitChars text={line} /> : line}
+                                        </span>
+                                    ))}
+                                </h2>
 
-                    <h2 className="ct-h2">
-                        <div><SplitChars text="IMPERIAL" /></div>
-                        <div><SplitChars text="SMOKE" /></div>
-                    </h2>
+                                <div data-sub className="ct-rule" />
 
-                    <div data-smoke-sub className="ct-rule"
-                        style={{ background: "linear-gradient(to right,rgba(212,175,55,0.8),transparent)" }} />
+                                <p data-sub className="ct-sub">
+                                    {p.sub[0]}<br />{p.sub[1]}
+                                </p>
 
-                    <p data-smoke-sub className="ct-sub" style={{ color: "rgba(255,255,255,0.52)" }}>
-                        Crafted in shadow.<br />Remembered forever.
-                    </p>
-
-                    <TransitionLink href="/collections" label="Discover Collection" data-smoke-sub className="ct-btn" style={{ marginTop: "1.2rem" }}>
-                        Discover
-                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </TransitionLink>
-                </div>
-
-                {/* â•â•â• SECTION 2 â€” REBEL GIRL â•â•â• */}
-                <div ref={rebelRef} className="ct-rebel">
-                    {/* <p data-rebel-label className="ct-label" style={{ color: "rgba(255,255,255,0.35)" }}>ZC-002</p> */}
-
-                    <h2 className="ct-h2">
-                        <div data-rebel-word="0" style={{ display: "block" }}>REBEL</div>
-                        <div data-rebel-word="1" style={{ display: "block" }}>GIRL</div>
-                    </h2>
-
-                    <div data-rebel-sub className="ct-rule ct-rebel-rule"
-                        style={{
-                            background: "linear-gradient(to left,rgba(212,175,55,0.8),transparent)",
-                        }} />
-
-                    <p data-rebel-sub className="ct-sub" style={{ color: "rgba(255,255,255,0.52)" }}>
-                        Wild confidence.<br />Wrapped in elegance.
-                    </p>
-
-                    <div data-rebel-sub data-rebel-sub-btn className="ct-rebel-btn-row"
-                        style={{ display: "flex", marginTop: "1.2rem" }}>
-                        <TransitionLink href="/collections" label="Discover Collection" className="ct-btn">
-                            Discover
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </TransitionLink>
-                    </div>
-                </div>
-
-                {/* â•â•â• SECTION 3 â€” IT BOY â•â•â• */}
-                <div ref={itboyRef} className="ct-itboy">
-
-                    {/* IT BOY — unified bottom-left block */}
-                    <div className="ct-it">
-                        {/* <p data-it-sub className="ct-label" style={{ color: "rgba(255,255,255,0.35)", marginBottom: "0.4rem" }}>
-                            N&#176; 003
-                        </p> */}
-
-                        <div data-it-word className="ct-giant">IT</div>
-                        <div data-boy-word className="ct-giant ct-giant-italic">BOY</div>
-
-                        <div data-it-sub className="ct-rule"
-                            style={{ background: "linear-gradient(to right,rgba(212,175,55,0.8),transparent)", marginTop: "0.8rem" }} />
-
-                        <p data-it-sub className="ct-sub"
-                            style={{ color: "rgba(255,255,255,0.52)", marginTop: "0.6rem" }}>
-                            Fresh. Bold. Addictive. <br />
-                            The signature scent for GenZ Boys
-                        </p>
-
-                        <TransitionLink href="/collections" label="Discover Collection" data-it-sub className="ct-btn" style={{ marginTop: "1rem" }}>
-                            Discover
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        </TransitionLink>
-                    </div>
-
-                </div>
-
+                                <div data-sub className="ct-btn-row">
+                                    <TransitionLink href={`/products/${p.key}`} label={name} className="ct-btn">
+                                        Discover
+                                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                                            <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </TransitionLink>
+                                </div>
+                            </div>
+                        </section>
+                    );
+                })}
             </div>
         </>
     );
 }
-
-
-

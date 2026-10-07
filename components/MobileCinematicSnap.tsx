@@ -2,20 +2,16 @@
 
 import { useEffect, type RefObject } from "react";
 import gsap from "gsap";
+import { cinematicMaxScroll, getCinematicVariant, isMobileViewport } from "@/lib/cinematic";
 
 // Mobile-only: turns the long 1300vh cinematic scroll into a few swipe-driven
 // steps. Each swipe auto-scrolls to the next stop, so the frame animation and
 // CinematicTypography triggers still play exactly as on desktop — the user just
 // doesn't have to drag through them.
 //
-// Stops are fractions of the cinematic scroll max (12 × innerHeight), matching
-// the ScrollTrigger ranges in CinematicTypography:
-//   0     → IMPERIAL SMOKE (product 1)
-//   0.435 → REBEL GIRL (product 2 — frame ~131, before the glow bloom blurs the
-//           bottle; text fully revealed inside its mobile 0.22–0.55 range)
-//   0.9   → IT BOY (product 3, triggers at 0.81)
-//   end   → top of HomeSections
-const STOPS = [0, 0.435, 0.9];
+// Stops come from lib/cinematic (mobile variant) — one per bottle, each landing
+// where that bottle is sharp and its text is fully revealed:
+//   Blind Date → It Boy → Rebel Girl → Imperial Smoke → top of HomeSections
 const STEP_DURATION = 1.6;
 const SWIPE_THRESHOLD = 25;
 const EPS = 4;
@@ -26,7 +22,8 @@ export default function MobileCinematicSnap({
     endRef: RefObject<HTMLElement | null>;
 }) {
     useEffect(() => {
-        if (window.innerWidth >= 768) return;
+        if (!isMobileViewport()) return;
+        const { stops: STOPS } = getCinematicVariant();
 
         let animating = false;
         let cooldownUntil = 0;
@@ -38,7 +35,7 @@ export default function MobileCinematicSnap({
             return el.getBoundingClientRect().top + window.scrollY;
         };
         const getStops = () => {
-            const max = window.innerHeight * 12;
+            const max = cinematicMaxScroll();
             return [...STOPS.map(p => p * max), getEnd()];
         };
 

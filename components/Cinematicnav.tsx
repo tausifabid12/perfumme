@@ -153,7 +153,10 @@ export default function CinematicNav({
                     opacity: 0,
                     // Desktop: mix-blend-difference for the cinematic overlay effect
                     // Mobile: always normal so the frosted glass shows correctly
-                    mixBlendMode: isMobileView ? "normal" : "difference",
+                    // Home hero: normal too — difference turns the gold logo
+                    // muddy over the warm cinematic frames, and the hero is
+                    // always dark (then the frosted bar) so it isn't needed.
+                    mixBlendMode: isMobileView || transparentHero ? "normal" : "difference",
                     background: scrolled ? "rgba(7,7,10,0.82)" : "transparent",
                     backdropFilter: scrolled ? "blur(20px) saturate(150%)" : "none",
                     WebkitBackdropFilter: scrolled ? "blur(20px) saturate(150%)" : "none",
@@ -168,12 +171,13 @@ export default function CinematicNav({
                         onMouseMove={handleMagnetic}
                         onMouseLeave={resetMagnetic}
                     >
-                        <div className="relative w-14 h-14">
+                        <div className="relative w-14 h-14 md:w-16 md:h-16">
                             <Image
                                 src="/logo.png"
                                 alt="Senz8"
                                 fill
                                 className="object-contain"
+                                style={transparentHero ? { filter: "drop-shadow(0 1px 6px rgba(0,0,0,0.85)) drop-shadow(0 0 2px rgba(0,0,0,0.6))" } : undefined}
                                 priority
                             />
                         </div>

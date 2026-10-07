@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-
-const TOTAL_FRAMES = 302; // 10s video @ ~30fps
+import { cinematicMaxScroll, getCinematicVariant } from "@/lib/cinematic";
 
 export default function GodModeExperience({ onReady }: { onReady?: () => void }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,6 +21,8 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
     useEffect(() => {
         const canvas = canvasRef.current!;
         const ctx = canvas.getContext("2d")!;
+        // Portrait sequence on phones, 16:9 on everything else.
+        const { dir, frames: TOTAL_FRAMES } = getCinematicVariant();
 
         const resize = () => {
             const dpr = window.devicePixelRatio || 1;
@@ -32,6 +33,7 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
             canvas.style.width = `${w}px`;
             canvas.style.height = `${h}px`;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.imageSmoothingQuality = "high";
         };
         resize();
         window.addEventListener("resize", resize);
@@ -39,7 +41,7 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
         let loadedCount = 0;
         for (let i = 0; i < TOTAL_FRAMES; i++) {
             const img = new Image();
-            img.src = `/frames3/frame_${String(i + 1).padStart(4, "0")}.webp`;
+            img.src = `${dir}/frame_${String(i + 1).padStart(4, "0")}.webp`;
             img.onload = () => {
                 loadedCount++;
                 if (loadedCount === 1) fireReady();
@@ -47,13 +49,15 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
             images.current[i] = img;
         }
 
-        const CINEMATIC_MAX = () => window.innerHeight * 12;
-
         const onScroll = () => {
-            const clamped = Math.min(window.scrollY, CINEMATIC_MAX());
-            targetFrame.current = (clamped / CINEMATIC_MAX()) * (TOTAL_FRAMES - 1);
+            const max = cinematicMaxScroll();
+            const clamped = Math.min(window.scrollY, max);
+            targetFrame.current = (clamped / max) * (TOTAL_FRAMES - 1);
         };
         window.addEventListener("scroll", onScroll, { passive: true });
+        // Restored scroll position on refresh — start on the right frame.
+        onScroll();
+        currentFrame.current = targetFrame.current;
 
         const drawFrame = (img: HTMLImageElement) => {
             const cw = window.innerWidth;
