@@ -73,3 +73,24 @@ export const getCinematicVariant = (): CinematicVariant =>
     isMobileViewport() ? MOBILE : WEB;
 
 export const cinematicMaxScroll = () => window.innerHeight * 12;
+
+// ── Displayed-frame progress ─────────────────────────────────────────
+// The canvas eases toward the scroll target and can lag further while frames
+// are still downloading (it falls back to the last loaded frame). The copy is
+// timed against the frame that is actually painted, not raw scroll, so text
+// never appears over the wrong bottle.
+type ProgressListener = (p: number) => void;
+let displayedProgress = 0;
+const progressListeners = new Set<ProgressListener>();
+
+export const setDisplayedProgress = (p: number) => {
+    if (p === displayedProgress) return;
+    displayedProgress = p;
+    progressListeners.forEach(fn => fn(p));
+};
+
+export const onDisplayedProgress = (fn: ProgressListener) => {
+    progressListeners.add(fn);
+    fn(displayedProgress);
+    return () => { progressListeners.delete(fn); };
+};

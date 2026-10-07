@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { cinematicMaxScroll, getCinematicVariant } from "@/lib/cinematic";
+import { cinematicMaxScroll, getCinematicVariant, setDisplayedProgress } from "@/lib/cinematic";
+
+// Parallel frame requests. Small enough that the priority order below is
+// actually honoured on slow mobile connections.
+const CONCURRENCY = 6;
 
 export default function GodModeExperience({ onReady }: { onReady?: () => void }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -22,7 +26,7 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
         const canvas = canvasRef.current!;
         const ctx = canvas.getContext("2d")!;
         // Portrait sequence on phones, 16:9 on everything else.
-        const { dir, frames: TOTAL_FRAMES } = getCinematicVariant();
+        const { dir, frames: TOTAL_FRAMES, stops } = getCinematicVariant();
 
         const resize = () => {
             const dpr = window.devicePixelRatio || 1;
@@ -38,16 +42,47 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
         resize();
         window.addEventListener("resize", resize);
 
-        let loadedCount = 0;
-        for (let i = 0; i < TOTAL_FRAMES; i++) {
-            const img = new Image();
-            img.src = `${dir}/frame_${String(i + 1).padStart(4, "0")}.webp`;
-            img.onload = () => {
-                loadedCount++;
-                if (loadedCount === 1) fireReady();
-            };
-            images.current[i] = img;
+        // Load order: first frame → each bottle's sharp frame (and its
+        // neighbours) → a coarse pass across the whole sequence → the gaps.
+        // A fast swipe then always lands near a loaded frame instead of
+        // falling back to a blurry transition frame.
+        const order: number[] = [];
+        const seen = new Set<number>();
+        const add = (i: number) => {
+            if (i < 0 || i >= TOTAL_FRAMES || seen.has(i)) return;
+            seen.add(i);
+            order.push(i);
+        };
+        add(0);
+        stops.forEach(p => {
+            const c = Math.round(p * (TOTAL_FRAMES - 1));
+            for (let d = 0; d <= 6; d++) { add(c - d); add(c + d); }
+        });
+        for (const step of [16, 8, 4, 2, 1]) {
+            for (let i = 0; i < TOTAL_FRAMES; i += step) add(i);
         }
+
+        const isLoaded = (i: number) => {
+            const img = images.current[i];
+            return !!img && img.complete && img.naturalWidth > 0;
+        };
+
+        let cancelled = false;
+        let next = 0;
+        const loadNext = () => {
+            if (cancelled || next >= order.length) return;
+            const i = order[next++];
+            const img = new Image();
+            img.decoding = "async";
+            img.onload = () => {
+                if (i === 0) fireReady();
+                loadNext();
+            };
+            img.onerror = loadNext;
+            img.src = `${dir}/frame_${String(i + 1).padStart(4, "0")}.webp`;
+            images.current[i] = img;
+        };
+        for (let k = 0; k < CONCURRENCY; k++) loadNext();
 
         const onScroll = () => {
             const max = cinematicMaxScroll();
@@ -74,19 +109,22 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
         const loop = () => {
             raf.current = requestAnimationFrame(loop);
             currentFrame.current += (targetFrame.current - currentFrame.current) * 0.12;
-            let i = Math.max(0, Math.min(Math.round(currentFrame.current), TOTAL_FRAMES - 1));
-            // Fall back to the nearest earlier frame that actually loaded (the tail
-            // frames may be missing). Otherwise a resize — e.g. the mobile address
-            // bar showing/hiding — clears the canvas and nothing redraws it: black.
-            while (i > 0 && !(images.current[i]?.complete && images.current[i].naturalWidth > 0)) i--;
-            const img = images.current[i];
-            if (img?.complete && img.naturalWidth > 0) {
-                drawFrame(img);
+            const want = Math.max(0, Math.min(Math.round(currentFrame.current), TOTAL_FRAMES - 1));
+            // Nearest loaded frame on either side — always draw something, or a
+            // resize (mobile address bar) clears the canvas and leaves it black.
+            let i = -1;
+            for (let d = 0; d < TOTAL_FRAMES; d++) {
+                if (isLoaded(want - d)) { i = want - d; break; }
+                if (isLoaded(want + d)) { i = want + d; break; }
             }
+            if (i < 0) return;
+            drawFrame(images.current[i]);
+            setDisplayedProgress(i / (TOTAL_FRAMES - 1));
         };
         loop();
 
         return () => {
+            cancelled = true;
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", resize);
             cancelAnimationFrame(raf.current);

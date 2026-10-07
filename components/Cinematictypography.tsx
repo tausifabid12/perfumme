@@ -8,6 +8,7 @@ import {
     cinematicMaxScroll,
     getCinematicVariant,
     isMobileViewport,
+    onDisplayedProgress,
     type ProductKey,
 } from "@/lib/cinematic";
 
@@ -102,6 +103,16 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
         });
 
         const [firstKey, , , lastKey] = variant.order;
+
+        // Scrubbed product timelines, each mapped onto a [start, end] window
+        // of displayed-frame progress.
+        type Scrubbed = {
+            window: readonly [number, number];
+            anim: gsap.core.Animation;
+            onProgress: (t: number) => void;
+        };
+        const scrubbed: Scrubbed[] = [];
+        let unsubscribe = () => {};
         const middleKeys = variant.order.slice(1, 3);
 
         const ctx = gsap.context(() => {
@@ -125,16 +136,14 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                 { opacity: 0, y: 18, filter: blur(6) },
                 { opacity: 1, y: 0, filter: blur(0), duration: 1.0, ease: "power2.out", stagger: 0.15, delay: 1.1 });
 
-            ScrollTrigger.create({
-                trigger: document.body,
-                start: () => at(variant.introOut[0]),
-                end: () => at(variant.introOut[1]),
-                scrub: 1,
-                animation: gsap.to(first.inner, {
-                    opacity: 0, y: -28, filter: blur(10),
-                    ease: "power2.in", paused: true,
-                }),
-                onUpdate: self => setInteractive(first.sec, self.progress < 0.9),
+            const firstOut = gsap.to(first.inner, {
+                opacity: 0, y: -28, filter: blur(10),
+                ease: "power2.in", paused: true,
+            });
+            scrubbed.push({
+                window: variant.introOut,
+                anim: firstOut,
+                onProgress: t => setInteractive(first.sec, t < 0.9),
             });
 
             // ── PRODUCTS 2 & 3 — scrubbed in → hold → out, bracketing the
@@ -158,14 +167,10 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                     .to(p.inner, { opacity: 0, y: -22, filter: blur(8), duration: 1 - OUT_START, ease: "power1.in" }, OUT_START)
                     .set(p.sec, { autoAlpha: 0 }, 1);
 
-                ScrollTrigger.create({
-                    trigger: document.body,
-                    start: () => at(start),
-                    end: () => at(end),
-                    scrub: 1.2,
-                    animation: tl,
-                    onUpdate: self =>
-                        setInteractive(p.sec, self.progress > IN_END * 0.5 && self.progress < OUT_START + 0.08),
+                scrubbed.push({
+                    window: [start, end],
+                    anim: tl,
+                    onProgress: t => setInteractive(p.sec, t > IN_END * 0.5 && t < OUT_START + 0.08),
                 });
             });
 
@@ -185,11 +190,27 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                 .to(last.lines[1], { opacity: 1, y: 0, filter: blur(0), duration: 0.8, ease: "expo.out" }, 0.22)
                 .to(last.subs, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 }, 0.45);
 
-            ScrollTrigger.create({
-                trigger: document.body,
-                start: () => at(variant.finalAt),
-                onEnter: () => { setInteractive(last.sec, true); lastTl.play(); },
-                onLeaveBack: () => { setInteractive(last.sec, false); lastTl.reverse(); },
+            let lastShown = false;
+            const toggleLast = (p: number) => {
+                const show = p >= variant.finalAt;
+                if (show === lastShown) return;
+                lastShown = show;
+                setInteractive(last.sec, show);
+                if (show) lastTl.play(); else lastTl.reverse();
+            };
+
+            // ── Drive all product copy from the frame that is actually on
+            //    screen (not raw scroll), so text can't run ahead of a bottle
+            //    that is still loading or easing into place.
+            const scrubTo = new Map(scrubbed.map(s => [s, gsap.quickTo(s.anim, "progress", { duration: 0.45, ease: "power2.out" })]));
+            unsubscribe = onDisplayedProgress(p => {
+                scrubbed.forEach(s => {
+                    const [a, b] = s.window;
+                    const t = Math.min(1, Math.max(0, (p - a) / (b - a)));
+                    scrubTo.get(s)!(t);
+                    s.onProgress(t);
+                });
+                toggleLast(p);
             });
 
             // ── Hide the whole overlay once the user scrolls past the
@@ -227,6 +248,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
         return () => {
             window.removeEventListener("mousemove", onMouse);
             cancelAnimationFrame(raf);
+            unsubscribe();
             ctx.revert();
             overlayEl.style.display = "";
         };
