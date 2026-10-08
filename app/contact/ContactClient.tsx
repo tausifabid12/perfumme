@@ -30,7 +30,7 @@ const INFO = [
     {
         icon: MapPin,
         label: "Visit Us",
-        value: " 2nd floor, Four Square, 301, 85, Haudin Rd, Yellappa Chetty Layout, Bengaluru, Karnataka 560042",
+        value: " 2nd floor, Four Square, 201, 85, Haudin Rd, Yellappa Chetty Layout, Bengaluru, Karnataka 560042",
         sub: "Senz Eight Aroma Private Limited",
         href: "#",
     },
