@@ -11,7 +11,7 @@ import { cinematicMaxScroll, getCinematicVariant, isMobileViewport } from "@/lib
 //
 // Stops come from lib/cinematic (mobile variant) — one per bottle, each landing
 // where that bottle is sharp and its text is fully revealed:
-//   Blind Date → It Boy → Rebel Girl → Imperial Smoke → top of HomeSections
+//   Imperial Smoke → Rebel Girl → It Boy → Blind Date → top of HomeSections
 const STEP_DURATION = 1.6;
 const SWIPE_THRESHOLD = 25;
 const EPS = 4;

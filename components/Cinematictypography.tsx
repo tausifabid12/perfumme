@@ -489,8 +489,7 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
             `}</style>
 
             <div ref={overlayRef} className="ct-overlay mt-20">
-                {PRODUCTS.map((p, i) => {
-                    const isFirst = i === 0;
+                {PRODUCTS.map(p => {
                     const name = `${p.lines[0]} ${p.lines[1]}`;
                     return (
                         <section
@@ -507,7 +506,9 @@ export default function CinematicTypography({ canAnimate = false }: { canAnimate
                                 <h2 className="ct-h2" aria-label={name}>
                                     {p.lines.map(line => (
                                         <span key={line} data-line>
-                                            {isFirst ? <SplitChars text={line} /> : line}
+                                            {/* Split for every product — whichever opens the
+                                                sequence gets the letter-by-letter reveal. */}
+                                            <SplitChars text={line} />
                                         </span>
                                     ))}
                                 </h2>

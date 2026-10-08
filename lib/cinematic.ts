@@ -16,7 +16,10 @@ export type Window = [number, number];
 export interface CinematicVariant {
     dir: string;
     frames: number;
-    // Product order as it appears in this frame sequence.
+    // Play the frame files last → first. Every timing below is in *playback*
+    // space (p = 0 is the first frame shown), so nothing else needs to know.
+    reversed: boolean;
+    // Product order as it appears on screen.
     order: [ProductKey, ProductKey, ProductKey, ProductKey];
     // Product 1 text is revealed on load; scrubbed out over this window.
     introOut: Window;
@@ -28,41 +31,43 @@ export interface CinematicVariant {
     stops: number[];
 }
 
-// 432 frames, 16:9.
-//   Blind Date      sharp f1–33    (p 0–0.076)   zooms past by f49
-//   Rebel Girl      sharp f117–173 (p 0.27–0.40) zooms past by f193
-//   It Boy          sharp f261–321 (p 0.60–0.74) zooms past by f349
-//   Imperial Smoke  sharp f401–432 (p 0.93–1.0)
+// 432 frames, 16:9, played in reverse.
+//   Imperial Smoke  sharp f432–401 (p 0–0.07)    drifts away by p 0.10
+//   It Boy          sharp f321–261 (p 0.26–0.40) recedes by p 0.42
+//   Rebel Girl      sharp f173–117 (p 0.60–0.73) recedes by p 0.80
+//   Blind Date      sharp f33–1    (p 0.92–1.0)  resolves from close-up at p 0.89
 const WEB: CinematicVariant = {
     dir: "/frames-web",
     frames: 432,
-    order: ["blind-date", "rebel-girl", "it-boy", "imperial-smoke"],
-    introOut: [0.055, 0.095],
+    reversed: true,
+    order: ["imperial-smoke", "it-boy", "rebel-girl", "blind-date"],
+    introOut: [0.06, 0.095],
     middle: {
-        "rebel-girl": [0.21, 0.43],
-        "it-boy": [0.56, 0.78],
+        "it-boy": [0.21, 0.43],
+        "rebel-girl": [0.555, 0.77],
     },
-    finalAt: 0.9,
-    stops: [0, 0.335, 0.675, 0.985],
+    finalAt: 0.905,
+    stops: [0, 0.33, 0.665, 0.985],
 };
 
-// 288 frames, portrait (1280×2276).
-//   Blind Date      sharp f1–21    (p 0–0.07)    zooms past by f37
-//   It Boy          sharp f81–109  (p 0.28–0.38) slides out by f125
-//   Rebel Girl      sharp f173–217 (p 0.60–0.75) zooms past by f229
-//   Imperial Smoke  sharp f277–288 (p 0.96–1.0)
+// 288 frames, portrait (1280×2276), played in reverse.
+//   Imperial Smoke  sharp f288–277 (p 0–0.04)    drifts away by p 0.08
+//   Rebel Girl      sharp f217–173 (p 0.25–0.40) recedes by p 0.46
+//   It Boy          sharp f109–81  (p 0.62–0.72) recedes by p 0.76
+//   Blind Date      sharp f21–1    (p 0.93–1.0)  resolves from close-up at p 0.88
 const MOBILE: CinematicVariant = {
     dir: "/frames-mobile",
     frames: 288,
-    order: ["blind-date", "it-boy", "rebel-girl", "imperial-smoke"],
-    introOut: [0.05, 0.09],
+    reversed: true,
+    order: ["imperial-smoke", "rebel-girl", "it-boy", "blind-date"],
+    introOut: [0.035, 0.075],
     middle: {
-        "it-boy": [0.22, 0.41],
-        "rebel-girl": [0.54, 0.785],
+        "rebel-girl": [0.2, 0.45],
+        "it-boy": [0.57, 0.76],
     },
-    finalAt: 0.93,
+    finalAt: 0.9,
     // Last stop stays below the 0.998 point where the overlay hides.
-    stops: [0, 0.325, 0.67, 0.985],
+    stops: [0, 0.32, 0.67, 0.985],
 };
 
 export const MOBILE_BREAKPOINT = 768;

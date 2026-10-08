@@ -26,7 +26,7 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
         const canvas = canvasRef.current!;
         const ctx = canvas.getContext("2d")!;
         // Portrait sequence on phones, 16:9 on everything else.
-        const { dir, frames: TOTAL_FRAMES, stops } = getCinematicVariant();
+        const { dir, frames: TOTAL_FRAMES, stops, reversed } = getCinematicVariant();
 
         const resize = () => {
             const dpr = window.devicePixelRatio || 1;
@@ -79,7 +79,9 @@ export default function GodModeExperience({ onReady }: { onReady?: () => void })
                 loadNext();
             };
             img.onerror = loadNext;
-            img.src = `${dir}/frame_${String(i + 1).padStart(4, "0")}.webp`;
+            // Slot i is the i-th frame *shown*; reversed sequences read files back to front.
+            const file = reversed ? TOTAL_FRAMES - i : i + 1;
+            img.src = `${dir}/frame_${String(file).padStart(4, "0")}.webp`;
             images.current[i] = img;
         };
         for (let k = 0; k < CONCURRENCY; k++) loadNext();
