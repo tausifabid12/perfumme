@@ -16,6 +16,9 @@ export type Window = [number, number];
 export interface CinematicVariant {
     dir: string;
     frames: number;
+    // Folder also holds frame_NNNN.avif (≈ half the bytes of the WebP at the
+    // same visual quality). Used when the browser supports AVIF; WebP otherwise.
+    avif: boolean;
     // Play the frame files last → first. Every timing below is in *playback*
     // space (p = 0 is the first frame shown), so nothing else needs to know.
     reversed: boolean;
@@ -31,14 +34,16 @@ export interface CinematicVariant {
     stops: number[];
 }
 
-// 432 frames, 16:9, played in reverse.
-//   Imperial Smoke  sharp f432–401 (p 0–0.07)    drifts away by p 0.10
-//   It Boy          sharp f321–261 (p 0.26–0.40) recedes by p 0.42
-//   Rebel Girl      sharp f173–117 (p 0.60–0.73) recedes by p 0.80
-//   Blind Date      sharp f33–1    (p 0.92–1.0)  resolves from close-up at p 0.89
+// 270 frames (15 fps, 1280×720), played in reverse. The canvas also
+// cross-fades between neighbouring frames so scrubbing stays smooth.
+//   Imperial Smoke  sharp f270–252 (p 0–0.07)    drifts away by p 0.10
+//   It Boy          sharp f200–163 (p 0.26–0.40) recedes by p 0.42
+//   Rebel Girl      sharp f108–73  (p 0.60–0.73) recedes by p 0.80
+//   Blind Date      sharp f21–1    (p 0.92–1.0)  resolves from close-up at p 0.89
 const WEB: CinematicVariant = {
     dir: "/frames-web",
-    frames: 432,
+    frames: 270,
+    avif: true,
     reversed: true,
     order: ["imperial-smoke", "it-boy", "rebel-girl", "blind-date"],
     introOut: [0.06, 0.095],
@@ -58,6 +63,7 @@ const WEB: CinematicVariant = {
 const MOBILE: CinematicVariant = {
     dir: "/frames-mobile",
     frames: 288,
+    avif: false,
     reversed: true,
     order: ["imperial-smoke", "rebel-girl", "it-boy", "blind-date"],
     introOut: [0.035, 0.075],
@@ -76,6 +82,17 @@ export const isMobileViewport = () => window.innerWidth < MOBILE_BREAKPOINT;
 
 export const getCinematicVariant = (): CinematicVariant =>
     isMobileViewport() ? MOBILE : WEB;
+
+// One-time AVIF decode probe (1×1 image). Resolves false on any failure so we
+// always fall back to WebP.
+let avifSupport: Promise<boolean> | null = null;
+export const supportsAvif = () =>
+    (avifSupport ??= new Promise<boolean>(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(img.width > 0);
+        img.onerror = () => resolve(false);
+        img.src = "data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=";
+    }));
 
 export const cinematicMaxScroll = () => window.innerHeight * 12;
 

@@ -19,7 +19,8 @@ interface Product {
     lines: [string, string];
     tag: string;
     sub: [string, string];
-    // Desktop placement — alternates so consecutive products never share a corner.
+    // Desktop placement — alternates in playback order (Imperial Smoke → It Boy →
+    // Rebel Girl → Blind Date) so consecutive products never share a side.
     side: "left" | "right";
 }
 
@@ -29,28 +30,28 @@ const PRODUCTS: Product[] = [
         lines: ["BLIND", "DATE"],
         tag: "Unisex",
         sub: ["Fresh. Warm. Irresistible.", "Made for close encounters."],
-        side: "left",
+        side: "right",
     },
     {
         key: "rebel-girl",
         lines: ["REBEL", "GIRL"],
         tag: "For Her",
         sub: ["Wild confidence.", "Wrapped in elegance."],
-        side: "right",
+        side: "left",
     },
     {
         key: "it-boy",
         lines: ["IT", "BOY"],
         tag: "For Him",
         sub: ["Fresh. Bold. Addictive.", "The signature scent for GenZ Boys."],
-        side: "left",
+        side: "right",
     },
     {
         key: "imperial-smoke",
         lines: ["IMPERIAL", "SMOKE"],
         tag: "For Him",
         sub: ["Crafted in shadow.", "Remembered forever."],
-        side: "right",
+        side: "left",
     },
 ];
 
