@@ -1,8 +1,9 @@
 /**
  * POST /api/cart/checkout  { cartId }
- * Attaches the logged-in customer (httpOnly token cookie) to the cart via
- * cartBuyerIdentityUpdate, then returns the cart's checkoutUrl. Without this
- * the cart is anonymous and Shopify checkout treats the user as a guest.
+ * Logged in: attaches the customer (httpOnly token cookie) to the cart via
+ * cartBuyerIdentityUpdate and returns the cart's checkoutUrl, so the order is
+ * linked to their account. Guest: returns { checkoutUrl: null, guest: true }
+ * and the client uses the cart's own checkoutUrl — Shopify guest checkout.
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -20,7 +21,8 @@ const CART_BUYER_IDENTITY_UPDATE = /* GraphQL */ `
 export async function POST(req: NextRequest) {
     const token = req.cookies.get("shopify_customer_token")?.value;
     if (!token) {
-        return NextResponse.json({ error: "Not logged in" }, { status: 401 });
+        // No account needed — guest checkout uses the cart's checkoutUrl as is.
+        return NextResponse.json({ checkoutUrl: null, guest: true });
     }
 
     const { cartId } = await req.json();

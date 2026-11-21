@@ -8,7 +8,6 @@ import CustomCursor from "@/lib/animations/custom-cursor";
 import ScrollProgress from "@/lib/animations/scroll-progress";
 import TransitionLink from "@/components/TransitionLink";
 import { useCart } from "@/components/providers/CartProvider";
-import { useAuth } from "@/lib/hooks/useAuth";
 import type { ShopifyProduct, ShopifyProductVariant } from "@/lib/shopify/types";
 import SiteFooter from "@/components/SiteFooter";
 
@@ -45,7 +44,6 @@ export default function ShopifyProductClient({
     longevity, concentration, topNotes, heartNotes, baseNotes,
 }: Props) {
     const { addToCart, adding, goToCheckout } = useCart();
-    const { customer } = useAuth();
     const [selectedVariant, setSelectedVariant] = useState<ShopifyProductVariant>(
         product.variants.nodes[0]
     );
@@ -94,12 +92,9 @@ export default function ShopifyProductClient({
 
     const handleBuyNow = useCallback(async () => {
         await addToCart(selectedVariant.id, qty);
-        if (!customer) {
-            window.location.href = "/login?from=checkout";
-            return;
-        }
+        // No account needed — guests check out directly on Shopify.
         await goToCheckout();
-    }, [addToCart, selectedVariant.id, qty, goToCheckout, customer]);
+    }, [addToCart, selectedVariant.id, qty, goToCheckout]);
 
     return (
         <div className="relative min-h-screen" style={{ background: "var(--bg-primary)" }}>

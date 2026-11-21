@@ -207,9 +207,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (data?.cartLinesUpdate?.cart) applyCart(data.cartLinesUpdate.cart);
   }, [cartId, applyCart, removeFromCart]);
 
-  // Link the logged-in customer to the cart server-side, then open Shopify
-  // checkout so the user stays signed in there. Not logged in → login first;
-  // LoginClient calls this again after auth (via the ?from=checkout flow).
+  // Open Shopify checkout. Logged-in customers are linked to the cart
+  // server-side first so the order lands in their account; guests go straight
+  // to Shopify's guest checkout — no account required.
   const goToCheckout = useCallback(async () => {
     // Read from storage: callers may run right after addToCart, before state updates
     const id = (typeof window !== "undefined" ? localStorage.getItem(CART_KEY) : null) ?? cartId;
@@ -221,12 +221,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
       credentials: "include",
       body: JSON.stringify({ cartId: id }),
     }).catch(() => null);
-
-    if (res?.status === 401) {
-      setCartOpen(false);
-      window.location.href = "/login?from=checkout";
-      return;
-    }
 
     const data = res?.ok ? await res.json() : null;
     const url = data?.checkoutUrl ?? checkoutUrl;
