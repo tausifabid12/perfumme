@@ -5,6 +5,10 @@ import SmoothScrollProvider from "@/components/providers/SmoothScrollProvider";
 import { PageTransitionProvider } from "@/components/PageTransition";
 import { CartProvider } from "@/components/providers/CartProvider";
 import CartDrawer from "@/components/CartDrawer";
+import Script from "next/script";
+import { Suspense } from "react";
+import MetaPixel from "@/components/MetaPixel";
+import Analytics from "@/components/Analytics";
 
 // Self-hosted (latin, variable weight) instead of next/font/google: Turbopack
 // fails to resolve Google's "/l/font?kit=…&skey=…" URLs on some networks.
@@ -96,6 +100,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: BASE_URL,
   },
+
+  verification: {
+    google: "-npCjy6VpS_t41U5H9E9DOJ9pOcDFedrW7XMNeQ5YKw",
+  },
 };
 
 export default function RootLayout({
@@ -106,6 +114,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${bodoniModa.variable}`}>
       <body>
+        <Analytics />
+
         <SmoothScrollProvider>
           <CartProvider>
             <PageTransitionProvider>
@@ -114,6 +124,10 @@ export default function RootLayout({
             <CartDrawer />
           </CartProvider>
         </SmoothScrollProvider>
+
+        <Suspense fallback={null}>
+          <MetaPixel />
+        </Suspense>
       </body>
     </html>
   );

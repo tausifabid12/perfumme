@@ -1,9 +1,8 @@
 import type { MetadataRoute } from "next";
-import { getAllShopifyProducts } from "@/lib/shopify/api";
 
 const BASE_URL = "https://www.senz8.in";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
     // ── Static pages ──────────────────────────────────────────────────
     const staticRoutes: MetadataRoute.Sitemap = [
         {
@@ -57,19 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ];
 
-    // ── Dynamic Shopify product pages ─────────────────────────────────
-    let shopifyRoutes: MetadataRoute.Sitemap = [];
-    try {
-        const products = await getAllShopifyProducts();
-        shopifyRoutes = products.map((p) => ({
-            url: `${BASE_URL}/products/shopify/${p.handle}`,
-            lastModified: new Date(),
-            changeFrequency: "weekly" as const,
-            priority: 0.8,
-        }));
-    } catch {
-        // Shopify not configured — skip dynamic routes
-    }
-
-    return [...staticRoutes, ...shopifyRoutes];
+    // Shopify product pages (/products/shopify/[handle]) are intentionally
+    // left out — they duplicate the cinematic product pages above.
+    return staticRoutes;
 }
