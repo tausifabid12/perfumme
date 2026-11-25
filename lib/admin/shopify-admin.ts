@@ -78,6 +78,32 @@ export async function adminFetch<T>(query: string, variables: Record<string, unk
     return json.data as T;
 }
 
+/**
+ * Admin REST call — only for what GraphQL can't do (setting a customer's
+ * password). `path` is relative to /admin/api/{version}/, e.g. "customers.json".
+ */
+export async function adminRest<T>(method: "GET" | "POST" | "PUT", path: string, body?: unknown): Promise<T> {
+    if (!DOMAIN) throw new Error("NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN is not set.");
+
+    const res = await fetch(`https://${DOMAIN}/admin/api/${API_VERSION}/${path}`, {
+        method,
+        headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": await getAdminToken(),
+        },
+        body: body === undefined ? undefined : JSON.stringify(body),
+        cache: "no-store",
+    });
+
+    if (res.status === 401) cachedToken = null;
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        const detail = JSON.stringify(json?.errors ?? json).slice(0, 300);
+        throw new Error(`Shopify Admin REST ${method} ${path} → ${res.status}: ${detail}`);
+    }
+    return json as T;
+}
+
 // ── Types ────────────────────────────────────────────────────────────────────
 
 export interface Money {

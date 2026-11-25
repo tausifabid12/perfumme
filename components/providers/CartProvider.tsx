@@ -8,6 +8,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
+import WhatsAppOtpModal from "@/components/WhatsAppOtpModal";
 
 const CART_KEY = "senz8_cart_id";
 // All Shopify calls go through our own API route to avoid CORS and keep tokens server-side
@@ -207,9 +208,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (data?.cartLinesUpdate?.cart) applyCart(data.cartLinesUpdate.cart);
   }, [cartId, applyCart, removeFromCart]);
 
-  // Open Shopify checkout. Logged-in customers are linked to the cart
-  // server-side first so the order lands in their account; guests go straight
-  // to Shopify's guest checkout — no account required.
+  const [otpOpen, setOtpOpen] = useState(false);
+
+  // Open Shopify checkout. The server first requires a WhatsApp-verified
+  // number (403 needsOtp → show the OTP modal, then retry). Logged-in
+  // customers are linked to the cart so the order lands in their account;
+  // guests go to Shopify's guest checkout — no account required.
   const goToCheckout = useCallback(async () => {
     // Read from storage: callers may run right after addToCart, before state updates
     const id = (typeof window !== "undefined" ? localStorage.getItem(CART_KEY) : null) ?? cartId;
@@ -222,7 +226,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify({ cartId: id }),
     }).catch(() => null);
 
-    const data = res?.ok ? await res.json() : null;
+    const data = res ? await res.json().catch(() => null) : null;
+    if (res?.status === 403 && data?.needsOtp) {
+      setOtpOpen(true);
+      return;
+    }
+    if (!res?.ok) return;
+
     const url = data?.checkoutUrl ?? checkoutUrl;
     if (url) window.location.href = url;
   }, [cartId, checkoutUrl]);
@@ -230,6 +240,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <Ctx.Provider value={{ cartId, checkoutUrl, totalQuantity, lines, subtotal, adding, cartOpen, setCartOpen, addToCart, removeFromCart, updateQty, goToCheckout }}>
       {children}
+      {otpOpen && (
+        <WhatsAppOtpModal onClose={() => setOtpOpen(false)} onVerified={goToCheckout} />
+      )}
     </Ctx.Provider>
   );
 }
